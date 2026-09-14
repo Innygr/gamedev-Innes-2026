@@ -1,4 +1,4 @@
 #grad1 {
-  background-color: red; /* For browsers that do not support gradients */
+  background-color: #ffadc9; /* For browsers that do not support gradients */
   background-image: linear-gradient(to top, #ffadc9, #fff106);
 }
