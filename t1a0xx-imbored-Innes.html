@@ -1,7 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Three.js Animation</title>
+
+  <title>Crystal</title>
 
   <style>
     html, body {
@@ -9,10 +12,312 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #080812;
+      background: #070711;
     }
 
     canvas {
       display: block;
     }
+
+    #back {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+
+      padding: 10px 15px;
+      border-radius: 10px;
+
+      color: white;
+      background: rgba(20, 20, 35, 0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+
+      text-decoration: none;
+      font-family: sans-serif;
+      backdrop-filter: blur(8px);
+    }
+
+    #back:hover {
+      background: rgba(50, 50, 80, 0.8);
+    }
   </style>
+</head>
+
+<body>
+
+<a id="back" href="index.html">← Back</a>
+
+<script type="module">
+  import * as THREE from
+    "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+
+  // -------------------------
+  // Scene
+  // -------------------------
+
+  const scene = new THREE.Scene();
+
+  scene.fog = new THREE.FogExp2(0x070711, 0.035);
+
+  // -------------------------
+  // Camera
+  // -------------------------
+
+  const camera = new THREE.PerspectiveCamera(
+    60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    100
+  );
+
+  camera.position.z = 6;
+
+  // -------------------------
+  // Renderer
+  // -------------------------
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true
+  });
+
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio, 2)
+  );
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
+
+  document.body.appendChild(renderer.domElement);
+
+  // -------------------------
+  // Crystal
+  // -------------------------
+
+  const crystalGeometry =
+    new THREE.OctahedronGeometry(1.4, 0);
+
+  const crystalMaterial =
+    new THREE.MeshPhysicalMaterial({
+      color: 0x7755ff,
+      emissive: 0x221144,
+      emissiveIntensity: 1,
+
+      metalness: 0.15,
+      roughness: 0.15,
+
+      transparent: true,
+      opacity: 0.88,
+
+      transmission: 0.15,
+      thickness: 1
+    });
+
+  const crystal =
+    new THREE.Mesh(
+      crystalGeometry,
+      crystalMaterial
+    );
+
+  scene.add(crystal);
+
+  // Wireframe outline
+
+  const edges =
+    new THREE.EdgesGeometry(crystalGeometry);
+
+  const outline =
+    new THREE.LineSegments(
+      edges,
+      new THREE.LineBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.5
+      })
+    );
+
+  crystal.add(outline);
+
+  // -------------------------
+  // Floating particles
+  // -------------------------
+
+  const particleCount = 450;
+
+  const positions =
+    new Float32Array(particleCount * 3);
+
+  for (let i = 0; i < particleCount; i++) {
+    const i3 = i * 3;
+
+    positions[i3] =
+      (Math.random() - 0.5) * 14;
+
+    positions[i3 + 1] =
+      (Math.random() - 0.5) * 14;
+
+    positions[i3 + 2] =
+      (Math.random() - 0.5) * 14;
+  }
+
+  const particleGeometry =
+    new THREE.BufferGeometry();
+
+  particleGeometry.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+      positions,
+      3
+    )
+  );
+
+  const particleMaterial =
+    new THREE.PointsMaterial({
+      color: 0xaaaaff,
+      size: 0.035,
+      transparent: true,
+      opacity: 0.7
+    });
+
+  const particles =
+    new THREE.Points(
+      particleGeometry,
+      particleMaterial
+    );
+
+  scene.add(particles);
+
+  // -------------------------
+  // Lighting
+  // -------------------------
+
+  scene.add(
+    new THREE.AmbientLight(
+      0xffffff,
+      0.25
+    )
+  );
+
+  const purpleLight =
+    new THREE.PointLight(
+      0x7755ff,
+      30,
+      15
+    );
+
+  purpleLight.position.set(
+    3, 3, 4
+  );
+
+  scene.add(purpleLight);
+
+  const whiteLight =
+    new THREE.PointLight(
+      0xffffff,
+      15,
+      10
+    );
+
+  whiteLight.position.set(
+    -3, -2, 2
+  );
+
+  scene.add(whiteLight);
+
+  // -------------------------
+  // Mouse interaction
+  // -------------------------
+
+  let mouseX = 0;
+  let mouseY = 0;
+
+  window.addEventListener(
+    "mousemove",
+    (event) => {
+      mouseX =
+        (event.clientX /
+          window.innerWidth - 0.5) * 2;
+
+      mouseY =
+        (event.clientY /
+          window.innerHeight - 0.5) * 2;
+    }
+  );
+
+  // -------------------------
+  // Animation
+  // -------------------------
+
+  const clock =
+    new THREE.Clock();
+
+  function animate() {
+    requestAnimationFrame(animate);
+
+    const time =
+      clock.getElapsedTime();
+
+    // Slowly spin the crystal
+    crystal.rotation.x =
+      time * 0.35;
+
+    crystal.rotation.y =
+      time * 0.55;
+
+    // Make it float
+    crystal.position.y =
+      Math.sin(time * 1.5) * 0.25;
+
+    crystal.position.x =
+      Math.cos(time * 0.7) * 0.15;
+
+    // Slowly move the particles
+    particles.rotation.y =
+      time * 0.015;
+
+    particles.rotation.x =
+      time * 0.008;
+
+    // Subtle mouse movement
+    camera.position.x +=
+      (mouseX * 0.8 -
+        camera.position.x) * 0.025;
+
+    camera.position.y +=
+      (-mouseY * 0.8 -
+        camera.position.y) * 0.025;
+
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(
+      scene,
+      camera
+    );
+  }
+
+  animate();
+
+  // -------------------------
+  // Resize
+  // -------------------------
+
+  window.addEventListener(
+    "resize",
+    () => {
+      camera.aspect =
+        window.innerWidth /
+        window.innerHeight;
+
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+      );
+    }
+  );
+</script>
+
+</body>
+</html>
