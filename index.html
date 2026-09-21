@@ -1,34 +1,41 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8">
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
-
-<title>GameDev Innes 2026</title> <style> html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; overflow-x: hidden; background: #000; color: white; font-family: sans-serif; } /* ================================= SPACE IMAGE ================================= */ #background-image { position: fixed; inset: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; pointer-events: none; } /* ================================= CRYSTAL CANVAS ================================= */ #crystalCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; } /* ================================= PAGE CONTENT ================================= */ .content { position: relative; z-index: 10; padding: 20px; min-height: 100vh; box-sizing: border-box; } a { color: #9ccaff; } a:hover { color: white; } </style> </head> <body> <!-- ================================= BACKGROUND IMAGE ================================= -->
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>GameDev Innes 2026</title> <style> html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; background: black; color: white; font-family: Arial, sans-serif; overflow-x: hidden; } /* ================================== SPACE BACKGROUND ================================== */ #space { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; } /* ================================== CRYSTAL ================================== */ #crystal { position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 1; pointer-events: none; } /* ================================== WEBSITE ================================== */ #page { position: relative; z-index: 2; padding: 20px; } a { color: #9ccaff; } a:hover { color: white; } </style> </head> <body> <!-- ================================== SPACE BACKGROUND ================================== -->
 <img
-id="background-image"
+id="space"
 src="SpaceBG.png"
 alt=""
 
-<!-- ================================= CRYSTAL CANVAS ================================= -->
-<canvas id="crystalCanvas"></canvas>
+<!-- ================================== THREE.JS CANVAS ================================== -->
+<canvas id="crystal"></canvas>
 
-<!-- ================================= WEBSITE CONTENT ================================= --> <div class="content">
-  <h1>GameDev Innes 2026</h1>
+<!-- ================================== PAGE ================================== --> <div id="page">
+  <h1>
+  GameDev Innes 2026
+</h1>
+
 
 <br>
 
-<h3>btw I made the background image on blender</h3>
+
+<h3>
+  btw I made the background image on blender
+</h3>
+
 
 <img
   src="NegInny.png"
   width="50"
 >
 
+
 <br>
+<br>
+
 
 Links:
 
+
 <br>
+
 
 <ul>
 
@@ -38,6 +45,7 @@ Links:
     </a>
   </li>
 
+
   <li>
     <a href="https://innygr.github.io/gamedev-Innes-2026">
       This Page
@@ -46,14 +54,16 @@ Links:
 
 </ul>
 
+
 <br>
 
 
-<!-- =================================
+<!-- ==================================
      ASSIGNMENTS
-     ================================= -->
+     ================================== -->
 
 <ol>
+
 
   <li>
     <a href="t1a00-simple-Innes.html">
@@ -63,6 +73,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a01-table-Innes.html">
       t1a01-table-Innes
@@ -70,6 +81,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a02-list-Innes.html">
@@ -79,6 +91,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a03-forms-Innes.html">
       t1a03-forms-Innes
@@ -86,6 +99,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
 
@@ -103,6 +117,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a05-inputoutput-Innes.html">
       t1a05-InputOutput-Innes
@@ -110,6 +125,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a06-list-Innes.html">
@@ -119,6 +135,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a07-list-Innes.html">
       t1a07-table-Innes
@@ -126,6 +143,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a08-list-Innes.html">
@@ -135,6 +153,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a09-list-Innes.html">
       t1a09-table-Innes
@@ -142,6 +161,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a10-list-Innes.html">
@@ -151,6 +171,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a11-list-Innes.html">
       t1a11-table-Innes
@@ -158,6 +179,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a12-list-Innes.html">
@@ -167,6 +189,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a13-list-Innes.html">
       t1a13-table-Innes
@@ -174,6 +197,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a14-list-Innes.html">
@@ -183,6 +207,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a15-list-Innes.html">
       t1a15-table-Innes
@@ -190,6 +215,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a16-list-Innes.html">
@@ -199,6 +225,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a17-list-Innes.html">
       t1a17-table-Innes
@@ -206,6 +233,7 @@ Links:
   </li>
 
   <br>
+
 
   <li>
     <a href="t1a18-list-Innes.html">
@@ -215,6 +243,7 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a19-list-Innes.html">
       t1a19-table-Innes
@@ -223,22 +252,25 @@ Links:
 
   <br>
 
+
   <li>
     <a href="t1a20-list-Innes.html">
       t1a20-table-Innes
     </a>
   </li>
 
+
 </ol>
 
 
-<!-- =================================
-     SECRET AREA
-     ================================= -->
+<!-- ==================================
+     SECRET
+     ================================== -->
 
 if you're reading this, then hi :D
 
 <br>
+
 
 <img
   src="NegInny.png"
@@ -247,19 +279,27 @@ if you're reading this, then hi :D
 
 <br>
 
+
 |<br>
 v<br>
 
+
 <br><br><br><br><br><br><br><br><br><br>
+
 <br><br><br><br><br><br><br><br><br><br>
+
 <br><br><br><br><br><br><br><br><br><br>
+
 <br><br><br><br><br><br><br><br><br><br>
+
 
 <a href="https://innygr.github.io/Card-Stuff-Yes/">
   Card Stuff Yes
 </a>
 
+
 <br>
 
+
 Secret Found!!
-</div> <!-- ================================= THREE.JS ================================= --> <script type="module"> import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"; // ================================= // CANVAS // ================================= const canvas = document.getElementById( "crystalCanvas" ); // ================================= // RENDERER // ================================= const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); renderer.setPixelRatio( Math.min( window.devicePixelRatio, 2 ) ); renderer.setSize( window.innerWidth, window.innerHeight ); // Transparent background. // This allows SpaceBG.png // to remain visible. renderer.setClearColor( 0x000000, 0 ); // ================================= // SCENE // ================================= const scene = new THREE.Scene(); // ================================= // CAMERA // ================================= const camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 ); camera.position.z = 6; // ================================= // CRYSTAL // ================================= const geometry = new THREE.OctahedronGeometry( 1.5, 0 ); /* MeshBasicMaterial does NOT need lights to work. This guarantees the crystal has a visible purple color. */ const material = new THREE.MeshBasicMaterial({ color: 0xaa33ff, transparent: true, opacity: 0.9, side: THREE.DoubleSide }); const crystal = new THREE.Mesh( geometry, material ); scene.add( crystal ); // ================================= // WHITE EDGES // ================================= const edgeGeometry = new THREE.EdgesGeometry( geometry ); const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 3 }); const edges = new THREE.LineSegments( edgeGeometry, edgeMaterial ); crystal.add( edges ); // ================================= // GLOW // ================================= const glowGeometry = new THREE.OctahedronGeometry( 1.8, 0 ); const glowMaterial = new THREE.MeshBasicMaterial({ color: 0x6600ff, transparent: true, opacity: 0.15, side: THREE.BackSide }); const glow = new THREE.Mesh( glowGeometry, glowMaterial ); scene.add( glow ); // ================================= // PARTICLES // ================================= const particleCount = 400; const particlePositions = new Float32Array( particleCount * 3 ); for ( let i = 0; i < particleCount; i++ ) { const i3 = i * 3; particlePositions[i3] = (Math.random() - 0.5) * 14; particlePositions[i3 + 1] = (Math.random() - 0.5) * 14; particlePositions[i3 + 2] = (Math.random() - 0.5) * 14; } const particleGeometry = new THREE.BufferGeometry(); particleGeometry.setAttribute( "position", new THREE.BufferAttribute( particlePositions, 3 ) ); const particleMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.04, transparent: true, opacity: 0.8 }); const particles = new THREE.Points( particleGeometry, particleMaterial ); scene.add( particles ); // ================================= // ANIMATION // ================================= const clock = new THREE.Clock(); function animate() { requestAnimationFrame( animate ); const time = clock.getElapsedTime(); // Rotate crystal crystal.rotation.x = time * 0.4; crystal.rotation.y = time * 0.6; // Rotate glow glow.rotation.x = time * 0.4; glow.rotation.y = time * 0.6; // Floating motion const y = Math.sin( time * 1.5 ) * 0.3; crystal.position.y = y; glow.position.y = y; // Side-to-side const x = Math.cos( time * 0.7 ) * 0.15; crystal.position.x = x; glow.position.x = x; // Particles particles.rotation.y = time * 0.015; particles.rotation.x = time * 0.008; // Glow pulse glow.material.opacity = 0.10 + Math.sin(time * 2) * 0.05; // Render renderer.render( scene, camera ); } animate(); // ================================= // RESIZE // ================================= window.addEventListener( "resize", () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize( window.innerWidth, window.innerHeight ); } ); </script> </body> </html>
+</div> <!-- ================================== THREE.JS ================================== --> <script type="module"> import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"; // ================================== // CANVAS // ================================== const canvas = document.getElementById("crystal"); // ================================== // RENDERER // ================================== const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); renderer.setPixelRatio( window.devicePixelRatio ); renderer.setSize( window.innerWidth, window.innerHeight ); renderer.setClearColor( 0x000000, 0 ); // ================================== // SCENE // ================================== const scene = new THREE.Scene(); // ================================== // CAMERA // ================================== const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 ); camera.position.z = 5; // ================================== // CRYSTAL // ================================== const crystalGeometry = new THREE.OctahedronGeometry( 1.5, 0 ); /* IMPORTANT: This is MeshBasicMaterial. It does not need lights. It does not need transmission. It does not need physical rendering. It WILL show up. */ const crystalMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, side: THREE.DoubleSide }); const crystal = new THREE.Mesh( crystalGeometry, crystalMaterial ); scene.add( crystal ); // ================================== // CRYSTAL EDGES // ================================== const edgeGeometry = new THREE.EdgesGeometry( crystalGeometry ); const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffffff }); const edgeLines = new THREE.LineSegments( edgeGeometry, edgeMaterial ); crystal.add( edgeLines ); // ================================== // GLOW // ================================== const glowGeometry = new THREE.OctahedronGeometry( 1.75, 0 ); const glowMaterial = new THREE.MeshBasicMaterial({ color: 0x8800ff, transparent: true, opacity: 0.25, side: THREE.BackSide }); const glow = new THREE.Mesh( glowGeometry, glowMaterial ); scene.add( glow ); // ================================== // PARTICLES // ================================== const particleCount = 400; const particlePositions = new Float32Array( particleCount * 3 ); for ( let i = 0; i < particleCount; i++ ) { const i3 = i * 3; particlePositions[i3] = (Math.random() - 0.5) * 15; particlePositions[i3 + 1] = (Math.random() - 0.5) * 15; particlePositions[i3 + 2] = (Math.random() - 0.5) * 15; } const particleGeometry = new THREE.BufferGeometry(); particleGeometry.setAttribute( "position", new THREE.BufferAttribute( particlePositions, 3 ) ); const particleMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.04 }); const particles = new THREE.Points( particleGeometry, particleMaterial ); scene.add( particles ); // ================================== // ANIMATION // ================================== const clock = new THREE.Clock(); function animate() { requestAnimationFrame( animate ); const time = clock.getElapsedTime(); // Crystal spin crystal.rotation.x = time * 0.4; crystal.rotation.y = time * 0.6; // Glow follows crystal glow.rotation.x = crystal.rotation.x; glow.rotation.y = crystal.rotation.y; // Float crystal.position.y = Math.sin( time * 1.5 ) * 0.3; glow.position.y = crystal.position.y; crystal.position.x = Math.cos( time * 0.7 ) * 0.15; glow.position.x = crystal.position.x; // Particles particles.rotation.y = time * 0.01; // Render renderer.render( scene, camera ); } animate(); // ================================== // RESIZE // ================================== window.addEventListener( "resize", () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize( window.innerWidth, window.innerHeight ); } ); </script> </body> </html>
