@@ -35,11 +35,11 @@ b {color: blue;}
 </style>
 <script>
 function sayHello() {
-myNum = 3;
-myString = ' Hello ';
-myFloat = 17.5;
-myBool = true;
-myOut = document.getElementById('myDiv01');
+let myNum = 3;
+let myString = ' Hello ';
+let myFloat = 17.5;
+let myBool = true;
+let myOut = document.getElementById('myDiv01');
 myOut.innerHTML = myNum + myString + myFloat +', ' + myBool;
 if (myBool) {myOut.innerHTML += ', WOW';}
 }
@@ -47,6 +47,7 @@ function myToggle() {
   let myBool = true;
 myBool = !myBool;
 myBool = !myBool;
+}
 </script>
 </head>
 <body>
