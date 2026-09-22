@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>t1a06-proper-and-variables-Innes.html</title>
+<style>
+b {color: blue;}
+</style>
+<script>
+function sayHello() {
+myNum = 3;
+myString = ' Hello ';
+myFloat = 17.5;
+myBool = true;
+myOut = document.getElementById('myDiv01');
+myOut.innerHTML = myNum + myString + myFloat +', ' + myBool;
+if (myBool) {myOut.innerHTML += ', WOW';}
+}
+</script>
+</head>
+<body>
+<p>This is <b>Bold</b> text.</p>
+<button onclick="sayHello()">Click me if you want ig</button>
+<div id="myDiv01">Output here or smth</div>
+</body>
+</html>
