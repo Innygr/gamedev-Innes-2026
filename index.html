@@ -3,8 +3,97 @@
 name="viewport"
 content="width=device-width, initial-scale=1.0"
 
-<title>GameDev Innes 2026</title> <style> html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; overflow-x: hidden; background: #000; color: white; font-family: Arial, sans-serif; } /* ================================= SPACE BACKGROUND ================================= */ #space { position: fixed; inset: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 0; pointer-events: none; } /* ================================= THREE.JS CANVAS ================================= */ #crystalCanvas { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 1; display: block; pointer-events: none; } /* ================================= WEBSITE CONTENT ================================= */ #page { position: relative; z-index: 10; padding: 20px; box-sizing: border-box; min-height: 100vh; } a { color: #9ccaff; } a:hover { color: white; } </style> </head> <body> <!-- ================================= SPACE BACKGROUND ================================= -->
-<img
+<title>GameDev Innes 2026</title> <style>
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    min-height: 100%;
+
+    overflow-x: hidden;
+
+    background: #000;
+    color: white;
+
+    font-family: Arial, sans-serif;
+}
+
+
+/* =================================
+   SPACE BACKGROUND
+   ================================= */
+
+#space {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    object-fit: cover;
+
+    z-index: 0;
+
+    pointer-events: none;
+}
+
+
+/* =================================
+   THREE.JS CRYSTAL
+   ================================= */
+
+#crystalCanvas {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    z-index: 9999;
+
+    display: block;
+
+    pointer-events: none;
+}
+
+
+/* =================================
+   WEBSITE CONTENT
+   ================================= */
+
+#page {
+    position: relative;
+
+    z-index: 10000;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    min-height: 100vh;
+}
+
+
+/* =================================
+   LINKS
+   ================================= */
+
+a {
+    color: #9ccaff;
+}
+
+a:hover {
+    color: white;
+}
+
+</style>
 id="space"
 src="SpaceBG.png"
 alt=""
