@@ -1,4 +1,48 @@
-Version 0.0.1
+<p>Version 0.0.1
 
-<h2 align=center>Term 1 Assignment 07: Decisions by <b style="color: blue; font-size: 52px">Innes</b></h2><br>
-<a href="https://w3schools.com/js/js_if_else.asp">W3Schools If Else documentation</a> Good Reference to have for if / else statements in <img src="" width=>
+<h2 align=center>Term 1 Assignment 07: Decisions by <b style="color: blue; font-size: 52px">Innes</b></h2>
+<a href="https://w3schools.com/js/js_if_else.asp">W3Schools If Else documentation</a> Good Reference to have for if / else statements in <img src="https://pic.onlinewebfonts.com/thumbnails/icons_586406.svg" width=75> innerHTML value
+Note: ! = not, && = and, || = or
+  
+
+ <h4>Example input output code</h4>
+ <pre>
+   let myHour = 20
+   if (myHour < 18) {
+     let myGreeting = 'Good Day';
+     }
+ </pre>
+
+<h4>Example working code</h4>
+
+<input id="myNum01" type=number value="4">
+<input id="myNum02" type=number value="6">
+
+input type=button value="Simple if Statement for Decision Making" onclick="{
+let myIn01 = parseFloat(document.getElementById('myNum01').value)
+if (myIn01 >= myIn02){
+  document.getElementById('myDiv01').innerHTML = myNum01 + ' is greater than ' myNum02
+  }
+  }">
+
+  input type=button value="Simple if Statement for Decision Making" onclick="{
+let myIn01 = parseFloat(document.getElementById('myNum01').value)
+let myIn02 = parseFloat(document.getElementById('myNum02').value)
+if (myIn01 >= myIn02){
+  document.getElementById('myDiv02').innerHTML = myNum01 + ' is greater than ' myNum02
+  } else {
+  document.getElementById('myDiv02').innerHTML = myNum01 + ' is not greater than ' myNum02 }
+}">
+
+<input type=button value="Complex if" onclick="{
+  let myIn01 = parseFloat(document.getElementById('myNum01').value)
+  let myIn02 = parseFloat(document.getElementById('myNum02').value)
+  if ((myIn01 != myIn02 || myIn02 > -8) && myIn01 <=100 ){
+  document.getElementById('myDiv03').innerHTML = myIn01 + ' or ' myIn02 + ' is complex'
+  } else {
+  document.getElementById('myDiv03').innerHTML = myIn01 + ' or ' myIn02 + ' is not complex' }
+  }">
+
+  <div id="myDiv01">...</div>
+  <div id="myDiv02">...</div>
+  <div id="myDiv03">...</div>
