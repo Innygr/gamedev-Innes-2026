@@ -14,55 +14,103 @@
 
     <style>
 
+        @font-face {
+
+            font-family: "SGA";
+
+            src:
+                url("Sga-Regular.ttf")
+                format("truetype");
+
+        }
+
+
         html,
         body {
+
             margin: 0;
             padding: 0;
+
             width: 100%;
             min-height: 100%;
+
             overflow-x: hidden;
+
             background: #000;
             color: white;
+
             font-family: Arial, sans-serif;
+
         }
+
 
         #space {
+
             position: fixed;
+
             inset: 0;
+
             width: 100vw;
             height: 100vh;
+
             object-fit: cover;
+
             z-index: 0;
+
             pointer-events: none;
+
         }
+
 
         #crystalCanvas {
+
             position: fixed;
+
             inset: 0;
+
             width: 100vw;
             height: 100vh;
+
             z-index: 5;
+
             display: block;
+
             pointer-events: none;
+
         }
+
 
         #page {
+
             position: relative;
+
             z-index: 10;
+
             padding: 20px;
+
             box-sizing: border-box;
+
             min-height: 100vh;
+
         }
+
 
         a {
+
             color: #9ccaff;
+
         }
+
 
         a:hover {
+
             color: white;
+
         }
 
+
         #dailyFact {
+
             color: yellow;
 
             display: inline-block;
@@ -80,7 +128,9 @@
                 3s
                 ease-in-out
                 infinite;
+
         }
+
 
         @keyframes funFactPulse {
 
@@ -92,6 +142,7 @@
                     scale(0.75);
 
             }
+
 
             50% {
 
@@ -107,7 +158,9 @@
 
 </head>
 
+
 <body>
+
 
     <img
         id="space"
@@ -115,19 +168,25 @@
         alt=""
     >
 
+
     <canvas id="crystalCanvas"></canvas>
 
+
     <div id="page">
+
 
         <h1>
             GameDev Innes 2026
         </h1>
 
+
         <br>
+
 
         <h3>
             btw I made the background image on blender
         </h3>
+
 
         <img
             src="NegInny.png"
@@ -135,220 +194,325 @@
             alt=""
         >
 
+
         <br>
+
 
         <p id="dailyFact">
             Loading fun fact...
         </p>
 
+
         <br>
         <br>
+
 
         Links:
 
+
         <br>
+
 
         <ul>
 
             <li>
+
                 <a href="https://github.com/Innygr/gamedev-Innes-2026">
                     My GitHub
                 </a>
+
             </li>
 
+
             <li>
+
                 <a href="https://innygr.github.io/gamedev-Innes-2026">
                     This Page
                 </a>
+
             </li>
 
         </ul>
 
+
         <br>
+
 
         <ol start="0">
 
+
             <li>
+
                 <a href="t1a00-simple-Innes.html">
                     0th Assignment (Start)
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a01-table-Innes.html">
                     t1a01-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a02-list-Innes.html">
                     t1a02-list-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a03-forms-Innes.html">
                     t1a03-forms-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a04-CSS-Innes.html">
                     t1a04-CSS-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a05-inputoutput-Innes.html">
                     t1a05-InputOutput-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a06-...-Innes.html">
                     t1a06-...-Innest
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a07-decision-Innes.html">
                     t1a07-decision-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a08-list-Innes.html">
                     t1a08-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a09-list-Innes.html">
                     t1a09-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a10-list-Innes.html">
                     t1a10-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a11-list-Innes.html">
                     t1a11-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a12-list-Innes.html">
                     t1a12-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a13-list-Innes.html">
                     t1a13-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a14-list-Innes.html">
                     t1a14-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a15-list-Innes.html">
                     t1a15-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a16-list-Innes.html">
                     t1a16-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a17-list-Innes.html">
                     t1a17-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a18-list-Innes.html">
                     t1a18-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a19-list-Innes.html">
                     t1a19-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1a20-list-Innes.html">
                     t1a20-table-Innes
                 </a>
+
             </li>
+
 
             <br>
 
+
             <li>
+
                 <a href="t1ax4-crystal-Innes.html">
                     t1aX4 Innes (Crystal)
                 </a>
+
             </li>
+
 
         </ol>
 
+
         <br>
+
 
         if you're reading this, then hi :D
 
+
         <br>
+
 
         <img
             src="NegInny.png"
@@ -356,11 +520,14 @@
             alt=""
         >
 
+
         <br>
+
 
         |<br>
         v<br>
 
+
         <br>
         <br>
         <br>
@@ -371,6 +538,7 @@
         <br>
         <br>
         <br>
+
 
         <br>
         <br>
@@ -384,6 +552,7 @@
         <br>
         <br>
 
+
         <br>
         <br>
         <br>
@@ -395,22 +564,32 @@
         <br>
         <br>
         <br>
+
 
         <a href="https://innygr.github.io/Card-Stuff-Yes/">
             Card Stuff Yes
         </a>
 
+
         <br>
+
 
         Secret Found!!
 
+
     </div>
+
+
+    <!-- DAILY FUN FACT -->
 
     <script src="funfacts.js"></script>
 
+
     <script>
 
-        const today = new Date();
+        const today =
+            new Date();
+
 
         const dayNumber =
             Math.floor(
@@ -421,27 +600,45 @@
                 ) / 86400000
             );
 
-        const factIndex =
-            dayNumber % funFacts.length;
 
-        document.getElementById("dailyFact").textContent =
+        const factIndex =
+            dayNumber %
+            funFacts.length;
+
+
+        document.getElementById(
+            "dailyFact"
+        ).textContent =
             funFacts[factIndex];
 
     </script>
 
+
+    <!-- THREE.JS -->
+
     <script src="./three.min.js"></script>
+
 
     <script>
 
+
         const canvas =
-            document.getElementById("crystalCanvas");
+            document.getElementById(
+                "crystalCanvas"
+            );
+
 
         const renderer =
             new THREE.WebGLRenderer({
+
                 canvas: canvas,
+
                 antialias: true,
+
                 alpha: true
+
             });
+
 
         renderer.setPixelRatio(
             Math.min(
@@ -450,36 +647,57 @@
             )
         );
 
+
         renderer.setSize(
             window.innerWidth,
             window.innerHeight
         );
+
 
         renderer.setClearColor(
             0x000000,
             0
         );
 
+
         const scene =
             new THREE.Scene();
 
+
         const camera =
             new THREE.PerspectiveCamera(
+
                 60,
+
                 window.innerWidth /
                     window.innerHeight,
+
                 0.1,
+
                 100
+
             );
 
+
         camera.position.z = 7;
+
+
+        /*
+         * MAIN CRYSTAL GROUP
+         */
 
         const crystalGroup =
             new THREE.Group();
 
+
         scene.add(
             crystalGroup
         );
+
+
+        /*
+         * INNER LIGHT-PURPLE CRYSTAL
+         */
 
         const crystalGeometry =
             new THREE.OctahedronGeometry(
@@ -487,262 +705,889 @@
                 0
             );
 
+
         const crystalMaterial =
             new THREE.MeshBasicMaterial({
-                color: 0x9b00ff,
+
+                color: 0xc88cff,
+
                 transparent: true,
-                opacity: 0.65,
+
+                opacity: 0.48,
+
                 side: THREE.DoubleSide
+
             });
+
 
         const crystal =
             new THREE.Mesh(
+
                 crystalGeometry,
+
                 crystalMaterial
+
             );
+
 
         crystalGroup.add(
             crystal
         );
 
-        const coreGeometry =
-            new THREE.OctahedronGeometry(
-                0.75,
-                0
-            );
 
-        const coreMaterial =
-            new THREE.MeshBasicMaterial({
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0.85
-            });
-
-        const core =
-            new THREE.Mesh(
-                coreGeometry,
-                coreMaterial
-            );
-
-        crystalGroup.add(
-            core
-        );
+        /*
+         * INNER CRYSTAL EDGES
+         */
 
         const edgeGeometry =
             new THREE.EdgesGeometry(
                 crystalGeometry
             );
 
+
         const edgeMaterial =
             new THREE.LineBasicMaterial({
-                color: 0xffffff,
+
+                color: 0xe8cfff,
+
                 transparent: true,
-                opacity: 1
+
+                opacity: 0.85
+
             });
+
 
         const edges =
             new THREE.LineSegments(
+
                 edgeGeometry,
+
                 edgeMaterial
+
             );
+
 
         crystalGroup.add(
             edges
         );
 
-        const glowGeometry =
+
+        /*
+         * WHITE ENERGY CORE
+         */
+
+        const coreGeometry =
             new THREE.OctahedronGeometry(
-                1.8,
+                0.72,
                 0
             );
 
-        const glowMaterial =
+
+        const coreMaterial =
             new THREE.MeshBasicMaterial({
-                color: 0x8800ff,
+
+                color: 0xffffff,
+
                 transparent: true,
-                opacity: 0.16,
-                side: THREE.BackSide
+
+                opacity: 0.9,
+
+                side: THREE.DoubleSide
+
             });
 
-        const glow =
+
+        const core =
             new THREE.Mesh(
-                glowGeometry,
-                glowMaterial
+
+                coreGeometry,
+
+                coreMaterial
+
             );
 
+
         crystalGroup.add(
-            glow
+            core
         );
+
+
+        /*
+         * CORE GLOW
+         */
+
+        const coreGlowGeometry =
+            new THREE.OctahedronGeometry(
+                0.95,
+                0
+            );
+
+
+        const coreGlowMaterial =
+            new THREE.MeshBasicMaterial({
+
+                color: 0xd98cff,
+
+                transparent: true,
+
+                opacity: 0.22,
+
+                side: THREE.BackSide
+
+            });
+
+
+        const coreGlow =
+            new THREE.Mesh(
+
+                coreGlowGeometry,
+
+                coreGlowMaterial
+
+            );
+
+
+        crystalGroup.add(
+            coreGlow
+        );
+
+
+        /*
+         * GLASS OUTER CRYSTAL
+         *
+         * This is deliberately much larger
+         * and almost completely transparent.
+         */
+
+        const glassGeometry =
+            new THREE.OctahedronGeometry(
+                2.05,
+                0
+            );
+
+
+        const glassMaterial =
+            new THREE.MeshBasicMaterial({
+
+                color: 0xd9c4ff,
+
+                transparent: true,
+
+                opacity: 0.035,
+
+                side: THREE.DoubleSide,
+
+                depthWrite: false
+
+            });
+
+
+        const glassCrystal =
+            new THREE.Mesh(
+
+                glassGeometry,
+
+                glassMaterial
+
+            );
+
+
+        crystalGroup.add(
+            glassCrystal
+        );
+
+
+        /*
+         * GLASS CRYSTAL EDGES
+         */
+
+        const glassEdgeGeometry =
+            new THREE.EdgesGeometry(
+                glassGeometry
+            );
+
+
+        const glassEdgeMaterial =
+            new THREE.LineBasicMaterial({
+
+                color: 0xe8d9ff,
+
+                transparent: true,
+
+                opacity: 0.28
+
+            });
+
+
+        const glassEdges =
+            new THREE.LineSegments(
+
+                glassEdgeGeometry,
+
+                glassEdgeMaterial
+
+            );
+
+
+        crystalGroup.add(
+            glassEdges
+        );
+
+
+        /*
+         * EXTRA GLASS SHELL GLOW
+         */
+
+        const shellGlowGeometry =
+            new THREE.OctahedronGeometry(
+                2.18,
+                0
+            );
+
+
+        const shellGlowMaterial =
+            new THREE.MeshBasicMaterial({
+
+                color: 0x9f55ff,
+
+                transparent: true,
+
+                opacity: 0.025,
+
+                side: THREE.BackSide,
+
+                depthWrite: false
+
+            });
+
+
+        const shellGlow =
+            new THREE.Mesh(
+
+                shellGlowGeometry,
+
+                shellGlowMaterial
+
+            );
+
+
+        crystalGroup.add(
+            shellGlow
+        );
+
+
+        /*
+         * STANDARD GALACTIC ALPHABET
+         *
+         * These are the Minecraft enchanting-table
+         * glyphs.
+         */
+
+        const sgaGlyphs = [
+
+            "ᔑ",   // A
+            "ʖ",   // B
+            "ᓵ",   // C
+            "↸",   // D
+            "ᒷ",   // E
+            "⎓",   // F
+            "⊣",   // G
+            "⍑"    // H
+
+        ];
+
+
+        /*
+         * CREATE A PINK GLYPH TEXTURE
+         */
+
+        function createGlyphTexture(
+            glyph
+        ) {
+
+            const size = 256;
+
+            const glyphCanvas =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            glyphCanvas.width =
+                size;
+
+            glyphCanvas.height =
+                size;
+
+
+            const context =
+                glyphCanvas.getContext(
+                    "2d"
+                );
+
+
+            context.clearRect(
+                0,
+                0,
+                size,
+                size
+            );
+
+
+            context.textAlign =
+                "center";
+
+
+            context.textBaseline =
+                "middle";
+
+
+            context.font =
+                'bold 150px "SGA", "Segoe UI Symbol", sans-serif';
+
+
+            /*
+             * Glow
+             */
+
+            context.shadowColor =
+                "#ff4dff";
+
+
+            context.shadowBlur =
+                30;
+
+
+            context.fillStyle =
+                "#ff4dff";
+
+
+            context.fillText(
+
+                glyph,
+
+                size / 2,
+
+                size / 2
+
+            );
+
+
+            /*
+             * Bright inner glyph
+             */
+
+            context.shadowBlur =
+                8;
+
+
+            context.fillStyle =
+                "#ff8cff";
+
+
+            context.fillText(
+
+                glyph,
+
+                size / 2,
+
+                size / 2
+
+            );
+
+
+            const texture =
+                new THREE.CanvasTexture(
+                    glyphCanvas
+                );
+
+
+            texture.needsUpdate =
+                true;
+
+
+            return texture;
+
+        }
+
+
+        /*
+         * OCTAHEDRON FACE POSITIONS
+         *
+         * Each direction corresponds to
+         * one triangular face of the crystal.
+         */
+
+        const faceNormals = [
+
+            new THREE.Vector3(
+                1,
+                1,
+                1
+            ).normalize(),
+
+            new THREE.Vector3(
+                1,
+                1,
+                -1
+            ).normalize(),
+
+            new THREE.Vector3(
+                1,
+                -1,
+                1
+            ).normalize(),
+
+            new THREE.Vector3(
+                1,
+                -1,
+                -1
+            ).normalize(),
+
+            new THREE.Vector3(
+                -1,
+                1,
+                1
+            ).normalize(),
+
+            new THREE.Vector3(
+                -1,
+                1,
+                -1
+            ).normalize(),
+
+            new THREE.Vector3(
+                -1,
+                -1,
+                1
+            ).normalize(),
+
+            new THREE.Vector3(
+                -1,
+                -1,
+                -1
+            ).normalize()
+
+        ];
+
+
+        /*
+         * ADD ONE GLYPH TO EACH FACE
+         */
+
+        faceNormals.forEach(
+
+            function(
+                normal,
+                index
+            ) {
+
+                const glyphTexture =
+                    createGlyphTexture(
+                        sgaGlyphs[index]
+                    );
+
+
+                const glyphMaterial =
+                    new THREE.MeshBasicMaterial({
+
+                        map:
+                            glyphTexture,
+
+                        transparent:
+                            true,
+
+                        opacity:
+                            0.95,
+
+                        depthWrite:
+                            false,
+
+                        side:
+                            THREE.DoubleSide
+
+                    });
+
+
+                const glyphGeometry =
+                    new THREE.PlaneGeometry(
+                        0.72,
+                        0.72
+                    );
+
+
+                const glyph =
+                    new THREE.Mesh(
+
+                        glyphGeometry,
+
+                        glyphMaterial
+
+                    );
+
+
+                /*
+                 * Position slightly
+                 * outside the crystal.
+                 */
+
+                glyph.position.copy(
+                    normal
+                        .clone()
+                        .multiplyScalar(
+                            1.05
+                        )
+                );
+
+
+                /*
+                 * Point the front of
+                 * the glyph toward the
+                 * outside of the crystal.
+                 */
+
+                const lookTarget =
+                    glyph.position
+                        .clone()
+                        .add(
+                            normal
+                        );
+
+
+                glyph.lookAt(
+                    lookTarget
+                );
+
+
+                /*
+                 * Slight variation makes
+                 * the glyphs feel embedded
+                 * into the crystal instead
+                 * of being floating labels.
+                 */
+
+                glyph.rotateZ(
+                    (index % 2 === 0)
+                        ? 0.08
+                        : -0.08
+                );
+
+
+                crystalGroup.add(
+                    glyph
+                );
+
+            }
+
+        );
+
+
+        /*
+         * PURPLE AURA
+         */
 
         const auraGeometry =
             new THREE.OctahedronGeometry(
-                2.3,
+                2.55,
                 0
             );
 
+
         const auraMaterial =
             new THREE.MeshBasicMaterial({
-                color: 0x5500ff,
+
+                color: 0x8b32ff,
+
                 transparent: true,
-                opacity: 0.06,
-                side: THREE.BackSide
+
+                opacity: 0.055,
+
+                side: THREE.BackSide,
+
+                depthWrite: false
+
             });
+
 
         const aura =
             new THREE.Mesh(
+
                 auraGeometry,
+
                 auraMaterial
+
             );
+
 
         crystalGroup.add(
             aura
         );
 
+
+        /*
+         * MAIN BEAM
+         */
+
         const beamGeometry =
             new THREE.CylinderGeometry(
+
                 0.035,
+
                 0.035,
+
                 20,
+
                 8
+
             );
+
 
         const beamMaterial =
             new THREE.MeshBasicMaterial({
+
                 color: 0xff00ff,
+
                 transparent: true,
-                opacity: 0.18
+
+                opacity: 0.2
+
             });
+
 
         const beam =
             new THREE.Mesh(
+
                 beamGeometry,
+
                 beamMaterial
+
             );
+
 
         crystalGroup.add(
             beam
         );
 
+
+        /*
+         * BEAM GLOW
+         */
+
         const beamGlowGeometry =
             new THREE.CylinderGeometry(
-                0.12,
-                0.12,
+
+                0.13,
+
+                0.13,
+
                 20,
+
                 8
+
             );
+
 
         const beamGlowMaterial =
             new THREE.MeshBasicMaterial({
-                color: 0x8800ff,
+
+                color: 0xa800ff,
+
                 transparent: true,
-                opacity: 0.035
+
+                opacity: 0.04
+
             });
+
 
         const beamGlow =
             new THREE.Mesh(
+
                 beamGlowGeometry,
+
                 beamGlowMaterial
+
             );
+
 
         crystalGroup.add(
             beamGlow
         );
 
-        const particleCount = 500;
+
+        /*
+         * PARTICLES
+         */
+
+        const particleCount =
+            500;
+
 
         const particlePositions =
             new Float32Array(
+
                 particleCount * 3
+
             );
 
+
         for (
+
             let i = 0;
+
             i < particleCount;
+
             i++
+
         ) {
 
             const i3 =
                 i * 3;
 
+
             const radius =
                 2 +
                 Math.random() * 5;
+
 
             const angle =
                 Math.random() *
                 Math.PI *
                 2;
 
-            particlePositions[i3] =
-                Math.cos(angle) *
+
+            particlePositions[
+                i3
+            ] =
+                Math.cos(
+                    angle
+                ) *
                 radius;
 
-            particlePositions[i3 + 1] =
-                (Math.random() - 0.5) *
+
+            particlePositions[
+                i3 + 1
+            ] =
+                (
+                    Math.random() -
+                    0.5
+                ) *
                 8;
 
-            particlePositions[i3 + 2] =
-                Math.sin(angle) *
+
+            particlePositions[
+                i3 + 2
+            ] =
+                Math.sin(
+                    angle
+                ) *
                 radius;
 
         }
 
+
         const particleGeometry =
             new THREE.BufferGeometry();
 
+
         particleGeometry.setAttribute(
+
             "position",
+
             new THREE.BufferAttribute(
+
                 particlePositions,
+
                 3
+
             )
+
         );
+
 
         const particleMaterial =
             new THREE.PointsMaterial({
-                color: 0xd000ff,
-                size: 0.045,
-                transparent: true,
-                opacity: 0.8
+
+                color:
+                    0xd000ff,
+
+                size:
+                    0.045,
+
+                transparent:
+                    true,
+
+                opacity:
+                    0.8
+
             });
+
 
         const particles =
             new THREE.Points(
+
                 particleGeometry,
+
                 particleMaterial
+
             );
+
 
         scene.add(
             particles
         );
 
+
+        /*
+         * ANIMATION CLOCK
+         */
+
         const clock =
             new THREE.Clock();
 
+
         function animate() {
+
 
             requestAnimationFrame(
                 animate
             );
 
+
             const time =
                 clock.getElapsedTime();
 
+
+            /*
+             * Crystal rotation
+             */
+
             crystalGroup.rotation.y =
-                time * 0.7;
+                time * 0.55;
+
 
             crystalGroup.rotation.x =
                 Math.sin(
                     time * 0.4
                 ) * 0.15;
 
+
+            /*
+             * Floating motion
+             */
+
             const float =
                 Math.sin(
                     time * 1.5
                 ) * 0.35;
 
+
             crystalGroup.position.y =
                 float;
+
+
+            /*
+             * Core pulse
+             */
 
             const pulse =
                 1 +
@@ -750,17 +1595,66 @@
                     time * 3
                 ) * 0.12;
 
+
             core.scale.set(
+
                 pulse,
                 pulse,
                 pulse
+
             );
 
-            glow.scale.set(
+
+            coreGlow.scale.set(
+
                 pulse,
                 pulse,
                 pulse
+
             );
+
+
+            /*
+             * Glass shell breathing
+             */
+
+            const glassPulse =
+                1 +
+                Math.sin(
+                    time * 1.7
+                ) * 0.035;
+
+
+            glassCrystal.scale.set(
+
+                glassPulse,
+                glassPulse,
+                glassPulse
+
+            );
+
+
+            glassEdges.scale.set(
+
+                glassPulse,
+                glassPulse,
+                glassPulse
+
+            );
+
+
+            shellGlow.scale.set(
+
+                glassPulse,
+                glassPulse,
+                glassPulse
+
+            );
+
+
+            /*
+             * Aura pulse
+             */
 
             const auraPulse =
                 1 +
@@ -768,58 +1662,104 @@
                     time * 2
                 ) * 0.08;
 
+
             aura.scale.set(
+
                 auraPulse,
                 auraPulse,
                 auraPulse
+
             );
+
+
+            /*
+             * Particle rotation
+             */
 
             particles.rotation.y =
                 time * 0.08;
 
+
             particles.rotation.x =
                 time * 0.03;
 
+
+            /*
+             * Beam pulse
+             */
+
             beamMaterial.opacity =
+
                 0.12 +
+
                 Math.sin(
                     time * 2
-                ) * 0.06;
+                ) *
+                0.06;
+
 
             beamGlowMaterial.opacity =
+
                 0.025 +
+
                 Math.sin(
                     time * 2
-                ) * 0.015;
+                ) *
+                0.015;
+
+
+            /*
+             * Render
+             */
 
             renderer.render(
+
                 scene,
+
                 camera
+
             );
 
         }
 
+
         animate();
 
+
+        /*
+         * WINDOW RESIZE
+         */
+
         window.addEventListener(
+
             "resize",
+
             function() {
 
+
                 camera.aspect =
+
                     window.innerWidth /
                     window.innerHeight;
 
+
                 camera.updateProjectionMatrix();
 
+
                 renderer.setSize(
+
                     window.innerWidth,
                     window.innerHeight
+
                 );
 
             }
+
         );
 
+
     </script>
+
 
 </body>
 
