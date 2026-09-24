@@ -1,1034 +1,826 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>GameDev Innes 2026</title>
+    <meta charset="UTF-8">
 
-<style>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100%;
-    overflow-x: hidden;
-    background: #000;
-    color: white;
-    font-family: Arial, sans-serif;
-}
+    <title>GameDev Innes 2026</title>
 
+    <style>
 
-/* Space background */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            background: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
 
-#space {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    z-index: 0;
-    pointer-events: none;
-}
+        #space {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 0;
+            pointer-events: none;
+        }
 
+        #crystalCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 5;
+            display: block;
+            pointer-events: none;
+        }
 
-/* Three.js canvas */
+        #page {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            box-sizing: border-box;
+            min-height: 100vh;
+        }
 
-#crystalCanvas {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 5;
-    display: block;
-    pointer-events: none;
-}
+        a {
+            color: #9ccaff;
+        }
 
+        a:hover {
+            color: white;
+        }
 
-/* Website */
+        #dailyFact {
+            color: yellow;
 
-#page {
-    position: relative;
-    z-index: 10;
-    padding: 20px;
-    box-sizing: border-box;
-    min-height: 100vh;
-}
+            display: inline-block;
 
+            transform:
+                rotate(-10deg)
+                scale(0.75);
 
-a {
-    color: #9ccaff;
-}
+            transform-origin: center;
 
+            font-weight: bold;
 
-a:hover {
-    color: white;
-}
+            animation:
+                funFactPulse
+                3s
+                ease-in-out
+                infinite;
+        }
 
+        @keyframes funFactPulse {
 
-/* Daily Fun Fact */
+            0%,
+            100% {
 
-#dailyFact {
-    color: yellow;
-    display: inline-block;
-    transform: rotate(-4deg);
-    transform-origin: center;
-    font-weight: bold;
+                transform:
+                    rotate(-10deg)
+                    scale(0.75);
 
-    animation: funFactPulse 3s ease-in-out infinite;
-}
+            }
 
+            50% {
 
-@keyframes funFactPulse {
+                transform:
+                    rotate(-10deg)
+                    scale(0.9);
 
-    0%, 100% {
-        transform:
-            rotate(-4deg)
-            scale(1);
-    }
+            }
 
-    50% {
-        transform:
-            rotate(-4deg)
-            scale(1.08);
-    }
+        }
 
-}
+    </style>
 
-</style>
 </head>
 
 <body>
 
-
-<!-- SPACE BACKGROUND -->
-
-<img
-    id="space"
-    src="SpaceBG.png"
-    alt=""
->
-
-
-<!-- THREE.JS CANVAS -->
-
-<canvas id="crystalCanvas"></canvas>
-
-
-<!-- WEBSITE CONTENT -->
-
-<div id="page">
-
-    <h1>GameDev Innes 2026</h1>
-
-    <br>
-
-
-    <!-- DAILY FUN FACT -->
-
-    <h2>Daily Fun Fact</h2>
-
-    <p id="dailyFact">
-        Loading fun fact...
-    </p>
-
-    <br>
-    <br>
-
-
-    <h3>
-        btw I made the background image on blender
-    </h3>
-
-
     <img
-        src="NegInny.png"
-        width="50"
+        id="space"
+        src="SpaceBG.png"
         alt=""
     >
 
-    <br>
-    <br>
+    <canvas id="crystalCanvas"></canvas>
 
+    <div id="page">
 
-    Links:
-
-    <br>
-
-    <ul>
-
-        <li>
-            <a href="https://github.com/Innygr/gamedev-Innes-2026">
-                My GitHub
-            </a>
-        </li>
-
-        <li>
-            <a href="https://innygr.github.io/gamedev-Innes-2026">
-                This Page
-            </a>
-        </li>
-
-    </ul>
-
-    <br>
-
-
-    <!-- ASSIGNMENTS -->
-
-    <ol start="0">
-
-        <li>
-            <a href="t1a00-simple-Innes.html">
-                0th Assignment (Start)
-            </a>
-        </li>
+        <h1>
+            GameDev Innes 2026
+        </h1>
 
         <br>
 
-        <li>
-            <a href="t1a01-table-Innes.html">
-                t1a01-table-Innes
-            </a>
-        </li>
+        <h3>
+            btw I made the background image on blender
+        </h3>
+
+        <img
+            src="NegInny.png"
+            width="50"
+            alt=""
+        >
 
         <br>
 
-        <li>
-            <a href="t1a02-list-Innes.html">
-                t1a02-list-Innes
-            </a>
-        </li>
+        <p id="dailyFact">
+            Loading fun fact...
+        </p>
+
+        <br>
+        <br>
+
+        Links:
 
         <br>
 
-        <li>
-            <a href="t1a03-forms-Innes.html">
-                t1a03-forms-Innes
-            </a>
-        </li>
+        <ul>
+
+            <li>
+                <a href="https://github.com/Innygr/gamedev-Innes-2026">
+                    My GitHub
+                </a>
+            </li>
+
+            <li>
+                <a href="https://innygr.github.io/gamedev-Innes-2026">
+                    This Page
+                </a>
+            </li>
+
+        </ul>
 
         <br>
 
-        <li>
-            <a href="t1a04-CSS-Innes.html">
-                t1a04-CSS-Innes
-            </a>
-        </li>
+        <ol start="0">
+
+            <li>
+                <a href="t1a00-simple-Innes.html">
+                    0th Assignment (Start)
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a01-table-Innes.html">
+                    t1a01-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a02-list-Innes.html">
+                    t1a02-list-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a03-forms-Innes.html">
+                    t1a03-forms-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a04-CSS-Innes.html">
+                    t1a04-CSS-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a05-inputoutput-Innes.html">
+                    t1a05-InputOutput-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a06-...-Innes.html">
+                    t1a06-...-Innest
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a07-decision-Innes.html">
+                    t1a07-decision-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a08-list-Innes.html">
+                    t1a08-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a09-list-Innes.html">
+                    t1a09-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a10-list-Innes.html">
+                    t1a10-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a11-list-Innes.html">
+                    t1a11-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a12-list-Innes.html">
+                    t1a12-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a13-list-Innes.html">
+                    t1a13-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a14-list-Innes.html">
+                    t1a14-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a15-list-Innes.html">
+                    t1a15-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a16-list-Innes.html">
+                    t1a16-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a17-list-Innes.html">
+                    t1a17-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a18-list-Innes.html">
+                    t1a18-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a19-list-Innes.html">
+                    t1a19-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1a20-list-Innes.html">
+                    t1a20-table-Innes
+                </a>
+            </li>
+
+            <br>
+
+            <li>
+                <a href="t1ax4-crystal-Innes.html">
+                    t1aX4 Innes (Crystal)
+                </a>
+            </li>
+
+        </ol>
 
         <br>
 
-        <li>
-            <a href="t1a05-inputoutput-Innes.html">
-                t1a05-InputOutput-Innes
-            </a>
-        </li>
+        if you're reading this, then hi :D
 
         <br>
 
-        <li>
-            <a href="t1a06-...-Innes.html">
-                t1a06-...-Innest
-            </a>
-        </li>
+        <img
+            src="NegInny.png"
+            width="75"
+            alt=""
+        >
 
         <br>
 
-        <li>
-            <a href="t1a07-decision-Innes.html">
-                t1a07-decision-Innes
-            </a>
-        </li>
+        |<br>
+        v<br>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <a href="https://innygr.github.io/Card-Stuff-Yes/">
+            Card Stuff Yes
+        </a>
 
         <br>
 
-        <li>
-            <a href="t1a08-list-Innes.html">
-                t1a08-table-Innes
-            </a>
-        </li>
+        Secret Found!!
 
-        <br>
+    </div>
 
-        <li>
-            <a href="t1a09-list-Innes.html">
-                t1a09-table-Innes
-            </a>
-        </li>
+    <script src="funfacts.js"></script>
 
-        <br>
+    <script>
 
-        <li>
-            <a href="t1a10-list-Innes.html">
-                t1a10-table-Innes
-            </a>
-        </li>
+        const today = new Date();
 
-        <br>
+        const dayNumber =
+            Math.floor(
+                Date.UTC(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate()
+                ) / 86400000
+            );
 
-        <li>
-            <a href="t1a11-list-Innes.html">
-                t1a11-table-Innes
-            </a>
-        </li>
+        const factIndex =
+            dayNumber % funFacts.length;
 
-        <br>
+        document.getElementById("dailyFact").textContent =
+            funFacts[factIndex];
 
-        <li>
-            <a href="t1a12-list-Innes.html">
-                t1a12-table-Innes
-            </a>
-        </li>
+    </script>
 
-        <br>
+    <script src="./three.min.js"></script>
 
-        <li>
-            <a href="t1a13-list-Innes.html">
-                t1a13-table-Innes
-            </a>
-        </li>
+    <script>
 
-        <br>
+        const canvas =
+            document.getElementById("crystalCanvas");
 
-        <li>
-            <a href="t1a14-list-Innes.html">
-                t1a14-table-Innes
-            </a>
-        </li>
+        const renderer =
+            new THREE.WebGLRenderer({
+                canvas: canvas,
+                antialias: true,
+                alpha: true
+            });
 
-        <br>
-
-        <li>
-            <a href="t1a15-list-Innes.html">
-                t1a15-table-Innes
-            </a>
-        </li>
-
-        <br>
-
-        <li>
-            <a href="t1a16-list-Innes.html">
-                t1a16-table-Innes
-            </a>
-        </li>
-
-        <br>
-
-        <li>
-            <a href="t1a17-list-Innes.html">
-                t1a17-table-Innes
-            </a>
-        </li>
-
-        <br>
-
-        <li>
-            <a href="t1a18-list-Innes.html">
-                t1a18-table-Innes
-            </a>
-        </li>
-
-        <br>
-
-        <li>
-            <a href="t1a19-list-Innes.html">
-                t1a19-table-Innes
-            </a>
-        </li>
-
-        <br>
-
-        <li>
-            <a href="t1a20-list-Innes.html">
-                t1a20-table-Innes
-            </a>
-        </li>
-
-        <br>
-
-        <li>
-            <a href="t1ax4-crystal-Innes.html">
-                t1aX4 Innes (Crystal)
-            </a>
-        </li>
-
-    </ol>
-
-
-    <br>
-
-
-    <!-- SECRET -->
-
-    if you're reading this, then hi :D
-
-    <br>
-
-    <img
-        src="NegInny.png"
-        width="75"
-        alt=""
-    >
-
-    <br>
-
-    |<br>
-    v<br>
-
-
-    <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br>
-
-
-    <a href="https://innygr.github.io/Card-Stuff-Yes/">
-        Card Stuff Yes
-    </a>
-
-    <br>
-
-    Secret Found!!
-
-</div>
-
-
-<!-- ==================================================
-     DAILY FUN FACT
-     ================================================== -->
-
-<script src="funfacts.js"></script>
-
-<script>
-
-const today = new Date();
-
-
-const dayNumber = Math.floor(
-    Date.UTC(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-    ) / 86400000
-);
-
-
-const factIndex =
-    dayNumber % funFacts.length;
-
-
-document.getElementById("dailyFact").textContent =
-    funFacts[factIndex];
-
-</script>
-
-
-<!-- ==================================================
-     THREE.JS
-     ================================================== -->
-
-<script src="./three.min.js"></script>
-
-<script>
-
-
-// ============================================
-// END CRYSTAL
-// ============================================
-
-const canvas =
-    document.getElementById("crystalCanvas");
-
-
-// ============================================
-// RENDERER
-// ============================================
-
-const renderer =
-    new THREE.WebGLRenderer({
-
-        canvas: canvas,
-
-        antialias: true,
-
-        alpha: true
-
-    });
-
-
-renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
-);
-
-
-renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-);
-
-
-renderer.setClearColor(
-    0x000000,
-    0
-);
-
-
-// ============================================
-// SCENE
-// ============================================
-
-const scene =
-    new THREE.Scene();
-
-
-// ============================================
-// CAMERA
-// ============================================
-
-const camera =
-    new THREE.PerspectiveCamera(
-
-        60,
-
-        window.innerWidth /
-        window.innerHeight,
-
-        0.1,
-
-        100
-
-    );
-
-
-camera.position.z = 7;
-
-
-// ============================================
-// CRYSTAL GROUP
-// ============================================
-
-const crystalGroup =
-    new THREE.Group();
-
-scene.add(crystalGroup);
-
-
-// ============================================
-// MAIN END CRYSTAL
-// ============================================
-
-const crystalGeometry =
-    new THREE.OctahedronGeometry(
-        1.35,
-        0
-    );
-
-
-const crystalMaterial =
-    new THREE.MeshBasicMaterial({
-
-        color: 0x9b00ff,
-
-        transparent: true,
-
-        opacity: 0.65,
-
-        side: THREE.DoubleSide
-
-    });
-
-
-const crystal =
-    new THREE.Mesh(
-
-        crystalGeometry,
-
-        crystalMaterial
-
-    );
-
-
-crystalGroup.add(crystal);
-
-
-// ============================================
-// CRYSTAL INNER CORE
-// ============================================
-
-const coreGeometry =
-    new THREE.OctahedronGeometry(
-        0.75,
-        0
-    );
-
-
-const coreMaterial =
-    new THREE.MeshBasicMaterial({
-
-        color: 0xffffff,
-
-        transparent: true,
-
-        opacity: 0.85
-
-    });
-
-
-const core =
-    new THREE.Mesh(
-
-        coreGeometry,
-
-        coreMaterial
-
-    );
-
-
-crystalGroup.add(core);
-
-
-// ============================================
-// CRYSTAL EDGES
-// ============================================
-
-const edgeGeometry =
-    new THREE.EdgesGeometry(
-        crystalGeometry
-    );
-
-
-const edgeMaterial =
-    new THREE.LineBasicMaterial({
-
-        color: 0xffffff,
-
-        transparent: true,
-
-        opacity: 1
-
-    });
-
-
-const edges =
-    new THREE.LineSegments(
-
-        edgeGeometry,
-
-        edgeMaterial
-
-    );
-
-
-crystalGroup.add(edges);
-
-
-// ============================================
-// OUTER PURPLE GLOW
-// ============================================
-
-const glowGeometry =
-    new THREE.OctahedronGeometry(
-        1.8,
-        0
-    );
-
-
-const glowMaterial =
-    new THREE.MeshBasicMaterial({
-
-        color: 0x8800ff,
-
-        transparent: true,
-
-        opacity: 0.16,
-
-        side: THREE.BackSide
-
-    });
-
-
-const glow =
-    new THREE.Mesh(
-
-        glowGeometry,
-
-        glowMaterial
-
-    );
-
-
-crystalGroup.add(glow);
-
-
-// ============================================
-// BIGGER OUTER AURA
-// ============================================
-
-const auraGeometry =
-    new THREE.OctahedronGeometry(
-        2.3,
-        0
-    );
-
-
-const auraMaterial =
-    new THREE.MeshBasicMaterial({
-
-        color: 0x5500ff,
-
-        transparent: true,
-
-        opacity: 0.06,
-
-        side: THREE.BackSide
-
-    });
-
-
-const aura =
-    new THREE.Mesh(
-
-        auraGeometry,
-
-        auraMaterial
-
-    );
-
-
-crystalGroup.add(aura);
-
-
-// ============================================
-// END CRYSTAL BEAM
-// ============================================
-
-const beamGeometry =
-    new THREE.CylinderGeometry(
-
-        0.035,
-
-        0.035,
-
-        20,
-
-        8
-
-    );
-
-
-const beamMaterial =
-    new THREE.MeshBasicMaterial({
-
-        color: 0xff00ff,
-
-        transparent: true,
-
-        opacity: 0.18
-
-    });
-
-
-const beam =
-    new THREE.Mesh(
-
-        beamGeometry,
-
-        beamMaterial
-
-    );
-
-
-crystalGroup.add(beam);
-
-
-// ============================================
-// BEAM GLOW
-// ============================================
-
-const beamGlowGeometry =
-    new THREE.CylinderGeometry(
-
-        0.12,
-
-        0.12,
-
-        20,
-
-        8
-
-    );
-
-
-const beamGlowMaterial =
-    new THREE.MeshBasicMaterial({
-
-        color: 0x8800ff,
-
-        transparent: true,
-
-        opacity: 0.035
-
-    });
-
-
-const beamGlow =
-    new THREE.Mesh(
-
-        beamGlowGeometry,
-
-        beamGlowMaterial
-
-    );
-
-
-crystalGroup.add(beamGlow);
-
-
-// ============================================
-// PARTICLES
-// ============================================
-
-const particleCount = 500;
-
-
-const particlePositions =
-    new Float32Array(
-
-        particleCount * 3
-
-    );
-
-
-for (
-    let i = 0;
-    i < particleCount;
-    i++
-) {
-
-    const i3 = i * 3;
-
-
-    const radius =
-        2 + Math.random() * 5;
-
-
-    const angle =
-        Math.random() * Math.PI * 2;
-
-
-    particlePositions[i3] =
-        Math.cos(angle) * radius;
-
-
-    particlePositions[i3 + 1] =
-        (Math.random() - 0.5) * 8;
-
-
-    particlePositions[i3 + 2] =
-        Math.sin(angle) * radius;
-
-}
-
-
-const particleGeometry =
-    new THREE.BufferGeometry();
-
-
-particleGeometry.setAttribute(
-
-    "position",
-
-    new THREE.BufferAttribute(
-
-        particlePositions,
-
-        3
-
-    )
-
-);
-
-
-const particleMaterial =
-    new THREE.PointsMaterial({
-
-        color: 0xd000ff,
-
-        size: 0.045,
-
-        transparent: true,
-
-        opacity: 0.8
-
-    });
-
-
-const particles =
-    new THREE.Points(
-
-        particleGeometry,
-
-        particleMaterial
-
-    );
-
-
-scene.add(particles);
-
-
-// ============================================
-// ANIMATION
-// ============================================
-
-const clock =
-    new THREE.Clock();
-
-
-function animate() {
-
-    requestAnimationFrame(
-        animate
-    );
-
-
-    const time =
-        clock.getElapsedTime();
-
-
-    // ========================================
-    // ROTATION
-    // ========================================
-
-    crystalGroup.rotation.y =
-        time * 0.7;
-
-
-    crystalGroup.rotation.x =
-        Math.sin(time * 0.4) * 0.15;
-
-
-    // ========================================
-    // FLOATING
-    // ========================================
-
-    const float =
-        Math.sin(time * 1.5) * 0.35;
-
-
-    crystalGroup.position.y =
-        float;
-
-
-    // ========================================
-    // CORE PULSE
-    // ========================================
-
-    const pulse =
-        1 +
-        Math.sin(time * 3) * 0.12;
-
-
-    core.scale.set(
-        pulse,
-        pulse,
-        pulse
-    );
-
-
-    // ========================================
-    // GLOW PULSE
-    // ========================================
-
-    glow.scale.set(
-        pulse,
-        pulse,
-        pulse
-    );
-
-
-    aura.scale.set(
-
-        1 + Math.sin(time * 2) * 0.08,
-
-        1 + Math.sin(time * 2) * 0.08,
-
-        1 + Math.sin(time * 2) * 0.08
-
-    );
-
-
-    // ========================================
-    // PARTICLES
-    // ========================================
-
-    particles.rotation.y =
-        time * 0.08;
-
-
-    particles.rotation.x =
-        time * 0.03;
-
-
-    // ========================================
-    // BEAM PULSE
-    // ========================================
-
-    beamMaterial.opacity =
-        0.12 +
-        Math.sin(time * 2) * 0.06;
-
-
-    beamGlowMaterial.opacity =
-        0.025 +
-        Math.sin(time * 2) * 0.015;
-
-
-    // ========================================
-    // RENDER
-    // ========================================
-
-    renderer.render(
-        scene,
-        camera
-    );
-
-}
-
-
-animate();
-
-
-// ============================================
-// RESIZE
-// ============================================
-
-window.addEventListener(
-
-    "resize",
-
-    function() {
-
-        camera.aspect =
-            window.innerWidth /
-            window.innerHeight;
-
-
-        camera.updateProjectionMatrix();
-
-
-        renderer.setSize(
-
-            window.innerWidth,
-
-            window.innerHeight
-
+        renderer.setPixelRatio(
+            Math.min(
+                window.devicePixelRatio,
+                2
+            )
         );
 
-    }
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
 
-);
+        renderer.setClearColor(
+            0x000000,
+            0
+        );
 
-</script>
+        const scene =
+            new THREE.Scene();
+
+        const camera =
+            new THREE.PerspectiveCamera(
+                60,
+                window.innerWidth /
+                    window.innerHeight,
+                0.1,
+                100
+            );
+
+        camera.position.z = 7;
+
+        const crystalGroup =
+            new THREE.Group();
+
+        scene.add(
+            crystalGroup
+        );
+
+        const crystalGeometry =
+            new THREE.OctahedronGeometry(
+                1.35,
+                0
+            );
+
+        const crystalMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0x9b00ff,
+                transparent: true,
+                opacity: 0.65,
+                side: THREE.DoubleSide
+            });
+
+        const crystal =
+            new THREE.Mesh(
+                crystalGeometry,
+                crystalMaterial
+            );
+
+        crystalGroup.add(
+            crystal
+        );
+
+        const coreGeometry =
+            new THREE.OctahedronGeometry(
+                0.75,
+                0
+            );
+
+        const coreMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.85
+            });
+
+        const core =
+            new THREE.Mesh(
+                coreGeometry,
+                coreMaterial
+            );
+
+        crystalGroup.add(
+            core
+        );
+
+        const edgeGeometry =
+            new THREE.EdgesGeometry(
+                crystalGeometry
+            );
+
+        const edgeMaterial =
+            new THREE.LineBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 1
+            });
+
+        const edges =
+            new THREE.LineSegments(
+                edgeGeometry,
+                edgeMaterial
+            );
+
+        crystalGroup.add(
+            edges
+        );
+
+        const glowGeometry =
+            new THREE.OctahedronGeometry(
+                1.8,
+                0
+            );
+
+        const glowMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0x8800ff,
+                transparent: true,
+                opacity: 0.16,
+                side: THREE.BackSide
+            });
+
+        const glow =
+            new THREE.Mesh(
+                glowGeometry,
+                glowMaterial
+            );
+
+        crystalGroup.add(
+            glow
+        );
+
+        const auraGeometry =
+            new THREE.OctahedronGeometry(
+                2.3,
+                0
+            );
+
+        const auraMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0x5500ff,
+                transparent: true,
+                opacity: 0.06,
+                side: THREE.BackSide
+            });
+
+        const aura =
+            new THREE.Mesh(
+                auraGeometry,
+                auraMaterial
+            );
+
+        crystalGroup.add(
+            aura
+        );
+
+        const beamGeometry =
+            new THREE.CylinderGeometry(
+                0.035,
+                0.035,
+                20,
+                8
+            );
+
+        const beamMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0xff00ff,
+                transparent: true,
+                opacity: 0.18
+            });
+
+        const beam =
+            new THREE.Mesh(
+                beamGeometry,
+                beamMaterial
+            );
+
+        crystalGroup.add(
+            beam
+        );
+
+        const beamGlowGeometry =
+            new THREE.CylinderGeometry(
+                0.12,
+                0.12,
+                20,
+                8
+            );
+
+        const beamGlowMaterial =
+            new THREE.MeshBasicMaterial({
+                color: 0x8800ff,
+                transparent: true,
+                opacity: 0.035
+            });
+
+        const beamGlow =
+            new THREE.Mesh(
+                beamGlowGeometry,
+                beamGlowMaterial
+            );
+
+        crystalGroup.add(
+            beamGlow
+        );
+
+        const particleCount = 500;
+
+        const particlePositions =
+            new Float32Array(
+                particleCount * 3
+            );
+
+        for (
+            let i = 0;
+            i < particleCount;
+            i++
+        ) {
+
+            const i3 =
+                i * 3;
+
+            const radius =
+                2 +
+                Math.random() * 5;
+
+            const angle =
+                Math.random() *
+                Math.PI *
+                2;
+
+            particlePositions[i3] =
+                Math.cos(angle) *
+                radius;
+
+            particlePositions[i3 + 1] =
+                (Math.random() - 0.5) *
+                8;
+
+            particlePositions[i3 + 2] =
+                Math.sin(angle) *
+                radius;
+
+        }
+
+        const particleGeometry =
+            new THREE.BufferGeometry();
+
+        particleGeometry.setAttribute(
+            "position",
+            new THREE.BufferAttribute(
+                particlePositions,
+                3
+            )
+        );
+
+        const particleMaterial =
+            new THREE.PointsMaterial({
+                color: 0xd000ff,
+                size: 0.045,
+                transparent: true,
+                opacity: 0.8
+            });
+
+        const particles =
+            new THREE.Points(
+                particleGeometry,
+                particleMaterial
+            );
+
+        scene.add(
+            particles
+        );
+
+        const clock =
+            new THREE.Clock();
+
+        function animate() {
+
+            requestAnimationFrame(
+                animate
+            );
+
+            const time =
+                clock.getElapsedTime();
+
+            crystalGroup.rotation.y =
+                time * 0.7;
+
+            crystalGroup.rotation.x =
+                Math.sin(
+                    time * 0.4
+                ) * 0.15;
+
+            const float =
+                Math.sin(
+                    time * 1.5
+                ) * 0.35;
+
+            crystalGroup.position.y =
+                float;
+
+            const pulse =
+                1 +
+                Math.sin(
+                    time * 3
+                ) * 0.12;
+
+            core.scale.set(
+                pulse,
+                pulse,
+                pulse
+            );
+
+            glow.scale.set(
+                pulse,
+                pulse,
+                pulse
+            );
+
+            const auraPulse =
+                1 +
+                Math.sin(
+                    time * 2
+                ) * 0.08;
+
+            aura.scale.set(
+                auraPulse,
+                auraPulse,
+                auraPulse
+            );
+
+            particles.rotation.y =
+                time * 0.08;
+
+            particles.rotation.x =
+                time * 0.03;
+
+            beamMaterial.opacity =
+                0.12 +
+                Math.sin(
+                    time * 2
+                ) * 0.06;
+
+            beamGlowMaterial.opacity =
+                0.025 +
+                Math.sin(
+                    time * 2
+                ) * 0.015;
+
+            renderer.render(
+                scene,
+                camera
+            );
+
+        }
+
+        animate();
+
+        window.addEventListener(
+            "resize",
+            function() {
+
+                camera.aspect =
+                    window.innerWidth /
+                    window.innerHeight;
+
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(
+                    window.innerWidth,
+                    window.innerHeight
+                );
+
+            }
+        );
+
+    </script>
 
 </body>
+
 </html>
