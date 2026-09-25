@@ -1,245 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>GameDev Innes 2026</title>
 
     <style>
-
         @font-face {
-
             font-family: "SGA";
-
-            src:
-                url("Sga-Regular.ttf")
-                format("truetype");
-
+            src: url("Sga-Regular.ttf") format("truetype");
         }
 
-
-        html,
-        body {
-
+        html, body {
             margin: 0;
             padding: 0;
-
             background: black;
-
             color: white;
-
             font-family: Arial, sans-serif;
-
         }
-
 
         body {
-
             overflow-x: hidden;
-
         }
-
-
-        /* =========================
-           SPACE BACKGROUND
-           ========================= */
 
         #space {
-
             position: fixed;
-
             inset: 0;
-
             width: 100%;
             height: 100%;
-
             object-fit: cover;
-
             z-index: 0;
-
             pointer-events: none;
-
         }
-
-
-        /* =========================
-           THREE.JS CANVAS
-           ========================= */
 
         #crystalCanvas {
-
             position: fixed;
-
             inset: 0;
-
             width: 100%;
             height: 100%;
-
             z-index: 1;
-
             pointer-events: none;
-
         }
-
-
-        /* =========================
-           PAGE
-           ========================= */
 
         #page {
-
             position: relative;
-
             z-index: 10;
-
             padding: 20px;
-
         }
-
 
         a {
-
             color: cyan;
-
         }
-
 
         h1 {
-
             color: white;
-
         }
-
-
-        /* =========================
-           DAILY FACT
-           ========================= */
 
         #dailyFact {
-
             color: yellow;
-
             display: inline-block;
-
-            transform:
-                rotate(-10deg)
-                scale(0.75);
-
+            transform: rotate(-10deg) scale(0.75);
             transform-origin: center;
-
             font-weight: bold;
-
-            animation:
-                funFactPulse
-                3s
-                ease-in-out
-                infinite;
-
+            animation: funFactPulse 3s ease-in-out infinite;
         }
 
-
         @keyframes funFactPulse {
-
-            0%,
-            100% {
-
-                transform:
-                    rotate(-10deg)
-                    scale(0.75);
-
+            0%, 100% {
+                transform: rotate(-10deg) scale(0.75);
             }
 
             50% {
-
-                transform:
-                    rotate(-10deg)
-                    scale(0.9);
-
+                transform: rotate(-10deg) scale(0.9);
             }
-
         }
-
-
-        /* =========================
-           SECRET TEXT
-           ========================= */
 
         #secretFound {
-
             color: magenta;
-
             font-weight: bold;
-
             font-size: 24px;
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-
-    <!-- =========================
-         BACKGROUND
-         ========================= -->
-
-    <img
-        id="space"
-        src="SpaceBG.png"
-        alt=""
-    >
-
-
-    <!-- =========================
-         THREE.JS
-         ========================= -->
+    <img id="space" src="SpaceBG.png" alt="">
 
     <canvas id="crystalCanvas"></canvas>
 
-
-    <!-- =========================
-         PAGE CONTENT
-         ========================= -->
-
     <div id="page">
 
+        <h1>GameDev Innes 2026</h1>
 
-        <h1>
-            GameDev Innes 2026
-        </h1>
+        <p>btw I made the background image on blender</p>
 
+        <img src="NegInny.png" width="50" alt="">
+
+        <br>
+
+        <p id="dailyFact">Loading fun fact...</p>
+
+        <br><br>
 
         <p>
-            btw I made the background image on blender
-        </p>
-
-
-        <img
-            src="NegInny.png"
-            width="50"
-            alt=""
-        >
-
-
-        <br>
-
-
-        <p id="dailyFact">
-            Loading fun fact...
-        </p>
-
-
-        <br>
-        <br>
-
-
-        <p>
-
             <a href="https://github.com/Innygr/gamedev-Innes-2026">
                 GitHub
             </a>
@@ -249,17 +112,11 @@
             <a href="https://innygr.github.io/gamedev-Innes-2026/">
                 Website
             </a>
-
         </p>
 
-
-        <h2>
-            Assignments
-        </h2>
-
+        <h2>Assignments</h2>
 
         <ol start="0">
-
 
             <li>
                 <a href="t1a00-simple-Innes.html">
@@ -267,13 +124,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a01-table-Innes.html">
                     t1a01-table-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a02-list-Innes.html">
@@ -281,13 +136,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a03-forms-Innes.html">
                     t1a03-forms-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a04-CSS-Innes.html">
@@ -295,13 +148,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a05-inputoutput-Innes.html">
                     t1a05-InputOutput-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a06-...-Innes.html">
@@ -309,13 +160,11 @@
                 </a>
             </li>
 
-
             <li>
-                <a href="t1a07-loop-Innes.html">
-                    t1a07-loop-Innes
+                <a href="t1a07-desicion-Innes.html">
+                    t1a07-desicion-Innes.html
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a08-array-Innes.html">
@@ -323,13 +172,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a09-objects-Innes.html">
                     t1a09-objects-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a10-event-Innes.html">
@@ -337,13 +184,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a11-if-Innes.html">
                     t1a11-if-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a12-...-Innes.html">
@@ -351,13 +196,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a13-...-Innes.html">
                     t1a13-...-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a14-...-Innes.html">
@@ -365,13 +208,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a15-...-Innes.html">
                     t1a15-...-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a16-...-Innes.html">
@@ -379,13 +220,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a17-...-Innes.html">
                     t1a17-...-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a18-...-Innes.html">
@@ -393,13 +232,11 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1a19-...-Innes.html">
                     t1a19-...-Innes
                 </a>
             </li>
-
 
             <li>
                 <a href="t1a20-list-Innes.html">
@@ -407,288 +244,118 @@
                 </a>
             </li>
 
-
             <li>
                 <a href="t1ax4-crystal-Innes.html">
                     t1ax4-crystal-Innes
                 </a>
             </li>
 
-
         </ol>
 
+        <br><br><br><br><br><br><br><br><br><br>
 
-        <!-- =========================
-             SECRET
-             ========================= -->
-
-
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-
-
-        <img
-            src="NegInny.png"
-            width="75"
-            alt=""
-        >
-
+        <img src="NegInny.png" width="75" alt="">
 
         ➡️
 
-
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-
+        <br><br><br><br><br><br><br><br><br><br>
 
         <a href="https://innygr.github.io/Card-Stuff-Yes/">
-
             Card Stuff Yes
-
         </a>
 
-
         <p id="secretFound">
-
             Secret Found!!
-
         </p>
-
 
     </div>
 
-
-    <!-- =========================
-         FUN FACTS
-         ========================= -->
-
     <script src="funfacts.js"></script>
 
-
     <script>
+        const today = new Date();
 
-        const today =
-            new Date();
+        const dayNumber = Math.floor(
+            Date.UTC(
+                today.getFullYear(),
+                today.getMonth(),
+                today.getDate()
+            ) / 86400000
+        );
 
+        const factIndex = dayNumber % funFacts.length;
 
-        const dayNumber =
-            Math.floor(
-
-                Date.UTC(
-
-                    today.getFullYear(),
-
-                    today.getMonth(),
-
-                    today.getDate()
-
-                ) / 86400000
-
-            );
-
-
-        const factIndex =
-            dayNumber %
-            funFacts.length;
-
-
-        document.getElementById(
-            "dailyFact"
-        ).textContent =
+        document.getElementById("dailyFact").textContent =
             funFacts[factIndex];
-
     </script>
-
-
-    <!-- =========================
-         THREE.JS
-         ========================= -->
 
     <script src="three.min.js"></script>
 
-
     <script>
+        const canvas = document.getElementById("crystalCanvas");
 
+        const scene = new THREE.Scene();
 
-        /* =========================================
-           SCENE
-           ========================================= */
-
-        const canvas =
-            document.getElementById(
-                "crystalCanvas"
-            );
-
-
-        const scene =
-            new THREE.Scene();
-
-
-        const camera =
-            new THREE.PerspectiveCamera(
-
-                60,
-
-                window.innerWidth /
-                window.innerHeight,
-
-                0.1,
-
-                1000
-
-            );
-
+        const camera = new THREE.PerspectiveCamera(
+            60,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
 
         camera.position.z = 7;
 
-
-        const renderer =
-            new THREE.WebGLRenderer({
-
-                canvas: canvas,
-
-                alpha: true,
-
-                antialias: true
-
-            });
-
+        const renderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            alpha: true,
+            antialias: true
+        });
 
         renderer.setPixelRatio(
-            Math.min(
-                window.devicePixelRatio,
-                2
-            )
+            Math.min(window.devicePixelRatio, 2)
         );
-
 
         renderer.setSize(
             window.innerWidth,
             window.innerHeight
         );
 
+        const crystalGroup = new THREE.Group();
 
-        /* =========================================
-           MAIN GROUP
-           ========================================= */
+        crystalGroup.position.y = 0.1;
 
-        const crystalGroup =
-            new THREE.Group();
+        scene.add(crystalGroup);
 
 
-        crystalGroup.position.y =
-            0.1;
+        function createCrystalGeometry(radius, height) {
 
-
-        scene.add(
-            crystalGroup
-        );
-
-
-        /* =========================================
-           CUSTOM END CRYSTAL SHAPE
-           
-           Tall diamond-like Minecraft shape:
-           
-                  TOP
-                   ▲
-                  / \
-                 /   \
-                /     \
-               /-------\
-               \       /
-                \     /
-                 \   /
-                  \ /
-                   ▼
-                 BOTTOM
-           ========================================= */
-
-
-        function createCrystalGeometry(
-            radius,
-            height
-        ) {
-
-            const half =
-                height / 2;
-
-
-            const yTop =
-                height * 0.5;
-
-
-            const yUpper =
-                height * 0.18;
-
-
-            const yLower =
-                -height * 0.18;
-
-
-            const yBottom =
-                -height * 0.5;
-
+            const yTop = height * 0.5;
+            const yUpper = height * 0.18;
+            const yLower = -height * 0.18;
+            const yBottom = -height * 0.5;
 
             const vertices = [
-
-                // top
                 0, yTop, 0,
 
-
-                // upper square ring
                 radius, yUpper, 0,
-
                 0, yUpper, radius,
-
                 -radius, yUpper, 0,
-
                 0, yUpper, -radius,
 
-
-                // lower square ring
                 radius, yLower, 0,
-
                 0, yLower, radius,
-
                 -radius, yLower, 0,
-
                 0, yLower, -radius,
 
-
-                // bottom
                 0, yBottom, 0
-
             ];
 
-
             const indices = [
-
-                // TOP
 
                 0, 1, 2,
                 0, 2, 3,
                 0, 3, 4,
                 0, 4, 1,
-
-
-                // MIDDLE
 
                 1, 5, 6,
                 1, 6, 2,
@@ -702,55 +369,32 @@
                 4, 8, 5,
                 4, 5, 1,
 
-
-                // BOTTOM
-
                 9, 6, 5,
                 9, 7, 6,
                 9, 8, 7,
                 9, 5, 8
-
             ];
 
-
-            const geometry =
-                new THREE.BufferGeometry();
-
+            const geometry = new THREE.BufferGeometry();
 
             geometry.setAttribute(
-
                 "position",
-
                 new THREE.Float32BufferAttribute(
                     vertices,
                     3
                 )
-
             );
 
-
-            geometry.setIndex(
-                indices
-            );
-
+            geometry.setIndex(indices);
 
             geometry.computeVertexNormals();
 
-
             return geometry;
-
         }
 
 
-        /* =========================================
-           INNER CRYSTAL
-           ========================================= */
-
         const crystalGeometry =
-            createCrystalGeometry(
-                1.05,
-                3.25
-            );
+            createCrystalGeometry(1.05, 3.25);
 
 
         const crystalMaterial =
@@ -764,32 +408,20 @@
 
                 side: THREE.DoubleSide,
 
-                blending:
-                    THREE.AdditiveBlending,
+                blending: THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const crystal =
             new THREE.Mesh(
-
                 crystalGeometry,
-
                 crystalMaterial
-
             );
 
+        crystalGroup.add(crystal);
 
-        crystalGroup.add(
-            crystal
-        );
-
-
-        /* =========================================
-           INNER CRYSTAL GLOW
-           ========================================= */
 
         const crystalGlowMaterial =
             new THREE.MeshBasicMaterial({
@@ -802,54 +434,34 @@
 
                 side: THREE.DoubleSide,
 
-                blending:
-                    THREE.AdditiveBlending,
+                blending: THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const crystalGlow =
             new THREE.Mesh(
-
                 crystalGeometry,
-
                 crystalGlowMaterial
-
             );
 
+        crystalGlow.scale.setScalar(1.08);
 
-        crystalGlow.scale.setScalar(
-            1.08
-        );
+        crystalGroup.add(crystalGlow);
 
-
-        crystalGroup.add(
-            crystalGlow
-        );
-
-
-        /* =========================================
-           CORE CUBE
-           ========================================= */
 
         const coreGroup =
             new THREE.Group();
 
-
-        crystalGroup.add(
-            coreGroup
-        );
+        crystalGroup.add(coreGroup);
 
 
         const coreGeometry =
             new THREE.BoxGeometry(
-
                 0.58,
                 0.58,
                 0.58
-
             );
 
 
@@ -862,38 +474,24 @@
 
                 opacity: 0.95,
 
-                blending:
-                    THREE.AdditiveBlending
-
+                blending: THREE.AdditiveBlending
             });
 
 
         const core =
             new THREE.Mesh(
-
                 coreGeometry,
-
                 coreMaterial
-
             );
 
+        coreGroup.add(core);
 
-        coreGroup.add(
-            core
-        );
-
-
-        /* =========================================
-           CORE GLOW CUBE
-           ========================================= */
 
         const coreGlowGeometry =
             new THREE.BoxGeometry(
-
                 0.82,
                 0.82,
                 0.82
-
             );
 
 
@@ -906,48 +504,29 @@
 
                 opacity: 0.16,
 
-                blending:
-                    THREE.AdditiveBlending,
+                blending: THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const coreGlow =
             new THREE.Mesh(
-
                 coreGlowGeometry,
-
                 coreGlowMaterial
-
             );
 
-
-        coreGroup.add(
-            coreGlow
-        );
+        coreGroup.add(coreGlow);
 
 
-        /* =========================================
-           OUTER GLASS CRYSTAL
-           ========================================= */
+        const outerRadius = 1.48;
 
-        const outerRadius =
-            1.48;
-
-
-        const outerHeight =
-            4.35;
-
+        const outerHeight = 4.35;
 
         const glassGeometry =
             createCrystalGeometry(
-
                 outerRadius,
-
                 outerHeight
-
             );
 
 
@@ -962,42 +541,25 @@
 
                 side: THREE.DoubleSide,
 
-                blending:
-                    THREE.AdditiveBlending,
+                blending: THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const glassCrystal =
             new THREE.Mesh(
-
                 glassGeometry,
-
                 glassMaterial
-
             );
 
+        crystalGroup.add(glassCrystal);
 
-        crystalGroup.add(
-            glassCrystal
-        );
-
-
-        /* =========================================
-           OUTER SHELL EDGES
-           
-           These are deliberately THICK.
-           ========================================= */
 
         const glassEdges =
             new THREE.Group();
 
-
-        crystalGroup.add(
-            glassEdges
-        );
+        crystalGroup.add(glassEdges);
 
 
         const edgeMaterial =
@@ -1009,9 +571,7 @@
 
                 opacity: 0.72,
 
-                blending:
-                    THREE.AdditiveBlending
-
+                blending: THREE.AdditiveBlending
             });
 
 
@@ -1024,18 +584,13 @@
 
                 opacity: 0.18,
 
-                blending:
-                    THREE.AdditiveBlending,
+                blending: THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
-        function makeEdge(
-            a,
-            b
-        ) {
+        function makeEdge(a, b) {
 
             const start =
                 new THREE.Vector3(
@@ -1043,7 +598,6 @@
                     a.y,
                     a.z
                 );
-
 
             const end =
                 new THREE.Vector3(
@@ -1063,9 +617,7 @@
             );
 
 
-            midpoint.multiplyScalar(
-                0.5
-            );
+            midpoint.multiplyScalar(0.5);
 
 
             const direction =
@@ -1082,36 +634,22 @@
                 direction.length();
 
 
-            /*
-             * BIGGER than before.
-             * These are the actual glass beams.
-             */
-
             const geometry =
                 new THREE.BoxGeometry(
-
                     0.115,
-
                     0.115,
-
                     length
-
                 );
 
 
             const edge =
                 new THREE.Mesh(
-
                     geometry,
-
                     edgeMaterial
-
                 );
 
 
-            edge.position.copy(
-                midpoint
-            );
+            edge.position.copy(midpoint);
 
 
             edge.quaternion.setFromUnitVectors(
@@ -1123,91 +661,50 @@
                 ),
 
                 direction.normalize()
-
             );
 
 
-            glassEdges.add(
-                edge
-            );
+            glassEdges.add(edge);
 
-
-            /*
-             * Slightly larger invisible-ish glow.
-             */
 
             const glowGeometry =
                 new THREE.BoxGeometry(
-
                     0.22,
-
                     0.22,
-
                     length * 1.01
-
                 );
 
 
             const glow =
                 new THREE.Mesh(
-
                     glowGeometry,
-
                     glowEdgeMaterial
-
                 );
 
 
-            glow.position.copy(
-                midpoint
-            );
-
+            glow.position.copy(midpoint);
 
             glow.quaternion.copy(
                 edge.quaternion
             );
 
+            glassEdges.add(glow);
 
-            glassEdges.add(
-                glow
-            );
-
-
-            /*
-             * Return the edge information so
-             * battlements can be placed directly
-             * along the edge.
-             */
 
             return {
-
                 start: start,
-
                 end: end
-
             };
-
         }
 
 
-        /* =========================================
-           OUTER CRYSTAL VERTICES
-           ========================================= */
+        const h = outerHeight;
 
-        const h =
-            outerHeight;
+        const r = outerRadius;
 
+        const upperY = h * 0.18;
 
-        const r =
-            outerRadius;
-
-
-        const upperY =
-            h * 0.18;
-
-
-        const lowerY =
-            -h * 0.18;
+        const lowerY = -h * 0.18;
 
 
         const top =
@@ -1290,10 +787,6 @@
             );
 
 
-        /* =========================================
-           BUILD EVERY OUTER EDGE
-           ========================================= */
-
         const edges = [
 
             [top, U1],
@@ -1320,7 +813,6 @@
             [bottom, L2],
             [bottom, L3],
             [bottom, L4]
-
         ];
 
 
@@ -1334,37 +826,16 @@
         ) {
 
             edgeData.push(
-
                 makeEdge(
                     edges[i][0],
                     edges[i][1]
                 )
-
             );
-
         }
 
 
-        /* =========================================
-           CASTLE-WALL BATTLEMENT SQUARES
-           
-           These are NOT floating around randomly.
-           
-           They are positioned directly on the
-           outer shell edges.
-           
-           Think Minecraft castle wall:
-           
-             █   █   █
-             │       │
-             █   █   █
-           
-           except following the crystal edges.
-           ========================================= */
-
         const battlements =
             new THREE.Group();
-
 
         crystalGroup.add(
             battlements
@@ -1373,11 +844,9 @@
 
         const battlementGeometry =
             new THREE.BoxGeometry(
-
                 0.20,
                 0.20,
                 0.20
-
             );
 
 
@@ -1390,19 +859,15 @@
 
                 opacity: 0.92,
 
-                blending:
-                    THREE.AdditiveBlending
-
+                blending: THREE.AdditiveBlending
             });
 
 
         const battlementGlowGeometry =
             new THREE.BoxGeometry(
-
                 0.31,
                 0.31,
                 0.31
-
             );
 
 
@@ -1415,19 +880,13 @@
 
                 opacity: 0.17,
 
-                blending:
-                    THREE.AdditiveBlending,
+                blending: THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
-        function addBattlement(
-            a,
-            b,
-            t
-        ) {
+        function addBattlement(a, b, t) {
 
             const position =
                 new THREE.Vector3();
@@ -1440,17 +899,10 @@
             );
 
 
-            /*
-             * Main chunky square.
-             */
-
             const block =
                 new THREE.Mesh(
-
                     battlementGeometry,
-
                     battlementMaterial
-
                 );
 
 
@@ -1458,12 +910,6 @@
                 position
             );
 
-
-            /*
-             * Rotate it somewhat with the edge.
-             * Since the entire battlement group is
-             * attached to the crystal, it stays locked.
-             */
 
             const direction =
                 new THREE.Vector3();
@@ -1484,26 +930,16 @@
                 ),
 
                 direction
-
             );
 
 
-            battlements.add(
-                block
-            );
+            battlements.add(block);
 
-
-            /*
-             * Bigger glow block around it.
-             */
 
             const glow =
                 new THREE.Mesh(
-
                     battlementGlowGeometry,
-
                     battlementGlowMaterial
-
                 );
 
 
@@ -1517,20 +953,9 @@
             );
 
 
-            battlements.add(
-                glow
-            );
-
+            battlements.add(glow);
         }
 
-
-        /*
-         * Put several battlements along EVERY
-         * outer edge.
-         *
-         * Multiple positions make them resemble
-         * crenellations instead of single dots.
-         */
 
         for (
             let i = 0;
@@ -1541,13 +966,11 @@
             const edge =
                 edgeData[i];
 
-
             addBattlement(
                 edge.start,
                 edge.end,
                 0.28
             );
-
 
             addBattlement(
                 edge.start,
@@ -1555,22 +978,15 @@
                 0.50
             );
 
-
             addBattlement(
                 edge.start,
                 edge.end,
                 0.72
             );
-
         }
 
 
-        /* =========================================
-           SGA GLYPHS
-           ========================================= */
-
         const sgaGlyphs = [
-
             "ᔑ",
             "ʖ",
             "ᓵ",
@@ -1579,13 +995,10 @@
             "⎓",
             "⊣",
             "⍑"
-
         ];
 
 
-        function makeGlyph(
-            character
-        ) {
+        function makeGlyph(character) {
 
             const canvas =
                 document.createElement(
@@ -1594,6 +1007,7 @@
 
 
             canvas.width = 256;
+
             canvas.height = 256;
 
 
@@ -1636,12 +1050,9 @@
 
 
             ctx.fillText(
-
                 character,
-
                 128,
                 128
-
             );
 
 
@@ -1662,42 +1073,28 @@
 
                     transparent: true,
 
-                    side:
-                        THREE.DoubleSide,
+                    side: THREE.DoubleSide,
 
                     blending:
                         THREE.AdditiveBlending,
 
                     depthWrite: false
-
                 });
 
 
             const geometry =
                 new THREE.PlaneGeometry(
-
                     0.52,
                     0.52
-
                 );
 
 
             return new THREE.Mesh(
-
                 geometry,
-
                 material
-
             );
-
         }
 
-
-        /*
-         * Four main visible sides.
-         * Additional glyphs make the crystal feel
-         * covered from more viewing angles.
-         */
 
         const glyphPositions = [
 
@@ -1715,7 +1112,6 @@
                         0,
                         0
                     )
-
             },
 
             {
@@ -1732,7 +1128,6 @@
                         Math.PI / 2,
                         0
                     )
-
             },
 
             {
@@ -1749,7 +1144,6 @@
                         Math.PI,
                         0
                     )
-
             },
 
             {
@@ -1766,9 +1160,7 @@
                         -Math.PI / 2,
                         0
                     )
-
             }
-
         ];
 
 
@@ -1797,21 +1189,14 @@
             crystalGroup.add(
                 glyph
             );
-
         }
 
 
-        /* =========================================
-           AURA
-           ========================================= */
-
         const auraGeometry =
             new THREE.SphereGeometry(
-
                 2.25,
                 32,
                 32
-
             );
 
 
@@ -1828,17 +1213,13 @@
                     THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const aura =
             new THREE.Mesh(
-
                 auraGeometry,
-
                 auraMaterial
-
             );
 
 
@@ -1847,19 +1228,12 @@
         );
 
 
-        /* =========================================
-           VERTICAL BEAM
-           ========================================= */
-
         const beamGeometry =
             new THREE.CylinderGeometry(
-
                 0.055,
                 0.055,
                 10,
-
                 16
-
             );
 
 
@@ -1876,17 +1250,13 @@
                     THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const beam =
             new THREE.Mesh(
-
                 beamGeometry,
-
                 beamMaterial
-
             );
 
 
@@ -1899,19 +1269,12 @@
         );
 
 
-        /* =========================================
-           BEAM GLOW
-           ========================================= */
-
         const beamGlowGeometry =
             new THREE.CylinderGeometry(
-
                 0.15,
                 0.15,
                 10,
-
                 16
-
             );
 
 
@@ -1928,17 +1291,13 @@
                     THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const beamGlow =
             new THREE.Mesh(
-
                 beamGlowGeometry,
-
                 beamGlowMaterial
-
             );
 
 
@@ -1950,12 +1309,6 @@
             beamGlow
         );
 
-
-        /* =========================================
-           END CRYSTAL BASE
-           
-           Dark obsidian/bedrock-like base.
-           ========================================= */
 
         const baseGroup =
             new THREE.Group();
@@ -1978,27 +1331,21 @@
                 transparent: true,
 
                 opacity: 0.95
-
             });
 
 
         const baseGeometry =
             new THREE.BoxGeometry(
-
                 1.65,
                 0.32,
                 1.65
-
             );
 
 
         const base =
             new THREE.Mesh(
-
                 baseGeometry,
-
                 baseMaterial
-
             );
 
 
@@ -2009,11 +1356,9 @@
 
         const baseTopGeometry =
             new THREE.BoxGeometry(
-
                 1.25,
                 0.20,
                 1.25
-
             );
 
 
@@ -2025,17 +1370,13 @@
                 transparent: true,
 
                 opacity: 0.98
-
             });
 
 
         const baseTop =
             new THREE.Mesh(
-
                 baseTopGeometry,
-
                 baseTopMaterial
-
             );
 
 
@@ -2048,10 +1389,6 @@
         );
 
 
-        /* =========================================
-           BASE PURPLE EDGES
-           ========================================= */
-
         const baseEdgeMaterial =
             new THREE.MeshBasicMaterial({
 
@@ -2063,7 +1400,6 @@
 
                 blending:
                     THREE.AdditiveBlending
-
             });
 
 
@@ -2078,65 +1414,32 @@
         const baseEdges = [
 
             {
-
                 x: 0,
-
-                z:
-                    baseEdgeSize / 2,
-
-                sx:
-                    baseEdgeSize,
-
-                sz:
-                    baseEdgeHeight
-
+                z: baseEdgeSize / 2,
+                sx: baseEdgeSize,
+                sz: baseEdgeHeight
             },
 
             {
-
                 x: 0,
-
-                z:
-                    -baseEdgeSize / 2,
-
-                sx:
-                    baseEdgeSize,
-
-                sz:
-                    baseEdgeHeight
-
+                z: -baseEdgeSize / 2,
+                sx: baseEdgeSize,
+                sz: baseEdgeHeight
             },
 
             {
-
-                x:
-                    baseEdgeSize / 2,
-
+                x: baseEdgeSize / 2,
                 z: 0,
-
-                sx:
-                    baseEdgeHeight,
-
-                sz:
-                    baseEdgeSize
-
+                sx: baseEdgeHeight,
+                sz: baseEdgeSize
             },
 
             {
-
-                x:
-                    -baseEdgeSize / 2,
-
+                x: -baseEdgeSize / 2,
                 z: 0,
-
-                sx:
-                    baseEdgeHeight,
-
-                sz:
-                    baseEdgeSize
-
+                sx: baseEdgeHeight,
+                sz: baseEdgeSize
             }
-
         ];
 
 
@@ -2152,45 +1455,31 @@
 
             const geometry =
                 new THREE.BoxGeometry(
-
                     e.sx,
                     0.07,
                     e.sz
-
                 );
 
 
             const mesh =
                 new THREE.Mesh(
-
                     geometry,
-
                     baseEdgeMaterial
-
                 );
 
 
             mesh.position.set(
-
                 e.x,
-
                 0.18,
-
                 e.z
-
             );
 
 
             baseGroup.add(
                 mesh
             );
-
         }
 
-
-        /* =========================================
-           PARTICLES
-           ========================================= */
 
         const particleCount =
             500;
@@ -2198,9 +1487,7 @@
 
         const particlePositions =
             new Float32Array(
-
                 particleCount * 3
-
             );
 
 
@@ -2217,8 +1504,7 @@
 
             const angle =
                 Math.random() *
-                Math.PI *
-                2;
+                Math.PI * 2;
 
 
             const height =
@@ -2244,7 +1530,6 @@
             ] =
                 Math.sin(angle) *
                 radius;
-
         }
 
 
@@ -2253,17 +1538,11 @@
 
 
         particleGeometry.setAttribute(
-
             "position",
-
             new THREE.BufferAttribute(
-
                 particlePositions,
-
                 3
-
             )
-
         );
 
 
@@ -2282,17 +1561,13 @@
                     THREE.AdditiveBlending,
 
                 depthWrite: false
-
             });
 
 
         const particles =
             new THREE.Points(
-
                 particleGeometry,
-
                 particleMaterial
-
             );
 
 
@@ -2300,10 +1575,6 @@
             particles
         );
 
-
-        /* =========================================
-           ANIMATION
-           ========================================= */
 
         const clock =
             new THREE.Clock();
@@ -2320,10 +1591,6 @@
                 clock.getElapsedTime();
 
 
-            /*
-             * Main crystal rotation.
-             */
-
             crystal.rotation.y =
                 time * 0.55;
 
@@ -2338,11 +1605,6 @@
                 time * 0.55;
 
 
-            /*
-             * Outer glass shell rotates slightly
-             * differently.
-             */
-
             glassCrystal.rotation.y =
                 -time * 0.30;
 
@@ -2355,10 +1617,6 @@
                 -time * 0.30;
 
 
-            /*
-             * Core spins faster.
-             */
-
             coreGroup.rotation.y =
                 -time * 1.15;
 
@@ -2367,10 +1625,6 @@
                 time * 0.75;
 
 
-            /*
-             * Gentle floating.
-             */
-
             const floatAmount =
                 Math.sin(
                     time * 1.4
@@ -2378,13 +1632,8 @@
 
 
             crystalGroup.position.y =
-                0.1 +
-                floatAmount;
+                0.1 + floatAmount;
 
-
-            /*
-             * Pulse the aura.
-             */
 
             const pulse =
                 1 +
@@ -2407,10 +1656,6 @@
                 ) * 0.012;
 
 
-            /*
-             * Beam pulse.
-             */
-
             beam.material.opacity =
                 0.58 +
                 (
@@ -2429,10 +1674,6 @@
                 ) * 0.035;
 
 
-            /*
-             * Particle rotation.
-             */
-
             particles.rotation.y =
                 time * 0.06;
 
@@ -2441,21 +1682,14 @@
                 scene,
                 camera
             );
-
         }
 
 
         animate();
 
 
-        /* =========================================
-           RESIZE
-           ========================================= */
-
         window.addEventListener(
-
             "resize",
-
             function () {
 
                 camera.aspect =
@@ -2467,20 +1701,12 @@
 
 
                 renderer.setSize(
-
                     window.innerWidth,
-
                     window.innerHeight
-
                 );
-
             }
-
         );
-
     </script>
 
-
 </body>
-
 </html>
