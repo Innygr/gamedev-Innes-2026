@@ -60,7 +60,7 @@
         }
 
         h1 {
-            text-align: center;
+            text-align: left;
             font-size: 42px;
             margin-bottom: 10px;
             text-shadow:
@@ -97,35 +97,22 @@
             color: #00ffff !important;
         }
 
-        .section {
-            padding: 15px;
-        }
-
-        .profile {
-            text-align: center;
-        }
-
-        .profile img {
-            max-width: 180px;
-            height: auto;
-            border-radius: 12px;
-            margin: 10px;
-        }
-
         .funFactBox {
-            text-align: center;
+            text-align: left;
             margin-top: 15px;
         }
 
         #funFact {
             min-height: 28px;
-            margin: 12px auto;
+            margin: 12px 0;
             color: #ffffff;
             font-size: 18px;
         }
 
-        #rerollFact {
+        #rerollFact,
+        #musicButton {
             margin-top: 8px;
+            margin-right: 8px;
             padding: 9px 16px;
             background: rgba(0, 0, 0, 0.8);
             color: #00ffff;
@@ -141,14 +128,16 @@
                 transform 0.15s;
         }
 
-        #rerollFact:hover {
+        #rerollFact:hover,
+        #musicButton:hover {
             background: #00ffff;
             color: #000;
             box-shadow: 0 0 12px #00ffff;
             transform: scale(1.04);
         }
 
-        #rerollFact:active {
+        #rerollFact:active,
+        #musicButton:active {
             transform: scale(0.97);
         }
 
@@ -157,7 +146,7 @@
         }
 
         .downArrow {
-            text-align: center;
+            text-align: left;
             font-size: 28px;
             line-height: 1;
             margin: 25px 0;
@@ -166,7 +155,7 @@
         }
 
         footer {
-            text-align: center;
+            text-align: left;
             margin-top: 40px;
             opacity: 0.75;
         }
@@ -178,10 +167,6 @@
 
             #page {
                 width: 94%;
-            }
-
-            .section {
-                padding: 15px;
             }
         }
     </style>
@@ -196,19 +181,7 @@
 
         <h1>GameDev Innes 2026</h1>
 
-        <div class="section profile">
-            <h2>About Me</h2>
-
-            <img src="NegInny.png" alt="NegInny">
-
-            <p>
-                Hi! I'm Innes, also known as Innygr.
-                I'm a game developer and I make various projects using
-                Construct, Roblox, HTML, JavaScript, and other tools.
-            </p>
-        </div>
-
-        <div class="section">
+        <div>
             <h2>Fun Facts</h2>
 
             <div class="funFactBox">
@@ -217,10 +190,14 @@
                 <button id="rerollFact" onclick="rerollFact()">
                     🎲 Re-roll Fact
                 </button>
+
+                <button id="musicButton" onclick="toggleMusic()">
+                    ♫ Play Music
+                </button>
             </div>
         </div>
 
-        <div class="section">
+        <div>
             <h2>Assignments</h2>
 
             <ul>
@@ -364,7 +341,7 @@
             </ul>
         </div>
 
-        <div class="section">
+        <div>
             <h2>Other Projects</h2>
 
             <ul>
@@ -382,7 +359,7 @@
             v
         </div>
 
-        <div class="section">
+        <div>
             <h2>Secrets</h2>
 
             <ul>
@@ -394,7 +371,7 @@
             </ul>
         </div>
 
-        <div class="section">
+        <div>
             <h2>SGA</h2>
 
             <p class="sga">
@@ -407,6 +384,11 @@
         </footer>
 
     </main>
+
+    <!-- Background music -->
+    <audio id="backgroundMusic" loop>
+        <source src="background.mp3" type="audio/mpeg">
+    </audio>
 
     <script src="three.min.js"></script>
     <script src="funfacts.js"></script>
@@ -458,6 +440,46 @@
 
 
         /* =========================
+           MUSIC
+           ========================= */
+
+        const backgroundMusic =
+            document.getElementById(
+                "backgroundMusic"
+            );
+
+        const musicButton =
+            document.getElementById(
+                "musicButton"
+            );
+
+        function toggleMusic() {
+
+            if (
+                backgroundMusic.paused
+            ) {
+
+                backgroundMusic.play()
+                    .then(() => {
+                        musicButton.textContent =
+                            "♫ Pause Music";
+                    })
+                    .catch(() => {
+                        musicButton.textContent =
+                            "♫ Music unavailable";
+                    });
+
+            } else {
+
+                backgroundMusic.pause();
+
+                musicButton.textContent =
+                    "♫ Play Music";
+            }
+        }
+
+
+        /* =========================
            THREE.JS END CRYSTAL
            ========================= */
 
@@ -470,7 +492,9 @@
         } else {
 
             const canvas =
-                document.getElementById("crystalCanvas");
+                document.getElementById(
+                    "crystalCanvas"
+                );
 
             const scene =
                 new THREE.Scene();
@@ -521,7 +545,9 @@
                 0.68
             );
 
-            scene.add(crystalGroup);
+            scene.add(
+                crystalGroup
+            );
 
 
             /* =========================
@@ -569,7 +595,9 @@
                     start
                 ).add(
                     end
-                ).multiplyScalar(0.5);
+                ).multiplyScalar(
+                    0.5
+                );
 
                 bar.quaternion.setFromUnitVectors(
                     new THREE.Vector3(
@@ -580,9 +608,9 @@
                     direction.normalize()
                 );
 
-                crystalGroup.add(bar);
-
-                return bar;
+                crystalGroup.add(
+                    bar
+                );
             }
 
 
@@ -730,7 +758,9 @@
                 panel.rotation.y =
                     panelPositions[i][1];
 
-                crystalGroup.add(panel);
+                crystalGroup.add(
+                    panel
+                );
             }
 
 
