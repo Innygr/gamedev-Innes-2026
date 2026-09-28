@@ -389,6 +389,18 @@
         </div>
 
         <div class="section">
+            <h2>Secrets</h2>
+
+            <ul>
+                <li>
+                    <a href="random-ahh-art.html">
+                        random-ahh-art.html
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
             <h2>SGA</h2>
 
             <p class="sga">
@@ -527,15 +539,6 @@
                     color: 0xdffcff,
                     transparent: true,
                     opacity: 0.92
-                });
-
-            const frameGlowMaterial =
-                new THREE.MeshBasicMaterial({
-                    color: 0x8fffff,
-                    transparent: true,
-                    opacity: 0.3,
-                    blending:
-                        THREE.AdditiveBlending
                 });
 
 
@@ -772,16 +775,16 @@
                 character
             ) {
 
-                const canvas =
+                const glyphCanvas =
                     document.createElement(
                         "canvas"
                     );
 
-                canvas.width = 256;
-                canvas.height = 256;
+                glyphCanvas.width = 256;
+                glyphCanvas.height = 256;
 
                 const ctx =
-                    canvas.getContext(
+                    glyphCanvas.getContext(
                         "2d"
                     );
 
@@ -818,7 +821,7 @@
 
                 const texture =
                     new THREE.CanvasTexture(
-                        canvas
+                        glyphCanvas
                     );
 
                 texture.needsUpdate =
