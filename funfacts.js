@@ -23,5 +23,6 @@ const funFacts = [
   "I am currently running out of fun facts",
   "This is definitely not filler",
   "Okay, this one might be filler",
-  "I have officially run out of interesting facts"
+  "I have officially run out of interesting facts",
+  "I HATE careers class, there is no words to describe how much I HATE it"
 ];
