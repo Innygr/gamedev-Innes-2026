@@ -655,55 +655,46 @@
             bottom: 50%;
             width: 185px;
             height: 245px;
-            animation: dreadGatewayEntry 1.7s cubic-bezier(.08,.82,.12,1) forwards;
+            pointer-events: none;
+            animation: dreadGatewayEntry 1.7s steps(1, end) forwards;
             cursor: default;
         }
 
         #gateway.gatewayEntering .gatewayFrame {
-            animation: dreadFrameEntry 1.7s cubic-bezier(.08,.82,.12,1) forwards;
+            animation: dreadFrameEntry 1.7s steps(1, end) forwards;
         }
 
         #gateway.gatewayEntering .gatewayInside img {
-            animation: dreadTextureEntry 1.7s cubic-bezier(.08,.82,.12,1) forwards;
+            animation: dreadTextureEntry 1.7s steps(1, end) forwards;
         }
 
         #gateway.gatewayEntering .gatewayEnergy {
-            animation: dreadEnergyEntry 1.7s ease-out forwards;
+            animation: dreadEnergyEntry 1.7s steps(1, end) forwards;
         }
 
         #gateway.gatewayEntering .gatewayParticle {
-            animation: dreadParticlesEntry .75s ease-out forwards;
+            animation: dreadParticlesEntry .8s steps(1, end) forwards;
         }
 
-        /* The red/black effect deliberately stays invisible until the
-           gateway has reached fullscreen. The first part is the normal
-           gateway moving toward the viewer. */
-        #gateway.gatewayEntering::after {
-            content: "";
+        /*
+           This is deliberately NOT a pseudo-element on #gateway.
+           The gateway itself has a low stacking level, so the old version
+           could get trapped underneath the page. This canvas is the actual
+           fullscreen jumpscare layer.
+        */
+        #dreadCanvas {
             position: fixed;
-            inset: -10vw;
-            z-index: 999999999;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000000000;
             pointer-events: none;
-            opacity: 0;
+            display: none;
+            image-rendering: pixelated;
+        }
 
-            background:
-                radial-gradient(ellipse at 20% 30%, #ff1744 0%, #300008 10%, transparent 25%),
-                radial-gradient(ellipse at 70% 25%, #ff003c 0%, #180003 12%, transparent 27%),
-                radial-gradient(ellipse at 45% 65%, #ff174f 0%, #220005 11%, transparent 28%),
-                radial-gradient(ellipse at 80% 75%, #ff003c 0%, #100002 10%, transparent 25%),
-                radial-gradient(ellipse at 15% 80%, #d90032 0%, #160002 11%, transparent 27%),
-                #050001;
-
-            background-size:
-                47px 39px,
-                63px 51px,
-                41px 57px,
-                58px 43px,
-                52px 61px,
-                100% 100%;
-
-            filter: contrast(4) saturate(1.8);
-            animation: dreadRedFullscreen 1.7s steps(1, end) forwards;
+        body.dreadShaking {
+            animation: dreadScreenShake .055s steps(2, end) infinite;
         }
 
         @keyframes dreadGatewayEntry {
@@ -712,85 +703,85 @@
                 filter: brightness(1);
             }
 
-            18% {
-                transform: translate(50%, 50%) scale(.88);
-                filter: brightness(1.15);
+            14% {
+                transform: translate(50%, 50%) scale(.92);
             }
 
-            27% {
-                transform: translate(50%, 50%) scale(1.08);
-                filter: brightness(1.3);
+            25% {
+                transform: translate(50%, 50%) scale(1.05);
+                filter: brightness(1.15);
             }
 
             38% {
-                transform: translate(50%, 50%) scale(1.55);
-                filter: brightness(1.45);
+                transform: translate(50%, 50%) scale(1.35);
+                filter: brightness(1.3);
             }
 
             50% {
-                width: 75vw;
-                height: 100vh;
-                transform: translate(50%, 50%) scale(1.45);
-                filter: brightness(1.25);
+                transform: translate(50%, 50%) scale(1.8);
+                filter: brightness(1.4);
             }
 
-            58% {
-                width: 115vw;
-                height: 125vh;
-                transform: translate(50%, 50%) scale(1.35);
+            60% {
+                width: 100vw;
+                height: 100vh;
+                transform: translate(50%, 50%) scale(2.1);
                 filter: brightness(1.15);
             }
 
-            /* Fullscreen is reached here. */
-            62% {
+            68% {
                 width: 150vw;
                 height: 150vh;
-                transform: translate(50%, 50%) scale(1.45);
-                filter: brightness(1);
+                transform: translate(50%, 50%) scale(2.55);
+                filter: brightness(.95);
             }
 
-            72% {
-                width: 210vw;
-                height: 210vh;
-                transform: translate(50%, 50%) scale(1.8);
-                filter: brightness(.75) contrast(1.5);
-            }
-
-            85% {
-                width: 300vw;
-                height: 300vh;
-                transform: translate(50%, 50%) scale(2.5);
-                filter: brightness(.45) contrast(2);
+            78% {
+                width: 220vw;
+                height: 220vh;
+                transform: translate(50%, 50%) scale(3.1);
+                filter: brightness(.7) contrast(1.5);
             }
 
             100% {
-                width: 450vw;
-                height: 450vh;
-                transform: translate(50%, 50%) scale(3.8);
-                filter: brightness(.3) contrast(2.5);
+                width: 500vw;
+                height: 500vh;
+                transform: translate(50%, 50%) scale(4.8);
+                filter: brightness(.25) contrast(3);
             }
         }
 
         @keyframes dreadFrameEntry {
             0%, 48% {
                 border-radius: 52% 52% 15px 15px / 30% 30% 12px 12px;
-                box-shadow: 0 0 0 3px #300008, 0 0 8px #ff003c, 0 0 18px rgba(255,0,50,.45);
+                box-shadow:
+                    0 0 0 3px #300008,
+                    0 0 8px #ff003c,
+                    0 0 18px rgba(255,0,50,.45);
             }
 
-            58% {
+            60% {
                 border-radius: 25%;
-                box-shadow: 0 0 0 5px #300008, 0 0 25px #ff003c, 0 0 70px rgba(255,0,50,.65);
+                box-shadow:
+                    0 0 0 6px #300008,
+                    0 0 30px #ff003c,
+                    0 0 80px rgba(255,0,50,.75);
             }
 
-            65% {
+            72% {
                 border-radius: 5%;
-                box-shadow: 0 0 0 8px #180003, 0 0 45px #ff003c, 0 0 100px rgba(255,0,50,.5);
+                box-shadow:
+                    0 0 0 10px #180003,
+                    0 0 55px #ff003c,
+                    0 0 120px rgba(255,0,50,.65);
             }
 
-            75%, 100% {
+            100% {
                 border-radius: 0;
                 border-color: #050001;
-                box-shadow: 0 0 0 10px #120001, 0 0 80px rgba(255,0,50,.7);
+                box-shadow:
+                    0 0 0 14px #120001,
+                    0 0 100px rgba(255,0,50,.55);
             }
         }
 
@@ -801,88 +792,49 @@
             }
 
             55% {
-                transform: scale(1.5) translate(-2%,1%);
-                filter: contrast(1.5);
+                transform: scale(1.7) translate(-3%,2%);
+                filter: contrast(1.5) saturate(1.2);
             }
 
-            65% {
-                transform: scale(2.8) translate(3%,-2%);
-                filter: contrast(2) brightness(1.15);
+            68% {
+                transform: scale(3.8) translate(4%,-3%);
+                filter: contrast(2.5) brightness(1.15) saturate(1.5);
             }
 
-            78% {
-                transform: scale(5.5) translate(-4%,3%);
-                filter: contrast(2.5) brightness(.75) saturate(1.5);
+            82% {
+                transform: scale(7.5) translate(-5%,3%);
+                filter: contrast(4) brightness(.7) saturate(1.8);
             }
 
             100% {
-                transform: scale(12) translate(0,0);
-                filter: contrast(3) brightness(.35) saturate(1.7);
+                transform: scale(16) translate(0,0);
+                filter: contrast(5) brightness(.3) saturate(2);
             }
         }
 
         @keyframes dreadEnergyEntry {
             0%, 45% { opacity: .55; transform: scale(1); }
-            55% { opacity: 1; transform: scale(1.2); }
-            65% { opacity: .7; transform: scale(2); }
-            78% { opacity: .9; transform: scale(5); }
-            100% { opacity: 0; transform: scale(12); }
+            55% { opacity: 1; transform: scale(1.3); }
+            68% { opacity: .75; transform: scale(2.5); }
+            82% { opacity: .45; transform: scale(6); }
+            100% { opacity: 0; transform: scale(14); }
         }
 
         @keyframes dreadParticlesEntry {
             0% { opacity: 1; transform: scale(1); }
             100% {
                 opacity: 0;
-                transform: scale(7) translate(calc((50vw - 50%) * 1.2), calc((50vh - 50%) * 1.2));
+                transform: scale(9) translate(0, -10px);
             }
         }
 
-        @keyframes dreadRedFullscreen {
-            /* Completely invisible during the normal approach. */
-            0%, 61% {
-                opacity: 0;
-                transform: scale(.15);
-            }
-
-            /* Red/black effect begins only after fullscreen coverage. */
-            64% {
-                opacity: .95;
-                transform: scale(1);
-                background:
-                    radial-gradient(circle at 50% 50%, #ff003c 0%, #300008 18%, #050001 62%, #000 100%);
-                filter: contrast(3) saturate(2);
-            }
-
-            70% {
-                opacity: 1;
-                transform: scale(1.25);
-                filter: contrast(5) saturate(2.5);
-            }
-
-            78% {
-                opacity: 1;
-                transform: scale(1.8);
-                background:
-                    radial-gradient(ellipse at 20% 30%, #ff1744 0%, #300008 9%, transparent 25%),
-                    radial-gradient(ellipse at 70% 25%, #ff003c 0%, #180003 11%, transparent 27%),
-                    radial-gradient(ellipse at 45% 65%, #ff174f 0%, #220005 10%, transparent 28%),
-                    #050001;
-                filter: contrast(7) saturate(3);
-            }
-
-            88% {
-                opacity: 1;
-                transform: scale(2.5);
-                filter: brightness(.45) contrast(6) saturate(2.5);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(4);
-                background:
-                    radial-gradient(ellipse at center, #260006 0%, #0b0002 42%, #000 80%);
-                filter: brightness(.3) contrast(4) saturate(2);
-            }
+        @keyframes dreadScreenShake {
+            0%   { transform: translate(0, 0); }
+            20%  { transform: translate(-7px, 4px); }
+            40%  { transform: translate(6px, -5px); }
+            60%  { transform: translate(-4px, -7px); }
+            80%  { transform: translate(8px, 3px); }
+            100% { transform: translate(0, 0); }
         }
 
         /* =========================
@@ -1032,6 +984,13 @@
         ></div>
 
     </div>
+
+
+    <!-- =========================
+         DREAD JUMPSCARE CANVAS
+         ========================= -->
+
+    <canvas id="dreadCanvas"></canvas>
 
 
     <!-- =========================
@@ -1485,13 +1444,492 @@
            GATEWAY ENTRY
            ========================= */
 
-        function enterGateway() {
+        const dreadCanvas =
+            document.getElementById("dreadCanvas");
 
+        const dreadCtx =
+            dreadCanvas.getContext("2d", {
+                alpha: true
+            });
+
+        let dreadRunning = false;
+        let dreadStartTime = 0;
+        let dreadAnimationFrame = null;
+
+        function resizeDreadCanvas() {
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            dreadCanvas.width =
+                Math.floor(window.innerWidth * dpr);
+
+            dreadCanvas.height =
+                Math.floor(window.innerHeight * dpr);
+
+            dreadCtx.setTransform(
+                dpr, 0, 0, dpr, 0, 0
+            );
+        }
+
+        resizeDreadCanvas();
+
+        window.addEventListener(
+            "resize",
+            resizeDreadCanvas
+        );
+
+        /*
+           DREAD-STYLE VISUALS
+           --------------------
+           The fullscreen effect is built from three things:
+           1. stretched concentric circles / ovals
+           2. rapidly shifting geometric patterns
+           3. chunky red/black TV static
+        */
+
+        const dreadNoiseCanvas =
+            document.createElement("canvas");
+
+        const dreadNoiseCtx =
+            dreadNoiseCanvas.getContext("2d");
+
+        const DREAD_NOISE_W = 96;
+        const DREAD_NOISE_H = 54;
+
+        dreadNoiseCanvas.width = DREAD_NOISE_W;
+        dreadNoiseCanvas.height = DREAD_NOISE_H;
+
+        function randomNoiseFrame(elapsed, alpha = 1) {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            const image =
+                dreadNoiseCtx.createImageData(
+                    DREAD_NOISE_W,
+                    DREAD_NOISE_H
+                );
+
+            const data = image.data;
+            const phase = Math.floor(elapsed * 48);
+
+            for (let i = 0; i < data.length; i += 4) {
+                const pixel = i / 4;
+                const x = pixel % DREAD_NOISE_W;
+                const y = Math.floor(pixel / DREAD_NOISE_W);
+
+                const random = Math.random();
+                const scan =
+                    Math.sin(
+                        y * 1.35 +
+                        phase * 1.8 +
+                        Math.sin(x * .15)
+                    );
+
+                let value;
+
+                if (random < .48) {
+                    value = 0;
+                } else if (random > .90) {
+                    value = 255;
+                } else if (scan > .15) {
+                    value = 100;
+                } else {
+                    value = 22;
+                }
+
+                /* Chunky horizontal interference */
+                if (
+                    ((y + phase) % 11) < 2 &&
+                    Math.random() < .75
+                ) {
+                    value = Math.random() < .5 ? 0 : 255;
+                }
+
+                /* Red instead of white */
+                data[i] = Math.min(255, Math.round(value * 1.05));
+                data[i + 1] = Math.round(value * .025);
+                data[i + 2] = Math.round(value * .04);
+                data[i + 3] = Math.round(255 * alpha);
+            }
+
+            dreadNoiseCtx.putImageData(image, 0, 0);
+
+            dreadCtx.imageSmoothingEnabled = false;
+
+            const stretchX =
+                w * (1.04 + Math.random() * .18);
+
+            const stretchY =
+                h * (1.04 + Math.random() * .12);
+
+            const x =
+                (w - stretchX) / 2 +
+                (Math.random() - .5) * 30;
+
+            const y =
+                (h - stretchY) / 2 +
+                (Math.random() - .5) * 24;
+
+            dreadCtx.drawImage(
+                dreadNoiseCanvas,
+                x,
+                y,
+                stretchX,
+                stretchY
+            );
+        }
+
+        function drawStretchedCircles(elapsed, intensity = 1) {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            const cx =
+                w / 2 +
+                Math.sin(elapsed * 8.5) * w * .025;
+
+            const cy =
+                h / 2 +
+                Math.cos(elapsed * 7.2) * h * .02;
+
+            dreadCtx.save();
+
+            /* Make the circles extremely wide like stretched TV rings. */
+            dreadCtx.translate(cx, cy);
+            dreadCtx.scale(
+                1 + Math.sin(elapsed * 11) * .18,
+                .42 + Math.sin(elapsed * 8) * .08
+            );
+
+            const base =
+                Math.max(w, h) * .08;
+
+            const spacing =
+                Math.max(w, h) * .055;
+
+            const count =
+                Math.ceil(Math.max(w, h) / spacing) + 5;
+
+            for (let i = count; i >= 0; i--) {
+                const radius =
+                    base +
+                    i * spacing +
+                    ((elapsed * 420) % spacing);
+
+                const wobble =
+                    Math.sin(
+                        elapsed * 10 + i * .8
+                    ) * 9;
+
+                const alpha =
+                    Math.max(
+                        0,
+                        (.58 - i * .018) * intensity
+                    );
+
+                if (alpha <= 0) {
+                    continue;
+                }
+
+                dreadCtx.lineWidth =
+                    Math.max(2, 7 - i * .08);
+
+                dreadCtx.strokeStyle =
+                    i % 2 === 0
+                        ? `rgba(255,0,38,${alpha})`
+                        : `rgba(0,0,0,${Math.min(.92, alpha + .18)})`;
+
+                dreadCtx.beginPath();
+                dreadCtx.ellipse(
+                    wobble,
+                    0,
+                    radius,
+                    radius * (.72 + Math.sin(i * .9) * .08),
+                    0,
+                    0,
+                    Math.PI * 2
+                );
+                dreadCtx.stroke();
+            }
+
+            dreadCtx.restore();
+        }
+
+        function drawPatternBurst(elapsed, intensity = 1) {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const cx = w / 2;
+            const cy = h / 2;
+
+            dreadCtx.save();
+
+            const rotation =
+                elapsed * 1.7 +
+                Math.sin(elapsed * 9) * .15;
+
+            dreadCtx.translate(cx, cy);
+            dreadCtx.rotate(rotation);
+
+            /* Long wedges / rays */
+            const rayCount = 18;
+            const maxR = Math.max(w, h) * 1.5;
+
+            for (let i = 0; i < rayCount; i++) {
+                const angle =
+                    (i / rayCount) * Math.PI * 2;
+
+                const width =
+                    .035 +
+                    Math.sin(elapsed * 14 + i) * .018;
+
+                dreadCtx.beginPath();
+                dreadCtx.moveTo(
+                    Math.cos(angle - width) * 20,
+                    Math.sin(angle - width) * 20
+                );
+                dreadCtx.lineTo(
+                    Math.cos(angle - width) * maxR,
+                    Math.sin(angle - width) * maxR
+                );
+                dreadCtx.lineTo(
+                    Math.cos(angle + width) * maxR,
+                    Math.sin(angle + width) * maxR
+                );
+                dreadCtx.closePath();
+
+                dreadCtx.fillStyle =
+                    i % 2 === 0
+                        ? `rgba(255,0,35,${.11 * intensity})`
+                        : `rgba(0,0,0,${.20 * intensity})`;
+
+                dreadCtx.fill();
+            }
+
+            /* Square-ish rings over the radial pattern */
+            for (let i = 0; i < 9; i++) {
+                const size =
+                    Math.max(w, h) * (.12 + i * .13) +
+                    Math.sin(elapsed * 12 + i) * 30;
+
+                dreadCtx.strokeStyle =
+                    i % 2 === 0
+                        ? `rgba(255,0,40,${.22 * intensity})`
+                        : `rgba(0,0,0,${.38 * intensity})`;
+
+                dreadCtx.lineWidth =
+                    3 + Math.sin(elapsed * 18 + i) * 1.5;
+
+                dreadCtx.strokeRect(
+                    -size,
+                    -size * .68,
+                    size * 2,
+                    size * 1.36
+                );
+            }
+
+            dreadCtx.restore();
+        }
+
+        function drawDreadFrame(timestamp) {
+            if (!dreadRunning) {
+                return;
+            }
+
+            const elapsed =
+                (timestamp - dreadStartTime) / 1000;
+
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            dreadCtx.clearRect(0, 0, w, h);
+
+            /*
+               The effect now ramps through circles -> patterns -> static,
+               then hits a hard red flash before collapsing into darkness.
+            */
+            if (elapsed < .12) {
+                dreadCtx.fillStyle = "rgba(0,0,0,0)";
+                dreadCtx.fillRect(0, 0, w, h);
+            }
+            else if (elapsed < .48) {
+                dreadCtx.fillStyle = "#080001";
+                dreadCtx.fillRect(0, 0, w, h);
+
+                drawStretchedCircles(
+                    elapsed,
+                    1.15
+                );
+
+                if (Math.random() < .45) {
+                    randomNoiseFrame(
+                        elapsed,
+                        .42
+                    );
+                }
+            }
+            else if (elapsed < .82) {
+                dreadCtx.fillStyle =
+                    Math.random() < .28
+                        ? "#ff001f"
+                        : "#050001";
+
+                dreadCtx.fillRect(0, 0, w, h);
+
+                drawPatternBurst(
+                    elapsed,
+                    1.15
+                );
+
+                drawStretchedCircles(
+                    elapsed * 1.35,
+                    .9
+                );
+
+                if (Math.random() < .7) {
+                    randomNoiseFrame(
+                        elapsed * 1.7,
+                        .72
+                    );
+                }
+            }
+            else if (elapsed < 1.05) {
+                /* The nasty full-screen hit: circles + static + red strobe. */
+                const flash =
+                    Math.floor(elapsed * 20) % 2 === 0;
+
+                dreadCtx.fillStyle =
+                    flash
+                        ? "#ff002d"
+                        : "#000000";
+
+                dreadCtx.fillRect(0, 0, w, h);
+
+                drawStretchedCircles(
+                    elapsed * 2.2,
+                    1.35
+                );
+
+                drawPatternBurst(
+                    elapsed * 2,
+                    1.25
+                );
+
+                randomNoiseFrame(
+                    elapsed * 2.4,
+                    .72
+                );
+            }
+            else if (elapsed < 1.48) {
+                dreadCtx.fillStyle = "#0d0002";
+                dreadCtx.fillRect(0, 0, w, h);
+
+                /* Reverse the pattern so it feels like the screen is collapsing. */
+                drawStretchedCircles(
+                    -elapsed * 1.7,
+                    1.0
+                );
+
+                drawPatternBurst(
+                    -elapsed * 1.2,
+                    .8
+                );
+
+                randomNoiseFrame(
+                    elapsed * 2.1,
+                    .55
+                );
+
+                if (Math.random() < .55) {
+                    dreadCtx.fillStyle =
+                        "rgba(255,0,30,.72)";
+
+                    const tearY =
+                        Math.random() * h;
+
+                    dreadCtx.fillRect(
+                        0,
+                        tearY,
+                        w,
+                        Math.random() * 18 + 2
+                    );
+                }
+            }
+            else {
+                /* End in near-black with a few dying red rings. */
+                dreadCtx.fillStyle = "#030001";
+                dreadCtx.fillRect(0, 0, w, h);
+
+                const fade =
+                    Math.max(
+                        0,
+                        1 - (elapsed - 1.48) / .22
+                    );
+
+                drawStretchedCircles(
+                    elapsed * .8,
+                    fade * .45
+                );
+
+                if (Math.random() < .28) {
+                    randomNoiseFrame(
+                        elapsed,
+                        fade * .3
+                    );
+                }
+            }
+
+            /* Violent camera movement during the main hit. */
+            if (elapsed > .35 && elapsed < 1.48) {
+                dreadCanvas.style.transform =
+                    `translate(${(Math.random() - .5) * 22}px, ${(Math.random() - .5) * 18}px) scale(${1 + Math.random() * .025})`;
+            } else {
+                dreadCanvas.style.transform =
+                    "translate(0,0)";
+            }
+
+            if (elapsed < 1.7) {
+                dreadAnimationFrame =
+                    requestAnimationFrame(
+                        drawDreadFrame
+                    );
+            } else {
+                dreadRunning = false;
+                dreadCanvas.style.display = "none";
+                dreadCanvas.style.transform = "translate(0,0)";
+                document.body.classList.remove("dreadShaking");
+            }
+        }
+
+        function startDreadEffect() {
+            if (dreadRunning) {
+                return;
+            }
+
+            resizeDreadCanvas();
+
+            dreadCanvas.style.display =
+                "block";
+
+            dreadRunning = true;
+            dreadStartTime =
+                performance.now();
+
+            document.body.classList.add(
+                "dreadShaking"
+            );
+
+            dreadAnimationFrame =
+                requestAnimationFrame(
+                    drawDreadFrame
+                );
+        }
+
+        function enterGateway() {
             const gateway =
                 document.getElementById("gateway");
 
             if (
-                gateway.classList.contains("gatewayEntering")
+                gateway.classList.contains(
+                    "gatewayEntering"
+                )
             ) {
                 return;
             }
@@ -1500,12 +1938,19 @@
                 "gatewayEntering"
             );
 
-            setTimeout(() => {
+            /*
+               The gateway has already reached the viewer by this point.
+               THEN the actual jumpscare layer appears.
+            */
+            setTimeout(
+                startDreadEffect,
+                1030
+            );
 
+            setTimeout(() => {
                 window.location.href =
                     "random-ahh-art.html";
-
-            }, 1750);
+            }, 2780);
         }
 
 
