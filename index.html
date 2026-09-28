@@ -48,7 +48,7 @@
         }
 
         /* =========================
-           THREE.JS CRYSTAL
+           THREE.JS CANVAS
            ========================= */
 
         #crystalCanvas {
@@ -68,15 +68,21 @@
         #page {
             position: relative;
             z-index: 10;
+
             width: 100%;
             margin: 0;
-            padding: 30px 20px 100px;
+
+            padding:
+                30px 20px 100px;
         }
 
         h1 {
             margin: 0;
+
             color: #00ffff;
+
             font-size: 42px;
+
             text-align: left;
 
             text-shadow:
@@ -86,6 +92,7 @@
 
         h2 {
             color: #00ffff;
+
             margin-top: 0;
 
             text-shadow:
@@ -96,17 +103,18 @@
             position: relative;
             z-index: 20;
 
-            background:
-                rgba(0, 0, 0, 0.22);
+            background: rgba(0, 0, 0, 0.22);
 
             border:
                 1px solid rgba(0, 255, 255, 0.16);
 
             border-radius: 8px;
 
-            padding: 12px 16px;
+            padding:
+                12px 16px;
 
-            margin: 14px 0;
+            margin:
+                14px 0;
 
             box-shadow:
                 0 0 8px rgba(0, 255, 255, 0.04);
@@ -145,6 +153,7 @@
 
         .funFactBox {
             position: relative;
+
             z-index: 90000000000;
 
             text-align: left;
@@ -160,13 +169,15 @@
 
         #funFact {
             position: relative;
+
             z-index: 90000000000;
 
             max-width: 70vw;
 
             min-height: 32px;
 
-            margin: 8px 0 15px 25px;
+            margin:
+                8px 0 15px 25px;
 
             color: #ffff00;
 
@@ -174,11 +185,13 @@
                 clamp(13px, 1.4vw, 18px);
 
             font-weight: bold;
+
             font-style: italic;
 
             display: inline-block;
 
-            transform-origin: center center;
+            transform-origin:
+                center center;
 
             text-shadow:
                 0 0 8px #ffff00,
@@ -195,24 +208,26 @@
         @keyframes funFactPulse {
             0% {
                 transform:
-                    rotate(-20deg)
+                    rotate(-30deg)
                     scale(0.88);
             }
 
             100% {
                 transform:
-                    rotate(-20deg)
+                    rotate(-30deg)
                     scale(1.05);
             }
         }
 
         #rerollFact {
             position: relative;
+
             z-index: 90000000000;
 
             margin-top: 8px;
 
-            padding: 9px 16px;
+            padding:
+                9px 16px;
 
             background:
                 rgba(0, 0, 0, 0.8);
@@ -227,6 +242,7 @@
             cursor: pointer;
 
             font-family: inherit;
+
             font-size: 15px;
 
             transition:
@@ -238,16 +254,19 @@
 
         #rerollFact:hover {
             background: #00ffff;
+
             color: #000;
 
             box-shadow:
                 0 0 12px #00ffff;
 
-            transform: scale(1.04);
+            transform:
+                scale(1.04);
         }
 
         #rerollFact:active {
-            transform: scale(0.97);
+            transform:
+                scale(0.97);
         }
 
         /* =========================
@@ -256,11 +275,13 @@
 
         #musicButton {
             position: relative;
+
             z-index: 30;
 
             margin-top: 8px;
 
-            padding: 9px 16px;
+            padding:
+                9px 16px;
 
             background:
                 rgba(0, 0, 0, 0.8);
@@ -275,6 +296,7 @@
             cursor: pointer;
 
             font-family: inherit;
+
             font-size: 15px;
 
             transition:
@@ -286,16 +308,19 @@
 
         #musicButton:hover {
             background: #00ffff;
+
             color: #000;
 
             box-shadow:
                 0 0 12px #00ffff;
 
-            transform: scale(1.04);
+            transform:
+                scale(1.04);
         }
 
         #musicButton:active {
-            transform: scale(0.97);
+            transform:
+                scale(0.97);
         }
 
         /* =========================
@@ -304,9 +329,11 @@
 
         .downArrow {
             position: relative;
+
             z-index: 20;
 
-            margin: 35px 0;
+            margin:
+                35px 0;
 
             color: #00ffff;
 
@@ -326,12 +353,16 @@
         @keyframes arrowPulse {
             0%,
             100% {
-                transform: translateY(0);
+                transform:
+                    translateY(0);
+
                 opacity: 0.65;
             }
 
             50% {
-                transform: translateY(8px);
+                transform:
+                    translateY(8px);
+
                 opacity: 1;
             }
         }
@@ -352,10 +383,10 @@
             z-index: 999999;
 
             pointer-events: auto;
-
             cursor: pointer;
 
-            transform-origin: center center;
+            transform-origin:
+                center bottom;
 
             animation:
                 gatewayFloat
@@ -392,144 +423,6 @@
                 infinite
                 alternate;
         }
-
-        /* =========================
-           JUMPSCARE TAKEOVER
-           ========================= */
-
-        #gateway.gatewayEntering {
-            right: 50%;
-            bottom: 50%;
-
-            width: 100px;
-            height: 130px;
-
-            transform:
-                translate(50%, 50%)
-                scale(1);
-
-            animation:
-                gatewayJump
-                1.35s
-                cubic-bezier(.05,.7,.1,1)
-                forwards;
-
-            cursor: default;
-        }
-
-        #gateway.gatewayEntering::before {
-            animation:
-                gatewayShockwave
-                1.35s
-                ease-out
-                forwards;
-        }
-
-        @keyframes gatewayJump {
-
-            /* snap into middle */
-
-            0% {
-                right: 22px;
-                bottom: 20px;
-
-                width: 185px;
-                height: 245px;
-
-                transform:
-                    translate(0, 0)
-                    scale(1);
-
-                filter:
-                    brightness(1);
-            }
-
-            /* VERY FAST center movement */
-
-            14% {
-                right: 50%;
-                bottom: 50%;
-
-                transform:
-                    translate(50%, 50%)
-                    scale(1.05);
-
-                filter:
-                    brightness(1.8);
-            }
-
-            /* brief "holy shit" pause */
-
-            20% {
-                right: 50%;
-                bottom: 50%;
-
-                transform:
-                    translate(50%, 50%)
-                    scale(1.08);
-
-                filter:
-                    brightness(2.5);
-            }
-
-            /* EXPLODE */
-
-            42% {
-                width: 100vw;
-                height: 100vh;
-
-                transform:
-                    translate(50%, 50%)
-                    scale(1.25);
-
-                filter:
-                    brightness(2);
-            }
-
-            /* rush toward viewer */
-
-            62% {
-                width: 120vw;
-                height: 120vh;
-
-                transform:
-                    translate(50%, 50%)
-                    scale(1.8);
-
-                filter:
-                    brightness(1.5);
-            }
-
-            /* completely engulf screen */
-
-            82% {
-                width: 180vw;
-                height: 180vh;
-
-                transform:
-                    translate(50%, 50%)
-                    scale(2.5);
-
-                filter:
-                    brightness(1);
-            }
-
-            100% {
-                width: 260vw;
-                height: 260vh;
-
-                transform:
-                    translate(50%, 50%)
-                    scale(3.5);
-
-                filter:
-                    brightness(0.8);
-            }
-        }
-
-        /* =========================
-           GATEWAY FRAME
-           ========================= */
 
         .gatewayFrame {
             position: absolute;
@@ -593,45 +486,6 @@
                 alternate;
         }
 
-        /* When it takes over, make the texture rush outward */
-
-        #gateway.gatewayEntering
-        .gatewayInside img {
-            animation:
-                gatewayRush
-                1.35s
-                cubic-bezier(.05,.7,.1,1)
-                forwards;
-        }
-
-        @keyframes gatewayRush {
-
-            0% {
-                transform:
-                    scale(1);
-            }
-
-            20% {
-                transform:
-                    scale(1.05);
-            }
-
-            45% {
-                transform:
-                    scale(1.7);
-            }
-
-            70% {
-                transform:
-                    scale(4);
-            }
-
-            100% {
-                transform:
-                    scale(10);
-            }
-        }
-
         .gatewayEnergy {
             position: absolute;
 
@@ -658,49 +512,14 @@
                 alternate;
         }
 
-        #gateway.gatewayEntering
-        .gatewayEnergy {
-            animation:
-                energyTakeover
-                1.35s
-                ease-in
-                forwards;
-        }
-
-        @keyframes energyTakeover {
-
-            0% {
-                opacity: .6;
-                transform: scale(1);
-            }
-
-            25% {
-                opacity: 1;
-                transform: scale(1.08);
-            }
-
-            55% {
-                opacity: 1;
-                transform: scale(2);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(8);
-            }
-        }
-
-        /* =========================
-           PARTICLES
-           ========================= */
-
         .gatewayParticle {
             position: absolute;
 
             width: 5px;
             height: 5px;
 
-            background: #ff174f;
+            background:
+                #ff174f;
 
             box-shadow:
                 0 0 8px #ff174f;
@@ -712,41 +531,6 @@
                 var(--time)
                 linear
                 infinite;
-        }
-
-        #gateway.gatewayEntering
-        .gatewayParticle {
-            animation:
-                particleTakeover
-                .8s
-                ease-in
-                forwards;
-        }
-
-        @keyframes particleTakeover {
-
-            0% {
-                transform:
-                    translate(0, 0)
-                    scale(1);
-
-                opacity: 1;
-            }
-
-            100% {
-                transform:
-                    translate(
-                        calc(
-                            (50vw - 50%)
-                        ),
-                        calc(
-                            (50vh - 50%)
-                        )
-                    )
-                    scale(8);
-
-                opacity: 0;
-            }
         }
 
         .gatewayParticle:nth-child(2) {
@@ -778,7 +562,6 @@
         }
 
         @keyframes gatewayFloat {
-
             0%,
             100% {
                 transform:
@@ -792,12 +575,11 @@
         }
 
         @keyframes gatewayGlow {
-
             from {
-                opacity: .55;
+                opacity: 0.55;
 
                 transform:
-                    scale(.95);
+                    scale(0.95);
             }
 
             to {
@@ -809,7 +591,6 @@
         }
 
         @keyframes gatewayTexture {
-
             0% {
                 transform:
                     scale(1)
@@ -830,12 +611,11 @@
         }
 
         @keyframes gatewayEnergy {
-
             from {
-                opacity: .55;
+                opacity: 0.55;
 
                 transform:
-                    scale(.98);
+                    scale(0.98);
             }
 
             to {
@@ -847,7 +627,6 @@
         }
 
         @keyframes gatewayParticle {
-
             0% {
                 transform:
                     translate(0, 25px);
@@ -867,38 +646,242 @@
             }
         }
 
-        @keyframes gatewayShockwave {
+        /* =========================
+           DREAD-STYLE GATEWAY ENTRY
+           ========================= */
 
+        #gateway.gatewayEntering {
+            right: 50%;
+            bottom: 50%;
+            width: 185px;
+            height: 245px;
+            animation: dreadGatewayEntry 1.7s cubic-bezier(.08,.82,.12,1) forwards;
+            cursor: default;
+        }
+
+        #gateway.gatewayEntering .gatewayFrame {
+            animation: dreadFrameEntry 1.7s cubic-bezier(.08,.82,.12,1) forwards;
+        }
+
+        #gateway.gatewayEntering .gatewayInside img {
+            animation: dreadTextureEntry 1.7s cubic-bezier(.08,.82,.12,1) forwards;
+        }
+
+        #gateway.gatewayEntering .gatewayEnergy {
+            animation: dreadEnergyEntry 1.7s ease-out forwards;
+        }
+
+        #gateway.gatewayEntering .gatewayParticle {
+            animation: dreadParticlesEntry .75s ease-out forwards;
+        }
+
+        /* The red/black effect deliberately stays invisible until the
+           gateway has reached fullscreen. The first part is the normal
+           gateway moving toward the viewer. */
+        #gateway.gatewayEntering::after {
+            content: "";
+            position: fixed;
+            inset: -10vw;
+            z-index: 999999999;
+            pointer-events: none;
+            opacity: 0;
+
+            background:
+                radial-gradient(ellipse at 20% 30%, #ff1744 0%, #300008 10%, transparent 25%),
+                radial-gradient(ellipse at 70% 25%, #ff003c 0%, #180003 12%, transparent 27%),
+                radial-gradient(ellipse at 45% 65%, #ff174f 0%, #220005 11%, transparent 28%),
+                radial-gradient(ellipse at 80% 75%, #ff003c 0%, #100002 10%, transparent 25%),
+                radial-gradient(ellipse at 15% 80%, #d90032 0%, #160002 11%, transparent 27%),
+                #050001;
+
+            background-size:
+                47px 39px,
+                63px 51px,
+                41px 57px,
+                58px 43px,
+                52px 61px,
+                100% 100%;
+
+            filter: contrast(4) saturate(1.8);
+            animation: dreadRedFullscreen 1.7s steps(1, end) forwards;
+        }
+
+        @keyframes dreadGatewayEntry {
             0% {
-                inset: -18px;
-                opacity: .5;
-
-                filter:
-                    blur(8px);
+                transform: translate(50%, 50%) scale(1);
+                filter: brightness(1);
             }
 
-            25% {
-                inset: -80px;
-                opacity: 1;
-
-                filter:
-                    blur(15px);
+            18% {
+                transform: translate(50%, 50%) scale(.88);
+                filter: brightness(1.15);
             }
 
-            60% {
-                inset: -300px;
-                opacity: .9;
+            27% {
+                transform: translate(50%, 50%) scale(1.08);
+                filter: brightness(1.3);
+            }
 
-                filter:
-                    blur(35px);
+            38% {
+                transform: translate(50%, 50%) scale(1.55);
+                filter: brightness(1.45);
+            }
+
+            50% {
+                width: 75vw;
+                height: 100vh;
+                transform: translate(50%, 50%) scale(1.45);
+                filter: brightness(1.25);
+            }
+
+            58% {
+                width: 115vw;
+                height: 125vh;
+                transform: translate(50%, 50%) scale(1.35);
+                filter: brightness(1.15);
+            }
+
+            /* Fullscreen is reached here. */
+            62% {
+                width: 150vw;
+                height: 150vh;
+                transform: translate(50%, 50%) scale(1.45);
+                filter: brightness(1);
+            }
+
+            72% {
+                width: 210vw;
+                height: 210vh;
+                transform: translate(50%, 50%) scale(1.8);
+                filter: brightness(.75) contrast(1.5);
+            }
+
+            85% {
+                width: 300vw;
+                height: 300vh;
+                transform: translate(50%, 50%) scale(2.5);
+                filter: brightness(.45) contrast(2);
             }
 
             100% {
-                inset: -700px;
-                opacity: 0;
+                width: 450vw;
+                height: 450vh;
+                transform: translate(50%, 50%) scale(3.8);
+                filter: brightness(.3) contrast(2.5);
+            }
+        }
 
-                filter:
-                    blur(80px);
+        @keyframes dreadFrameEntry {
+            0%, 48% {
+                border-radius: 52% 52% 15px 15px / 30% 30% 12px 12px;
+                box-shadow: 0 0 0 3px #300008, 0 0 8px #ff003c, 0 0 18px rgba(255,0,50,.45);
+            }
+
+            58% {
+                border-radius: 25%;
+                box-shadow: 0 0 0 5px #300008, 0 0 25px #ff003c, 0 0 70px rgba(255,0,50,.65);
+            }
+
+            65% {
+                border-radius: 5%;
+                box-shadow: 0 0 0 8px #180003, 0 0 45px #ff003c, 0 0 100px rgba(255,0,50,.5);
+            }
+
+            75%, 100% {
+                border-radius: 0;
+                border-color: #050001;
+                box-shadow: 0 0 0 10px #120001, 0 0 80px rgba(255,0,50,.7);
+            }
+        }
+
+        @keyframes dreadTextureEntry {
+            0%, 45% {
+                transform: scale(1) translate(0,0);
+                filter: none;
+            }
+
+            55% {
+                transform: scale(1.5) translate(-2%,1%);
+                filter: contrast(1.5);
+            }
+
+            65% {
+                transform: scale(2.8) translate(3%,-2%);
+                filter: contrast(2) brightness(1.15);
+            }
+
+            78% {
+                transform: scale(5.5) translate(-4%,3%);
+                filter: contrast(2.5) brightness(.75) saturate(1.5);
+            }
+
+            100% {
+                transform: scale(12) translate(0,0);
+                filter: contrast(3) brightness(.35) saturate(1.7);
+            }
+        }
+
+        @keyframes dreadEnergyEntry {
+            0%, 45% { opacity: .55; transform: scale(1); }
+            55% { opacity: 1; transform: scale(1.2); }
+            65% { opacity: .7; transform: scale(2); }
+            78% { opacity: .9; transform: scale(5); }
+            100% { opacity: 0; transform: scale(12); }
+        }
+
+        @keyframes dreadParticlesEntry {
+            0% { opacity: 1; transform: scale(1); }
+            100% {
+                opacity: 0;
+                transform: scale(7) translate(calc((50vw - 50%) * 1.2), calc((50vh - 50%) * 1.2));
+            }
+        }
+
+        @keyframes dreadRedFullscreen {
+            /* Completely invisible during the normal approach. */
+            0%, 61% {
+                opacity: 0;
+                transform: scale(.15);
+            }
+
+            /* Red/black effect begins only after fullscreen coverage. */
+            64% {
+                opacity: .95;
+                transform: scale(1);
+                background:
+                    radial-gradient(circle at 50% 50%, #ff003c 0%, #300008 18%, #050001 62%, #000 100%);
+                filter: contrast(3) saturate(2);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(1.25);
+                filter: contrast(5) saturate(2.5);
+            }
+
+            78% {
+                opacity: 1;
+                transform: scale(1.8);
+                background:
+                    radial-gradient(ellipse at 20% 30%, #ff1744 0%, #300008 9%, transparent 25%),
+                    radial-gradient(ellipse at 70% 25%, #ff003c 0%, #180003 11%, transparent 27%),
+                    radial-gradient(ellipse at 45% 65%, #ff174f 0%, #220005 10%, transparent 28%),
+                    #050001;
+                filter: contrast(7) saturate(3);
+            }
+
+            88% {
+                opacity: 1;
+                transform: scale(2.5);
+                filter: brightness(.45) contrast(6) saturate(2.5);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(4);
+                background:
+                    radial-gradient(ellipse at center, #260006 0%, #0b0002 42%, #000 80%);
+                filter: brightness(.3) contrast(4) saturate(2);
             }
         }
 
@@ -919,7 +902,8 @@
 
             text-shadow:
                 0 0 7px #b56cff,
-                0 0 14px rgba(181, 108, 255, 0.5);
+                0 0 14px
+                rgba(181, 108, 255, 0.5);
 
             word-break: break-word;
         }
@@ -1009,14 +993,10 @@
 
 
     <!-- =========================
-         CLICKABLE GATEWAY
+         GATEWAY
          ========================= -->
 
-    <div
-        id="gateway"
-        onclick="enterGateway()"
-        title="Enter the gateway"
-    >
+    <div id="gateway" onclick="enterGateway()" title="Enter the gateway">
 
         <div class="gatewayFrame">
 
@@ -1065,7 +1045,9 @@
         </h1>
 
 
-        <!-- FUN FACT -->
+        <!-- =====================
+             FUN FACT
+             ===================== -->
 
         <div class="funFactBox">
 
@@ -1085,7 +1067,9 @@
         </div>
 
 
-        <!-- MUSIC -->
+        <!-- =====================
+             MUSIC
+             ===================== -->
 
         <div class="section">
 
@@ -1109,7 +1093,9 @@
         </div>
 
 
-        <!-- ASSIGNMENTS -->
+        <!-- =====================
+             ASSIGNMENTS
+             ===================== -->
 
         <div class="section">
 
@@ -1120,121 +1106,161 @@
             <ul>
 
                 <li>
-                    <a href="t1a01-input-output-Innes.html">
+                    <a
+                        href="t1a01-input-output-Innes.html"
+                    >
                         t1a01-input-output-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a02-objects-Innes.html">
+                    <a
+                        href="t1a02-objects-Innes.html"
+                    >
                         t1a02-objects-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a03-loops-Innes.html">
+                    <a
+                        href="t1a03-loops-Innes.html"
+                    >
                         t1a03-loops-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a04-decisions-Innes.html">
+                    <a
+                        href="t1a04-decisions-Innes.html"
+                    >
                         t1a04-decisions-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a05-arrays-Innes.html">
+                    <a
+                        href="t1a05-arrays-Innes.html"
+                    >
                         t1a05-arrays-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a06-proper-and-variables-Innes.html">
+                    <a
+                        href="t1a06-proper-and-variables-Innes.html"
+                    >
                         t1a06-proper-and-variables-Innes
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a07-desicion-Innes.html">
+                    <a
+                        href="t1a07-desicion-Innes.html"
+                    >
                         t1a07-desicion-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a08-...-Innes.html">
+                    <a
+                        href="t1a08-...-Innes.html"
+                    >
                         t1a08-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a09-...-Innes.html">
+                    <a
+                        href="t1a09-...-Innes.html"
+                    >
                         t1a09-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a10-...-Innes.html">
+                    <a
+                        href="t1a10-...-Innes.html"
+                    >
                         t1a10-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a11-...-Innes.html">
+                    <a
+                        href="t1a11-...-Innes.html"
+                    >
                         t1a11-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a12-...-Innes.html">
+                    <a
+                        href="t1a12-...-Innes.html"
+                    >
                         t1a12-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a13-...-Innes.html">
+                    <a
+                        href="t1a13-...-Innes.html"
+                    >
                         t1a13-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a14-...-Innes.html">
+                    <a
+                        href="t1a14-...-Innes.html"
+                    >
                         t1a14-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a15-...-Innes.html">
+                    <a
+                        href="t1a15-...-Innes.html"
+                    >
                         t1a15-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a16-...-Innes.html">
+                    <a
+                        href="t1a16-...-Innes.html"
+                    >
                         t1a16-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a17-...-Innes.html">
+                    <a
+                        href="t1a17-...-Innes.html"
+                    >
                         t1a17-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a18-...-Innes.html">
+                    <a
+                        href="t1a18-...-Innes.html"
+                    >
                         t1a18-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a19-...-Innes.html">
+                    <a
+                        href="t1a19-...-Innes.html"
+                    >
                         t1a19-...-Innes.html
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1a20-list-Innes.html">
+                    <a
+                        href="t1a20-list-Innes.html"
+                    >
                         t1a20-list-Innes.html
                     </a>
                 </li>
@@ -1244,41 +1270,9 @@
         </div>
 
 
-        <!-- EXACTLY 30 BR TAGS -->
-
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-
-
-        <!-- OTHER PROJECTS -->
+        <!-- =====================
+             OTHER PROJECTS
+             ===================== -->
 
         <div class="section">
 
@@ -1289,19 +1283,25 @@
             <ul>
 
                 <li>
-                    <a href="https://innygr.github.io/Card-Stuff-Yes/">
+                    <a
+                        href="https://innygr.github.io/Card-Stuff-Yes/"
+                    >
                         Card Stuff Yes
                     </a>
                 </li>
 
                 <li>
-                    <a href="https://innygr.itch.io/escape-the-forsaken">
+                    <a
+                        href="https://innygr.itch.io/escape-the-forsaken"
+                    >
                         t1ax1-Escape-The-Forsaken
                     </a>
                 </li>
 
                 <li>
-                    <a href="t1ax4-crystal-Innes.html">
+                    <a
+                        href="t1ax4-crystal-Innes.html"
+                    >
                         t1ax4-crystal-Innes
                     </a>
                 </li>
@@ -1311,7 +1311,9 @@
         </div>
 
 
-        <!-- DOWN ARROW -->
+        <!-- =====================
+             DOWN ARROW
+             ===================== -->
 
         <div class="downArrow">
             |
@@ -1320,7 +1322,9 @@
         </div>
 
 
-        <!-- SECRETS -->
+        <!-- =====================
+             SECRETS
+             ===================== -->
 
         <div class="section">
 
@@ -1331,7 +1335,9 @@
             <ul>
 
                 <li>
-                    <a href="random-ahh-art.html">
+                    <a
+                        href="random-ahh-art.html"
+                    >
                         random-ahh-art.html
                     </a>
                 </li>
@@ -1341,7 +1347,9 @@
         </div>
 
 
-        <!-- SGA -->
+        <!-- =====================
+             SGA
+             ===================== -->
 
         <div class="section">
 
@@ -1364,7 +1372,7 @@
 
 
     <!-- =========================
-         FUN FACTS
+         FUN FACT SCRIPT
          ========================= -->
 
     <script src="funfacts.js"></script>
@@ -1393,6 +1401,7 @@
 
             let newFact;
 
+
             do {
 
                 newFact =
@@ -1407,7 +1416,8 @@
             );
 
 
-            currentFact = newFact;
+            currentFact =
+                newFact;
 
 
             document.getElementById(
@@ -1418,13 +1428,15 @@
 
 
         function rerollFact() {
+
             showRandomFact();
+
         }
 
 
-        /* =====================
+        /* =========================
            MUSIC
-           ===================== */
+           ========================= */
 
         const backgroundMusic =
             document.getElementById(
@@ -1464,49 +1476,36 @@
 
                 musicButton.textContent =
                     "♫ Play Music";
+
             }
         }
 
 
-        /* =====================
-           GATEWAY
-           ===================== */
+        /* =========================
+           GATEWAY ENTRY
+           ========================= */
 
         function enterGateway() {
 
             const gateway =
-                document.getElementById(
-                    "gateway"
-                );
-
+                document.getElementById("gateway");
 
             if (
-                gateway.classList.contains(
-                    "gatewayEntering"
-                )
+                gateway.classList.contains("gatewayEntering")
             ) {
                 return;
             }
 
-
             gateway.classList.add(
                 "gatewayEntering"
             );
-
-
-            /*
-             * Give the jumpscare animation
-             * enough time to completely
-             * consume the screen.
-             */
 
             setTimeout(() => {
 
                 window.location.href =
                     "random-ahh-art.html";
 
-            }, 1450);
-
+            }, 1750);
         }
 
 
@@ -1531,7 +1530,7 @@
         ) {
 
             console.error(
-                "Three.js did not load."
+                "Three.js did not load. Make sure three.min.js is in the same folder as this HTML file."
             );
 
         } else {
@@ -1586,7 +1585,7 @@
 
 
             /* =====================
-               CRYSTAL
+               CRYSTAL GROUP
                ===================== */
 
             const crystalGroup =
@@ -1594,7 +1593,7 @@
 
 
             crystalGroup.scale.setScalar(
-                0.46
+                0.48
             );
 
 
@@ -1607,59 +1606,86 @@
             );
 
 
-            /* MATERIALS */
+            /* =====================
+               MATERIALS
+               ===================== */
 
-            const frameMaterial =
+            const glassMaterial =
                 new THREE.MeshBasicMaterial({
-                    color: 0xe8ffff,
+                    color: 0xdfffff,
+
                     transparent: true,
-                    opacity: 0.9,
-                    side: THREE.DoubleSide
+
+                    opacity: 0.88,
+
+                    side:
+                        THREE.DoubleSide
                 });
 
 
-            const frameGlowMaterial =
+            const glassGlowMaterial =
                 new THREE.MeshBasicMaterial({
-                    color: 0xbfffff,
+                    color: 0x9fffff,
+
                     transparent: true,
-                    opacity: 0.3,
+
+                    opacity: 0.35,
+
                     blending:
                         THREE.AdditiveBlending,
+
                     depthWrite: false
                 });
 
 
             const crystalMaterial =
                 new THREE.MeshBasicMaterial({
-                    color: 0xb84cff,
+                    color: 0xd45cff,
+
                     transparent: true,
-                    opacity: 0.82,
-                    side: THREE.DoubleSide
+
+                    opacity: 0.88,
+
+                    side:
+                        THREE.DoubleSide
                 });
 
 
-            const crystalBrightMaterial =
+            const crystalHighlightMaterial =
                 new THREE.MeshBasicMaterial({
-                    color: 0xff4cda,
+                    color: 0xff55dd,
+
                     transparent: true,
-                    opacity: 0.92,
-                    side: THREE.DoubleSide,
+
+                    opacity: 0.9,
+
+                    side:
+                        THREE.DoubleSide,
+
                     blending:
                         THREE.AdditiveBlending
                 });
 
 
-            const baseMaterial =
+            const obsidianMaterial =
                 new THREE.MeshBasicMaterial({
-                    color: 0x09040e
+                    color: 0x100817
                 });
 
 
-            const baseTopMaterial =
+            const obsidianGlowMaterial =
                 new THREE.MeshBasicMaterial({
-                    color: 0x21102d
+                    color: 0x29133d,
+
+                    transparent: true,
+
+                    opacity: 0.9
                 });
 
+
+            /* =====================
+               BOX HELPER
+               ===================== */
 
             function addBox(
                 parent,
@@ -1699,7 +1725,9 @@
             }
 
 
-            /* BASE */
+            /* =====================
+               OBSIDIAN BASE
+               ===================== */
 
             const baseGroup =
                 new THREE.Group();
@@ -1719,10 +1747,10 @@
                 0,
                 0,
                 0,
-                1.55,
+                1.45,
                 0.25,
-                1.55,
-                baseMaterial
+                1.45,
+                obsidianMaterial
             );
 
 
@@ -1731,14 +1759,16 @@
                 0,
                 0.17,
                 0,
-                1.22,
+                1.15,
                 0.12,
-                1.22,
-                baseTopMaterial
+                1.15,
+                obsidianGlowMaterial
             );
 
 
-            /* CAGE */
+            /* =====================
+               OUTER CAGE
+               ===================== */
 
             const cage =
                 new THREE.Group();
@@ -1749,68 +1779,85 @@
             );
 
 
-            const half = 0.76;
-            const bar = 0.105;
+            const ringY = 0;
 
 
-            addBox(
-                cage,
-                0,
-                0,
-                half,
-                1.62,
-                bar,
-                bar,
-                frameMaterial
-            );
-
+            /* Front */
 
             addBox(
                 cage,
                 0,
-                0,
-                -half,
-                1.62,
-                bar,
-                bar,
-                frameMaterial
+                ringY,
+                0.72,
+                1.55,
+                0.11,
+                0.11,
+                glassMaterial
             );
 
+
+            /* Back */
 
             addBox(
                 cage,
-                -half,
                 0,
-                0,
-                bar,
-                bar,
-                1.62,
-                frameMaterial
+                ringY,
+                -0.72,
+                1.55,
+                0.11,
+                0.11,
+                glassMaterial
             );
 
+
+            /* Left */
 
             addBox(
                 cage,
-                half,
+                -0.72,
+                ringY,
                 0,
-                0,
-                bar,
-                bar,
-                1.62,
-                frameMaterial
+                0.11,
+                0.11,
+                1.55,
+                glassMaterial
             );
 
 
-            /* CORNERS */
+            /* Right */
+
+            addBox(
+                cage,
+                0.72,
+                ringY,
+                0,
+                0.11,
+                0.11,
+                1.55,
+                glassMaterial
+            );
+
+
+            /* =====================
+               CORNER SUPPORTS
+               ===================== */
+
+            const corners = [
+
+                [-0.72, 0.72],
+
+                [0.72, 0.72],
+
+                [-0.72, -0.72],
+
+                [0.72, -0.72]
+
+            ];
+
 
             for (
                 const [x, z]
-                of [
-                    [-half, -half],
-                    [-half, half],
-                    [half, -half],
-                    [half, half]
-                ]
+                of corners
             ) {
 
                 addBox(
@@ -1818,32 +1865,18 @@
                     x,
                     0,
                     z,
-                    bar,
-                    1.58,
-                    bar,
-                    frameMaterial
+                    0.11,
+                    1.55,
+                    0.11,
+                    glassMaterial
                 );
 
             }
 
 
-            /* TOP/BOTTOM */
-
-            const topPoint =
-                new THREE.Vector3(
-                    0,
-                    1.52,
-                    0
-                );
-
-
-            const bottomPoint =
-                new THREE.Vector3(
-                    0,
-                    -1.52,
-                    0
-                );
-
+            /* =====================
+               BEAM HELPER
+               ===================== */
 
             function makeBeam(
                 start,
@@ -1872,14 +1905,14 @@
                     );
 
 
-                const mesh =
+                const beam =
                     new THREE.Mesh(
                         geometry,
                         material
                     );
 
 
-                mesh.position
+                beam.position
                     .copy(start)
                     .add(end)
                     .multiplyScalar(
@@ -1887,145 +1920,200 @@
                     );
 
 
-                mesh.lookAt(
+                beam.lookAt(
                     end
                 );
 
 
-                return mesh;
+                return beam;
             }
+
+
+            /* =====================
+               TOP POINT
+               ===================== */
+
+            const topPoint =
+                new THREE.Vector3(
+                    0,
+                    1.48,
+                    0
+                );
 
 
             for (
                 const [x, z]
-                of [
-                    [-half, -half],
-                    [-half, half],
-                    [half, -half],
-                    [half, half]
-                ]
+                of corners
             ) {
 
                 cage.add(
                     makeBeam(
                         new THREE.Vector3(
                             x,
-                            0.78,
+                            0.72,
                             z
                         ),
+
                         topPoint,
-                        0.095,
-                        frameMaterial
-                    )
-                );
 
+                        0.09,
 
-                cage.add(
-                    makeBeam(
-                        new THREE.Vector3(
-                            x,
-                            -0.78,
-                            z
-                        ),
-                        bottomPoint,
-                        0.095,
-                        frameMaterial
+                        glassMaterial
                     )
                 );
 
             }
 
 
-            /* INNER CRYSTAL */
+            /* =====================
+               BOTTOM POINT
+               ===================== */
 
-            const innerCrystalGroup =
+            const bottomPoint =
+                new THREE.Vector3(
+                    0,
+                    -1.48,
+                    0
+                );
+
+
+            for (
+                const [x, z]
+                of corners
+            ) {
+
+                cage.add(
+                    makeBeam(
+                        new THREE.Vector3(
+                            x,
+                            -0.72,
+                            z
+                        ),
+
+                        bottomPoint,
+
+                        0.09,
+
+                        glassMaterial
+                    )
+                );
+
+            }
+
+
+            /* =====================
+               INNER CRYSTAL
+               ===================== */
+
+            const innerGroup =
                 new THREE.Group();
 
 
             crystalGroup.add(
-                innerCrystalGroup
+                innerGroup
             );
 
 
             const innerCrystal =
                 new THREE.Mesh(
                     new THREE.OctahedronGeometry(
-                        0.53,
+                        0.58,
                         0
                     ),
+
                     crystalMaterial
                 );
 
 
             innerCrystal.scale.set(
-                0.78,
-                1.30,
-                0.78
+                0.82,
+                1.42,
+                0.82
             );
 
 
-            innerCrystalGroup.add(
+            innerGroup.add(
                 innerCrystal
             );
 
 
-            const innerBright =
+            /* Bright inner crystal */
+
+            const innerHighlight =
                 new THREE.Mesh(
                     new THREE.OctahedronGeometry(
-                        0.30,
+                        0.34,
                         0
                     ),
-                    crystalBrightMaterial
+
+                    crystalHighlightMaterial
                 );
 
 
-            innerBright.scale.set(
-                0.78,
-                1.35,
-                0.78
+            innerHighlight.scale.set(
+                0.82,
+                1.45,
+                0.82
             );
 
 
-            innerCrystalGroup.add(
-                innerBright
+            innerGroup.add(
+                innerHighlight
             );
 
 
-            /* CORE */
+            /* Bright core */
 
             const core =
                 new THREE.Mesh(
                     new THREE.BoxGeometry(
-                        0.17,
-                        0.17,
-                        0.17
+                        0.20,
+                        0.20,
+                        0.20
                     ),
+
                     new THREE.MeshBasicMaterial({
-                        color: 0xffb4ff,
+                        color: 0xffaaff,
+
                         transparent: true,
+
                         opacity: 0.95,
+
                         blending:
                             THREE.AdditiveBlending
                     })
                 );
 
 
-            innerCrystalGroup.add(
+            innerGroup.add(
                 core
             );
 
 
-            /* GLOW */
+            /* =====================
+               SUBTLE GLOW
+               ===================== */
 
             const glow =
                 new THREE.Mesh(
                     new THREE.BoxGeometry(
-                        1.25,
-                        1.25,
-                        1.25
+                        1.65,
+                        1.65,
+                        1.65
                     ),
-                    frameGlowMaterial
+
+                    glassGlowMaterial
                 );
+
+
+            glow.scale.set(
+                0.98,
+                0.98,
+                0.98
+            );
+
+
+            glow.position.y = 0;
 
 
             crystalGroup.add(
@@ -2033,16 +2121,18 @@
             );
 
 
-            /* PARTICLES */
+            /* =====================
+               PARTICLES
+               ===================== */
 
             const particleGeometry =
                 new THREE.BufferGeometry();
 
 
-            const particleCount = 65;
+            const particleCount = 70;
 
 
-            const particlePositions =
+            const positions =
                 new Float32Array(
                     particleCount * 3
                 );
@@ -2054,21 +2144,21 @@
                 i++
             ) {
 
-                particlePositions[
+                positions[
                     i * 3
                 ] =
                     (Math.random() - 0.5) *
                     2.8;
 
 
-                particlePositions[
+                positions[
                     i * 3 + 1
                 ] =
                     (Math.random() - 0.5) *
-                    3;
+                    3.2;
 
 
-                particlePositions[
+                positions[
                     i * 3 + 2
                 ] =
                     (Math.random() - 0.5) *
@@ -2081,7 +2171,7 @@
                 "position",
 
                 new THREE.BufferAttribute(
-                    particlePositions,
+                    positions,
                     3
                 )
             );
@@ -2090,11 +2180,16 @@
             const particleMaterial =
                 new THREE.PointsMaterial({
                     color: 0xd477ff,
-                    size: 0.03,
+
+                    size: 0.035,
+
                     transparent: true,
-                    opacity: 0.6,
+
+                    opacity: 0.65,
+
                     blending:
                         THREE.AdditiveBlending,
+
                     depthWrite: false
                 });
 
@@ -2111,24 +2206,31 @@
             );
 
 
-            /* BEAM */
+            /* =====================
+               BEAM
+               ===================== */
 
             const beam =
                 new THREE.Mesh(
                     new THREE.CylinderGeometry(
-                        0.04,
-                        0.07,
-                        4.2,
+                        0.045,
+                        0.08,
+                        4.5,
                         12,
                         1,
                         true
                     ),
+
                     new THREE.MeshBasicMaterial({
                         color: 0xc66aff,
+
                         transparent: true,
-                        opacity: 0.07,
+
+                        opacity: 0.08,
+
                         blending:
                             THREE.AdditiveBlending,
+
                         depthWrite: false
                     })
                 );
@@ -2143,7 +2245,9 @@
             );
 
 
-            /* ANIMATION */
+            /* =====================
+               ANIMATION
+               ===================== */
 
             const clock =
                 new THREE.Clock();
@@ -2160,42 +2264,50 @@
                     clock.getElapsedTime();
 
 
-                crystalGroup.rotation.y =
-                    time * 0.30;
+                /* Whole crystal */
 
+                crystalGroup.rotation.y =
+                    time * 0.32;
+
+
+                /* Floating */
 
                 crystalGroup.position.y =
                     Math.sin(
-                        time * 1.3
+                        time * 1.35
                     ) * 0.08;
 
 
-                innerCrystalGroup.rotation.y =
-                    -time * 0.7;
+                /* Inner crystal */
+
+                innerGroup.rotation.y =
+                    -time * 0.65;
 
 
-                innerBright.rotation.y =
-                    time;
+                innerHighlight.rotation.y =
+                    time * 1.0;
 
+
+                /* Subtle pulse */
 
                 const pulse =
                     1 +
                     Math.sin(
-                        time * 2
-                    ) * 0.04;
+                        time * 2.2
+                    ) * 0.045;
 
 
                 innerCrystal.scale.set(
-                    0.78 * pulse,
-                    1.30 * pulse,
-                    0.78 * pulse
+                    0.82 * pulse,
+                    1.42 * pulse,
+                    0.82 * pulse
                 );
 
 
-                innerBright.scale.set(
-                    0.78 * pulse,
-                    1.35 * pulse,
-                    0.78 * pulse
+                innerHighlight.scale.set(
+                    0.82 * pulse,
+                    1.45 * pulse,
+                    0.82 * pulse
                 );
 
 
@@ -2205,17 +2317,17 @@
 
 
                 glow.material.opacity =
-                    0.16 +
+                    0.20 +
                     Math.sin(
                         time * 2
-                    ) * 0.04;
+                    ) * 0.05;
 
 
                 beam.material.opacity =
-                    0.055 +
+                    0.065 +
                     Math.sin(
                         time * 2
-                    ) * 0.02;
+                    ) * 0.025;
 
 
                 particles.rotation.y =
@@ -2233,7 +2345,9 @@
             animate();
 
 
-            /* RESIZE */
+            /* =====================
+               RESIZE
+               ===================== */
 
             window.addEventListener(
                 "resize",
