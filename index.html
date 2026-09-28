@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,162 +8,154 @@
 
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-
     <style>
-
         @font-face {
-            font-family: SGA;
-            src: url("Sga-Regular.ttf");
+            font-family: "SGA";
+            src: url("Sga-Regular.ttf") format("truetype");
         }
-
 
         * {
             box-sizing: border-box;
         }
 
-
         html,
         body {
             margin: 0;
             padding: 0;
-
             min-height: 100%;
-
             background: #000;
-            color: white;
-
+            color: #fff;
             font-family: Arial, sans-serif;
-        }
-
-
-        body {
             overflow-x: hidden;
         }
 
+        body {
+            position: relative;
+        }
 
-        /* =====================================================
-           SPACE BACKGROUND
-           ===================================================== */
+        /* =========================
+           BACKGROUND
+           ========================= */
 
         #space {
             position: fixed;
-
             inset: 0;
-
             width: 100vw;
             height: 100vh;
-
-            background-image: url("SpaceBG.png");
-            background-size: cover;
-            background-position: center;
-
+            object-fit: cover;
             z-index: 0;
-
             pointer-events: none;
         }
 
-
-        /* =====================================================
+        /* =========================
            THREE.JS CANVAS
-           ===================================================== */
+           ========================= */
 
         #crystalCanvas {
             position: fixed;
-
-            inset: 0;
-
+            top: 0;
+            left: 0;
             width: 100vw;
             height: 100vh;
-
             z-index: 2;
-
             pointer-events: none;
         }
 
-
-        /* =====================================================
+        /* =========================
            PAGE
-           ===================================================== */
+           ========================= */
 
         #page {
             position: relative;
-
             z-index: 10;
 
             width: 100%;
-
             margin: 0;
 
             padding:
-                30px
-                20px
-                100px;
+                30px 20px 100px;
         }
-
 
         h1 {
-            margin: 0 0 10px 0;
-
-            text-align: left;
-
-            font-size: 42px;
-
-            text-shadow:
-                0 0 10px #00ffff,
-                0 0 20px #00ffff;
-        }
-
-
-        h2 {
-            margin-top: 35px;
+            margin: 0;
 
             color: #00ffff;
 
+            font-size: 42px;
+
+            text-align: left;
+
             text-shadow:
-                0 0 8px #00ffff;
+                0 0 8px #00ffff,
+                0 0 18px rgba(0, 255, 255, 0.6);
         }
 
+        h2 {
+            color: #00ffff;
 
-        p {
-            line-height: 1.6;
+            margin-top: 0;
+
+            text-shadow:
+                0 0 8px rgba(0, 255, 255, 0.5);
         }
 
+        .section {
+            position: relative;
+            z-index: 20;
+
+            background: rgba(0, 0, 0, 0.22);
+
+            border:
+                1px solid rgba(0, 255, 255, 0.16);
+
+            border-radius: 8px;
+
+            padding:
+                12px 16px;
+
+            margin:
+                14px 0;
+
+            box-shadow:
+                0 0 8px rgba(0, 255, 255, 0.04);
+        }
 
         ul {
-            line-height: 1.8;
-
             padding-left: 25px;
         }
 
+        li {
+            margin: 7px 0;
+        }
 
-        /* =====================================================
+        /* =========================
            LINKS
-           ===================================================== */
+           ========================= */
 
         #page a,
         #page a:link,
         #page a:visited {
             color: #00ffff !important;
-
             text-decoration: underline;
         }
 
-
         #page a:hover {
-            color: white !important;
+            color: #ffffff !important;
         }
-
 
         #page a:active {
             color: #00ffff !important;
         }
 
-
-        /* =====================================================
+        /* =========================
            FUN FACT
-           ===================================================== */
+           ========================= */
 
         .funFactBox {
+            position: relative;
+
+            z-index: 99999;
+
             text-align: left;
 
             margin-top: 0;
@@ -177,19 +167,22 @@
             overflow: visible;
         }
 
-
         #funFact {
+            position: relative;
+
+            z-index: 99999;
+
+            max-width: 70vw;
+
             min-height: 32px;
 
             margin:
-                8px
-                0
-                15px
-                55px;
+                8px 0 15px 25px;
 
             color: #ffff00;
 
-            font-size: 20px;
+            font-size:
+                clamp(13px, 1.4vw, 18px);
 
             font-weight: bold;
 
@@ -197,7 +190,8 @@
 
             display: inline-block;
 
-            transform-origin: center center;
+            transform-origin:
+                center center;
 
             text-shadow:
                 0 0 8px #ffff00,
@@ -211,52 +205,37 @@
                 alternate;
         }
 
-
         @keyframes funFactPulse {
-
             0% {
                 transform:
-                    rotate(-20deg)
+                    rotate(-30deg)
                     scale(0.88);
             }
 
             100% {
                 transform:
-                    rotate(-20deg)
-                    scale(1.12);
+                    rotate(-30deg)
+                    scale(1.05);
             }
-
         }
 
+        #rerollFact {
+            position: relative;
 
-        /* =====================================================
-           BUTTONS
-           ===================================================== */
-
-        #rerollFact,
-        #musicButton {
+            z-index: 99999;
 
             margin-top: 8px;
 
-            margin-right: 8px;
-
             padding:
-                9px
-                16px;
+                9px 16px;
 
             background:
-                rgba(
-                    0,
-                    0,
-                    0,
-                    0.65
-                );
+                rgba(0, 0, 0, 0.8);
 
             color: #00ffff;
 
             border:
-                1px solid
-                #00ffff;
+                1px solid #00ffff;
 
             border-radius: 7px;
 
@@ -273,73 +252,126 @@
                 transform 0.15s;
         }
 
-
-        #rerollFact:hover,
-        #musicButton:hover {
-
+        #rerollFact:hover {
             background: #00ffff;
 
             color: #000;
 
             box-shadow:
-                0 0 12px
-                #00ffff;
+                0 0 12px #00ffff;
 
             transform:
                 scale(1.04);
         }
 
-
-        #rerollFact:active,
-        #musicButton:active {
-
+        #rerollFact:active {
             transform:
                 scale(0.97);
         }
 
+        /* =========================
+           MUSIC
+           ========================= */
 
-        /* =====================================================
-           VERTICAL ARROW
-           ===================================================== */
+        #musicButton {
+            position: relative;
 
-        .downArrow {
+            z-index: 30;
 
-            text-align: left;
+            margin-top: 8px;
 
-            font-size: 28px;
+            padding:
+                9px 16px;
 
-            line-height: 1;
-
-            margin:
-                25px
-                0;
+            background:
+                rgba(0, 0, 0, 0.8);
 
             color: #00ffff;
 
-            text-shadow:
-                0 0 10px
-                #00ffff;
+            border:
+                1px solid #00ffff;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-family: inherit;
+
+            font-size: 15px;
+
+            transition:
+                background 0.15s,
+                color 0.15s,
+                box-shadow 0.15s,
+                transform 0.15s;
         }
 
+        #musicButton:hover {
+            background: #00ffff;
 
-        /* =====================================================
-           SGA
-           ===================================================== */
+            color: #000;
 
-        .sga {
-            font-family:
-                SGA,
-                Arial,
-                sans-serif;
+            box-shadow:
+                0 0 12px #00ffff;
+
+            transform:
+                scale(1.04);
         }
 
+        #musicButton:active {
+            transform:
+                scale(0.97);
+        }
 
-        /* =====================================================
-           ANIMATED GATEWAY
-           ===================================================== */
+        /* =========================
+           DOWN ARROW
+           ========================= */
+
+        .downArrow {
+            position: relative;
+
+            z-index: 20;
+
+            margin:
+                35px 0;
+
+            color: #00ffff;
+
+            font-size: 35px;
+
+            line-height: 28px;
+
+            text-align: left;
+
+            animation:
+                arrowPulse
+                1.2s
+                ease-in-out
+                infinite;
+        }
+
+        @keyframes arrowPulse {
+            0%,
+            100% {
+                transform:
+                    translateY(0);
+
+                opacity: 0.65;
+            }
+
+            50% {
+                transform:
+                    translateY(8px);
+
+                opacity: 1;
+            }
+        }
+
+        /* =========================
+           GATEWAY
+           ========================= */
 
         #gateway {
-
             position: fixed;
 
             right: 22px;
@@ -362,11 +394,7 @@
                 infinite;
         }
 
-
-        /* Outer glow */
-
         #gateway::before {
-
             content: "";
 
             position: absolute;
@@ -374,34 +402,18 @@
             inset: -18px;
 
             border-radius:
-                50% 50%
-                45% 45%
-                / 35% 35%
-                45% 45%;
+                50% 50% 45% 45% /
+                35% 35% 45% 45%;
 
             background:
                 radial-gradient(
                     ellipse,
-                    rgba(
-                        255,
-                        0,
-                        50,
-                        0.35
-                    )
-                    0%,
-                    rgba(
-                        150,
-                        0,
-                        40,
-                        0.18
-                    )
-                    40%,
-                    transparent
-                    72%
+                    rgba(255, 0, 50, 0.35) 0%,
+                    rgba(150, 0, 40, 0.18) 40%,
+                    transparent 72%
                 );
 
-            filter:
-                blur(8px);
+            filter: blur(8px);
 
             animation:
                 gatewayGlow
@@ -411,51 +423,27 @@
                 alternate;
         }
 
-
-        /* Gateway frame */
-
         .gatewayFrame {
-
             position: absolute;
 
             inset: 0;
 
             border:
-                9px
-                solid
-                #180006;
+                9px solid #0b0003;
 
             border-radius:
-                52% 52%
-                15px 15px
-                /
-                30% 30%
-                12px 12px;
+                52% 52% 15px 15px /
+                30% 30% 12px 12px;
 
             box-shadow:
-
-                0 0 0 3px
-                #57000e,
-
-                0 0 10px
-                #ff003c,
-
-                0 0 25px
-                rgba(
-                    255,
-                    0,
-                    50,
-                    0.7
-                );
+                0 0 0 3px #300008,
+                0 0 8px #ff003c,
+                0 0 18px rgba(255, 0, 50, 0.45);
 
             overflow: hidden;
         }
 
-
-        /* Red Spectre interior */
-
         .gatewayInside {
-
             position: absolute;
 
             inset: 10px;
@@ -463,94 +451,67 @@
             overflow: hidden;
 
             border-radius:
-                45% 45%
-                12px 12px
-                /
-                25% 25%
-                8px 8px;
+                45% 45% 12px 12px /
+                25% 25% 8px 8px;
 
-            background:
-                #240006;
+            background: #120000;
 
             box-shadow:
-                inset 0 0 25px
-                #000;
+                inset 0 0 25px #000;
         }
 
-
         .gatewayInside img {
-
-            width: 135%;
-            height: 135%;
+            width: 125%;
+            height: 125%;
 
             object-fit: cover;
 
             position: absolute;
 
-            left: -17%;
-            top: -17%;
+            left: -12.5%;
+            top: -12.5%;
 
-            opacity: 0.9;
+            opacity: 1;
 
-            mix-blend-mode: screen;
+            mix-blend-mode: normal;
 
-            filter:
-                saturate(1.5)
-                contrast(1.25);
+            filter: none;
 
             animation:
                 gatewayTexture
-                4s
-                linear
-                infinite;
-        }
-
-
-        /* Portal energy */
-
-        .gatewayEnergy {
-
-            position: absolute;
-
-            inset: 5px;
-
-            border-radius:
-                45% 45%
-                12px 12px
-                /
-                25% 25%
-                8px 8px;
-
-            border:
-                2px
-                solid
-                rgba(
-                    255,
-                    20,
-                    65,
-                    0.8
-                );
-
-            box-shadow:
-                inset 0 0 15px
-                #ff003c,
-
-                0 0 12px
-                #ff003c;
-
-            animation:
-                gatewayEnergy
-                1s
+                6s
                 ease-in-out
                 infinite
                 alternate;
         }
 
+        .gatewayEnergy {
+            position: absolute;
 
-        /* Floating particles */
+            inset: 5px;
+
+            border-radius:
+                45% 45% 12px 12px /
+                25% 25% 8px 8px;
+
+            border:
+                1px solid
+                rgba(255, 30, 50, 0.35);
+
+            box-shadow:
+                inset
+                0 0 12px
+                rgba(255, 0, 30, 0.3);
+
+            animation:
+                gatewayEnergy
+                2s
+                ease-in-out
+                infinite
+                alternate;
+        }
 
         .gatewayParticle {
-
             position: absolute;
 
             width: 5px;
@@ -560,8 +521,7 @@
                 #ff174f;
 
             box-shadow:
-                0 0 8px
-                #ff174f;
+                0 0 8px #ff174f;
 
             border-radius: 1px;
 
@@ -572,53 +532,48 @@
                 infinite;
         }
 
-
-        .gatewayParticle:nth-child(1) {
-            left: 15%;
-            bottom: 15%;
-            --time: 2.2s;
-        }
-
-
         .gatewayParticle:nth-child(2) {
-            left: 75%;
-            bottom: 20%;
-            --time: 1.7s;
-        }
+            --time: 2.4s;
 
+            left: 30%;
+            bottom: 25px;
+        }
 
         .gatewayParticle:nth-child(3) {
-            left: 25%;
-            bottom: 5%;
-            --time: 2.7s;
-        }
+            --time: 3.1s;
 
+            left: 55%;
+            bottom: 35px;
+        }
 
         .gatewayParticle:nth-child(4) {
-            left: 80%;
-            bottom: 40%;
-            --time: 2s;
+            --time: 2.8s;
+
+            left: 72%;
+            bottom: 20px;
         }
 
+        .gatewayParticle:nth-child(5) {
+            --time: 3.5s;
+
+            left: 45%;
+            bottom: 15px;
+        }
 
         @keyframes gatewayFloat {
-
             0%,
             100% {
                 transform:
-                    translateY(0px);
+                    translateY(0);
             }
 
             50% {
                 transform:
                     translateY(-8px);
             }
-
         }
 
-
         @keyframes gatewayGlow {
-
             from {
                 opacity: 0.55;
 
@@ -632,35 +587,29 @@
                 transform:
                     scale(1.05);
             }
-
         }
 
-
         @keyframes gatewayTexture {
-
             0% {
                 transform:
                     scale(1)
-                    rotate(0deg);
+                    translate(0, 0);
             }
 
             50% {
                 transform:
-                    scale(1.15)
-                    rotate(3deg);
+                    scale(1.08)
+                    translate(-2%, 1%);
             }
 
             100% {
                 transform:
-                    scale(1)
-                    rotate(0deg);
+                    scale(1.03)
+                    translate(2%, -1%);
             }
-
         }
 
-
         @keyframes gatewayEnergy {
-
             from {
                 opacity: 0.55;
 
@@ -674,18 +623,12 @@
                 transform:
                     scale(1.02);
             }
-
         }
 
-
         @keyframes gatewayParticle {
-
             0% {
                 transform:
-                    translate(
-                        0,
-                        25px
-                    );
+                    translate(0, 25px);
 
                 opacity: 0;
             }
@@ -696,94 +639,122 @@
 
             100% {
                 transform:
-                    translate(
-                        20px,
-                        -130px
-                    );
+                    translate(20px, -130px);
 
                 opacity: 0;
             }
-
         }
 
+        /* =========================
+           SGA
+           ========================= */
 
-        /* =====================================================
+        .sga {
+            font-family:
+                "SGA",
+                monospace;
+
+            font-size: 22px;
+
+            letter-spacing: 3px;
+
+            color: #b56cff;
+
+            text-shadow:
+                0 0 7px #b56cff,
+                0 0 14px
+                rgba(181, 108, 255, 0.5);
+
+            word-break: break-word;
+        }
+
+        /* =========================
            FOOTER
-           ===================================================== */
+           ========================= */
 
         footer {
+            position: relative;
+
+            z-index: 20;
+
+            margin-top: 50px;
+
+            color: #aaa;
 
             text-align: left;
 
-            margin-top: 40px;
-
-            opacity: 0.75;
+            font-size: 14px;
         }
 
-
-        /* =====================================================
+        /* =========================
            MOBILE
-           ===================================================== */
+           ========================= */
 
         @media (max-width: 600px) {
+
+            #page {
+                padding:
+                    20px 10px 80px;
+            }
 
             h1 {
                 font-size: 30px;
             }
 
-
-            #page {
+            .section {
                 padding:
-                    20px
-                    12px
-                    100px;
+                    10px 12px;
             }
-
 
             #funFact {
+                max-width: 80vw;
 
-                margin-left: 35px;
+                margin-left: 15px;
 
-                font-size: 17px;
+                font-size:
+                    clamp(
+                        12px,
+                        3.2vw,
+                        17px
+                    );
             }
 
-
             #gateway {
-
                 width: 125px;
                 height: 165px;
 
-                right: 10px;
+                right: 8px;
                 bottom: 10px;
             }
-
         }
-
     </style>
-
 </head>
-
 
 <body>
 
+    <!-- =========================
+         BACKGROUND
+         ========================= -->
 
-    <!-- =====================================================
-         SPACE BACKGROUND
-         ===================================================== -->
-
-    <div id="space"></div>
-
-
-    <!-- =====================================================
-         THREE.JS CRYSTAL
-         ===================================================== -->
-
-    <canvas id="crystalCanvas"></canvas>
+    <img
+        id="space"
+        src="SpaceBG.png"
+        alt=""
+    >
 
 
-    <!-- =====================================================
-         ANIMATED GATEWAY
-         ===================================================== -->
+    <!-- =========================
+         THREE.JS CANVAS
+         ========================= -->
+
+    <canvas
+        id="crystalCanvas"
+    ></canvas>
+
+
+    <!-- =========================
+         GATEWAY
+         ========================= -->
 
     <div id="gateway">
 
@@ -796,49 +767,53 @@
                     alt=""
                 >
 
-                <div class="gatewayEnergy"></div>
+                <div
+                    class="gatewayEnergy"
+                ></div>
 
             </div>
 
         </div>
 
+        <div
+            class="gatewayParticle"
+        ></div>
 
         <div
-            class="gatewayParticle">
-        </div>
+            class="gatewayParticle"
+        ></div>
 
         <div
-            class="gatewayParticle">
-        </div>
+            class="gatewayParticle"
+        ></div>
 
         <div
-            class="gatewayParticle">
-        </div>
-
-        <div
-            class="gatewayParticle">
-        </div>
+            class="gatewayParticle"
+        ></div>
 
     </div>
 
 
-    <!-- =====================================================
-         PAGE CONTENT
-         ===================================================== -->
+    <!-- =========================
+         MAIN PAGE
+         ========================= -->
 
     <main id="page">
-
 
         <h1>
             GameDev Innes 2026
         </h1>
 
 
-        <!-- FUN FACT -->
+        <!-- =====================
+             FUN FACT
+             ===================== -->
 
         <div class="funFactBox">
 
-            <div id="funFact"></div>
+            <div id="funFact">
+                Loading fun fact...
+            </div>
 
             <br>
 
@@ -849,6 +824,14 @@
                 🎲 Re-roll Fact
             </button>
 
+        </div>
+
+
+        <!-- =====================
+             MUSIC
+             ===================== -->
+
+        <div class="section">
 
             <button
                 id="musicButton"
@@ -857,157 +840,187 @@
                 ♫ Play Music
             </button>
 
+            <audio
+                id="backgroundMusic"
+                loop
+            >
+                <source
+                    src="background.mp3"
+                    type="audio/mpeg"
+                >
+            </audio>
+
         </div>
 
 
-        <!-- =================================================
+        <!-- =====================
              ASSIGNMENTS
-             ================================================= -->
+             ===================== -->
 
-        <div>
+        <div class="section">
 
             <h2>
                 Assignments
             </h2>
 
-
             <ul>
 
                 <li>
-                    <a href="t1a01-input-output-Innes.html">
+                    <a
+                        href="t1a01-input-output-Innes.html"
+                    >
                         t1a01-input-output-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a02-objects-Innes.html">
+                    <a
+                        href="t1a02-objects-Innes.html"
+                    >
                         t1a02-objects-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a03-loops-Innes.html">
+                    <a
+                        href="t1a03-loops-Innes.html"
+                    >
                         t1a03-loops-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a04-decisions-Innes.html">
+                    <a
+                        href="t1a04-decisions-Innes.html"
+                    >
                         t1a04-decisions-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a05-arrays-Innes.html">
+                    <a
+                        href="t1a05-arrays-Innes.html"
+                    >
                         t1a05-arrays-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a06-proper-and-variables-Innes.html">
+                    <a
+                        href="t1a06-proper-and-variables-Innes.html"
+                    >
                         t1a06-proper-and-variables-Innes
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a07-desicion-Innes.html">
+                    <a
+                        href="t1a07-desicion-Innes.html"
+                    >
                         t1a07-desicion-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a08-...-Innes.html">
+                    <a
+                        href="t1a08-...-Innes.html"
+                    >
                         t1a08-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a09-...-Innes.html">
+                    <a
+                        href="t1a09-...-Innes.html"
+                    >
                         t1a09-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a10-...-Innes.html">
+                    <a
+                        href="t1a10-...-Innes.html"
+                    >
                         t1a10-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a11-...-Innes.html">
+                    <a
+                        href="t1a11-...-Innes.html"
+                    >
                         t1a11-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a12-...-Innes.html">
+                    <a
+                        href="t1a12-...-Innes.html"
+                    >
                         t1a12-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a13-...-Innes.html">
+                    <a
+                        href="t1a13-...-Innes.html"
+                    >
                         t1a13-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a14-...-Innes.html">
+                    <a
+                        href="t1a14-...-Innes.html"
+                    >
                         t1a14-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a15-...-Innes.html">
+                    <a
+                        href="t1a15-...-Innes.html"
+                    >
                         t1a15-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a16-...-Innes.html">
+                    <a
+                        href="t1a16-...-Innes.html"
+                    >
                         t1a16-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a17-...-Innes.html">
+                    <a
+                        href="t1a17-...-Innes.html"
+                    >
                         t1a17-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a18-...-Innes.html">
+                    <a
+                        href="t1a18-...-Innes.html"
+                    >
                         t1a18-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a19-...-Innes.html">
+                    <a
+                        href="t1a19-...-Innes.html"
+                    >
                         t1a19-...-Innes.html
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1a20-list-Innes.html">
+                    <a
+                        href="t1a20-list-Innes.html"
+                    >
                         t1a20-list-Innes.html
                     </a>
                 </li>
@@ -1017,16 +1030,15 @@
         </div>
 
 
-        <!-- =================================================
+        <!-- =====================
              OTHER PROJECTS
-             ================================================= -->
+             ===================== -->
 
-        <div>
+        <div class="section">
 
             <h2>
                 Other Projects
             </h2>
-
 
             <ul>
 
@@ -1038,7 +1050,6 @@
                     </a>
                 </li>
 
-
                 <li>
                     <a
                         href="https://innygr.itch.io/escape-the-forsaken"
@@ -1047,9 +1058,10 @@
                     </a>
                 </li>
 
-
                 <li>
-                    <a href="t1ax4-crystal-Innes.html">
+                    <a
+                        href="t1ax4-crystal-Innes.html"
+                    >
                         t1ax4-crystal-Innes
                     </a>
                 </li>
@@ -1059,34 +1071,33 @@
         </div>
 
 
-        <!-- =================================================
-             ARROW
-             ================================================= -->
+        <!-- =====================
+             DOWN ARROW
+             ===================== -->
 
         <div class="downArrow">
-
             |
             <br>
             v
-
         </div>
 
 
-        <!-- =================================================
+        <!-- =====================
              SECRETS
-             ================================================= -->
+             ===================== -->
 
-        <div>
+        <div class="section">
 
             <h2>
                 Secrets
             </h2>
 
-
             <ul>
 
                 <li>
-                    <a href="random-ahh-art.html">
+                    <a
+                        href="random-ahh-art.html"
+                    >
                         random-ahh-art.html
                     </a>
                 </li>
@@ -1096,64 +1107,37 @@
         </div>
 
 
-        <!-- =================================================
+        <!-- =====================
              SGA
-             ================================================= -->
+             ===================== -->
 
-        <div>
+        <div class="section">
 
             <h2>
                 SGA
             </h2>
 
-
-            <p class="sga">
-                This text uses the Standard Galactic Alphabet.
-            </p>
+            <div class="sga">
+                GameDev Innes 2026
+            </div>
 
         </div>
 
 
         <footer>
-
             GameDev Innes 2026
-
         </footer>
 
     </main>
 
 
-    <!-- =====================================================
-         MUSIC
-         ===================================================== -->
-
-    <audio
-        id="backgroundMusic"
-        loop
-    >
-
-        <source
-            src="background.mp3"
-            type="audio/mpeg"
-        >
-
-    </audio>
-
-
-    <!-- =====================================================
-         THREE.JS
-         ===================================================== -->
-
-    <script src="three.min.js"></script>
+    <!-- =========================
+         FUN FACT SCRIPT
+         ========================= -->
 
     <script src="funfacts.js"></script>
 
-
     <script>
-
-        /* =================================================
-           FUN FACT
-           ================================================= */
 
         let currentFact = -1;
 
@@ -1166,9 +1150,9 @@
                 funFacts.length === 0
             ) {
 
-                document
-                    .getElementById("funFact")
-                    .textContent =
+                document.getElementById(
+                    "funFact"
+                ).textContent =
                     "No fun facts loaded :(";
 
                 return;
@@ -1196,9 +1180,9 @@
                 newFact;
 
 
-            document
-                .getElementById("funFact")
-                .textContent =
+            document.getElementById(
+                "funFact"
+            ).textContent =
                 funFacts[currentFact];
         }
 
@@ -1210,21 +1194,14 @@
         }
 
 
-        window.addEventListener(
-            "DOMContentLoaded",
-            showRandomFact
-        );
-
-
-        /* =================================================
+        /* =========================
            MUSIC
-           ================================================= */
+           ========================= */
 
         const backgroundMusic =
             document.getElementById(
                 "backgroundMusic"
             );
-
 
         const musicButton =
             document.getElementById(
@@ -1259,17 +1236,29 @@
 
                 musicButton.textContent =
                     "♫ Play Music";
+
             }
         }
 
 
-        /* =================================================
-           THREE.JS END CRYSTAL
-           ================================================= */
+        window.addEventListener(
+            "DOMContentLoaded",
+            showRandomFact
+        );
+
+    </script>
+
+
+    <!-- =========================
+         THREE.JS
+         ========================= -->
+
+    <script src="three.min.js"></script>
+
+    <script>
 
         if (
-            typeof THREE ===
-            "undefined"
+            typeof THREE === "undefined"
         ) {
 
             console.error(
@@ -1277,7 +1266,6 @@
             );
 
         } else {
-
 
             const canvas =
                 document.getElementById(
@@ -1302,22 +1290,15 @@
             camera.position.set(
                 0,
                 0,
-                6
+                7
             );
 
 
             const renderer =
                 new THREE.WebGLRenderer({
-
-                    canvas:
-                        canvas,
-
-                    alpha:
-                        true,
-
-                    antialias:
-                        true
-
+                    canvas: canvas,
+                    alpha: true,
+                    antialias: true
                 });
 
 
@@ -1335,26 +1316,21 @@
             );
 
 
-            /* =================================================
+            /* =====================
                CRYSTAL GROUP
-               ================================================= */
+               ===================== */
 
             const crystalGroup =
                 new THREE.Group();
 
 
             crystalGroup.scale.setScalar(
-                0.58
+                0.48
             );
 
 
-            /*
-               Put the crystal on the right side
-               so it doesn't cover the text.
-            */
-
             crystalGroup.position.x =
-                2.0;
+                2.15;
 
 
             scene.add(
@@ -1362,35 +1338,283 @@
             );
 
 
-            /* =================================================
-               GLASS CAGE
-               ================================================= */
+            /* =====================
+               MATERIALS
+               ===================== */
 
-            const frameMaterial =
+            const glassMaterial =
                 new THREE.MeshBasicMaterial({
+                    color: 0xdfffff,
 
-                    color:
-                        0xe8ffff,
+                    transparent: true,
 
-                    transparent:
-                        true,
+                    opacity: 0.88,
 
-                    opacity:
-                        0.82,
+                    side:
+                        THREE.DoubleSide
+                });
+
+
+            const glassGlowMaterial =
+                new THREE.MeshBasicMaterial({
+                    color: 0x9fffff,
+
+                    transparent: true,
+
+                    opacity: 0.35,
 
                     blending:
                         THREE.AdditiveBlending,
 
-                    depthWrite:
-                        false
-
+                    depthWrite: false
                 });
 
 
-            function addBar(
+            const crystalMaterial =
+                new THREE.MeshBasicMaterial({
+                    color: 0xd45cff,
+
+                    transparent: true,
+
+                    opacity: 0.88,
+
+                    side:
+                        THREE.DoubleSide
+                });
+
+
+            const crystalHighlightMaterial =
+                new THREE.MeshBasicMaterial({
+                    color: 0xff55dd,
+
+                    transparent: true,
+
+                    opacity: 0.9,
+
+                    side:
+                        THREE.DoubleSide,
+
+                    blending:
+                        THREE.AdditiveBlending
+                });
+
+
+            const obsidianMaterial =
+                new THREE.MeshBasicMaterial({
+                    color: 0x100817
+                });
+
+
+            const obsidianGlowMaterial =
+                new THREE.MeshBasicMaterial({
+                    color: 0x29133d,
+
+                    transparent: true,
+
+                    opacity: 0.9
+                });
+
+
+            /* =====================
+               BOX HELPER
+               ===================== */
+
+            function addBox(
+                parent,
+                x,
+                y,
+                z,
+                width,
+                height,
+                depth,
+                material
+            ) {
+
+                const mesh =
+                    new THREE.Mesh(
+                        new THREE.BoxGeometry(
+                            width,
+                            height,
+                            depth
+                        ),
+                        material
+                    );
+
+
+                mesh.position.set(
+                    x,
+                    y,
+                    z
+                );
+
+
+                parent.add(
+                    mesh
+                );
+
+
+                return mesh;
+            }
+
+
+            /* =====================
+               OBSIDIAN BASE
+               ===================== */
+
+            const baseGroup =
+                new THREE.Group();
+
+
+            baseGroup.position.y =
+                -1.25;
+
+
+            crystalGroup.add(
+                baseGroup
+            );
+
+
+            addBox(
+                baseGroup,
+                0,
+                0,
+                0,
+                1.45,
+                0.25,
+                1.45,
+                obsidianMaterial
+            );
+
+
+            addBox(
+                baseGroup,
+                0,
+                0.17,
+                0,
+                1.15,
+                0.12,
+                1.15,
+                obsidianGlowMaterial
+            );
+
+
+            /* =====================
+               OUTER CAGE
+               ===================== */
+
+            const cage =
+                new THREE.Group();
+
+
+            crystalGroup.add(
+                cage
+            );
+
+
+            const ringY = 0;
+
+
+            /* Front */
+
+            addBox(
+                cage,
+                0,
+                ringY,
+                0.72,
+                1.55,
+                0.11,
+                0.11,
+                glassMaterial
+            );
+
+
+            /* Back */
+
+            addBox(
+                cage,
+                0,
+                ringY,
+                -0.72,
+                1.55,
+                0.11,
+                0.11,
+                glassMaterial
+            );
+
+
+            /* Left */
+
+            addBox(
+                cage,
+                -0.72,
+                ringY,
+                0,
+                0.11,
+                0.11,
+                1.55,
+                glassMaterial
+            );
+
+
+            /* Right */
+
+            addBox(
+                cage,
+                0.72,
+                ringY,
+                0,
+                0.11,
+                0.11,
+                1.55,
+                glassMaterial
+            );
+
+
+            /* =====================
+               CORNER SUPPORTS
+               ===================== */
+
+            const corners = [
+
+                [-0.72, 0.72],
+
+                [0.72, 0.72],
+
+                [-0.72, -0.72],
+
+                [0.72, -0.72]
+
+            ];
+
+
+            for (
+                const [x, z]
+                of corners
+            ) {
+
+                addBox(
+                    cage,
+                    x,
+                    0,
+                    z,
+                    0.11,
+                    1.55,
+                    0.11,
+                    glassMaterial
+                );
+
+            }
+
+
+            /* =====================
+               BEAM HELPER
+               ===================== */
+
+            function makeBeam(
                 start,
                 end,
-                thickness
+                thickness,
+                material
             ) {
 
                 const direction =
@@ -1413,14 +1637,14 @@
                     );
 
 
-                const mesh =
+                const beam =
                     new THREE.Mesh(
                         geometry,
-                        frameMaterial
+                        material
                     );
 
 
-                mesh.position
+                beam.position
                     .copy(start)
                     .add(end)
                     .multiplyScalar(
@@ -1428,520 +1652,219 @@
                     );
 
 
-                mesh.quaternion
-                    .setFromUnitVectors(
-                        new THREE.Vector3(
-                            0,
-                            0,
-                            1
-                        ),
-                        direction.normalize()
-                    );
-
-
-                crystalGroup.add(
-                    mesh
+                beam.lookAt(
+                    end
                 );
+
+
+                return beam;
             }
 
+
+            /* =====================
+               TOP POINT
+               ===================== */
 
             const topPoint =
                 new THREE.Vector3(
                     0,
-                    1.05,
+                    1.48,
                     0
                 );
 
+
+            for (
+                const [x, z]
+                of corners
+            ) {
+
+                cage.add(
+                    makeBeam(
+                        new THREE.Vector3(
+                            x,
+                            0.72,
+                            z
+                        ),
+
+                        topPoint,
+
+                        0.09,
+
+                        glassMaterial
+                    )
+                );
+
+            }
+
+
+            /* =====================
+               BOTTOM POINT
+               ===================== */
 
             const bottomPoint =
                 new THREE.Vector3(
                     0,
-                    -1.05,
+                    -1.48,
                     0
                 );
 
 
-            const ringPoints = [
-
-                new THREE.Vector3(
-                    0.72,
-                    0,
-                    0.72
-                ),
-
-                new THREE.Vector3(
-                    -0.72,
-                    0,
-                    0.72
-                ),
-
-                new THREE.Vector3(
-                    -0.72,
-                    0,
-                    -0.72
-                ),
-
-                new THREE.Vector3(
-                    0.72,
-                    0,
-                    -0.72
-                )
-
-            ];
-
-
-            /* Cage triangles */
-
             for (
-                let i = 0;
-                i < 4;
-                i++
+                const [x, z]
+                of corners
             ) {
 
-                addBar(
-                    topPoint,
-                    ringPoints[i],
-                    0.075
-                );
+                cage.add(
+                    makeBeam(
+                        new THREE.Vector3(
+                            x,
+                            -0.72,
+                            z
+                        ),
 
+                        bottomPoint,
 
-                addBar(
-                    bottomPoint,
-                    ringPoints[i],
-                    0.075
+                        0.09,
+
+                        glassMaterial
+                    )
                 );
 
             }
 
 
-            /* Cage square ring */
+            /* =====================
+               INNER CRYSTAL
+               ===================== */
 
-            for (
-                let i = 0;
-                i < 4;
-                i++
-            ) {
-
-                addBar(
-
-                    ringPoints[i],
-
-                    ringPoints[
-                        (i + 1) % 4
-                    ],
-
-                    0.075
-                );
-
-            }
+            const innerGroup =
+                new THREE.Group();
 
 
-            /* =================================================
-               ACTUAL CRYSTAL
-               ================================================= */
-
-            const crystalMaterial =
-                new THREE.MeshBasicMaterial({
-
-                    color:
-                        0xb86cff,
-
-                    transparent:
-                        true,
-
-                    opacity:
-                        0.68,
-
-                    side:
-                        THREE.DoubleSide,
-
-                    blending:
-                        THREE.AdditiveBlending,
-
-                    depthWrite:
-                        false
-
-                });
+            crystalGroup.add(
+                innerGroup
+            );
 
 
-            /*
-               Octahedron = diamond shape.
-               This is the important part that makes
-               it actually resemble an End Crystal.
-            */
-
-            const crystalCore =
+            const innerCrystal =
                 new THREE.Mesh(
-
                     new THREE.OctahedronGeometry(
-                        0.63,
+                        0.58,
                         0
                     ),
 
                     crystalMaterial
-
                 );
 
 
-            crystalGroup.add(
-                crystalCore
+            innerCrystal.scale.set(
+                0.82,
+                1.42,
+                0.82
             );
 
 
-            /* Inner bright crystal */
+            innerGroup.add(
+                innerCrystal
+            );
 
-            const innerCrystal =
+
+            /* Bright inner crystal */
+
+            const innerHighlight =
                 new THREE.Mesh(
-
                     new THREE.OctahedronGeometry(
-                        0.36,
+                        0.34,
                         0
                     ),
 
-                    new THREE.MeshBasicMaterial({
-
-                        color:
-                            0xff3ddc,
-
-                        transparent:
-                            true,
-
-                        opacity:
-                            0.88,
-
-                        blending:
-                            THREE.AdditiveBlending,
-
-                        depthWrite:
-                            false
-
-                    })
-
+                    crystalHighlightMaterial
                 );
 
 
-            crystalGroup.add(
-                innerCrystal
+            innerHighlight.scale.set(
+                0.82,
+                1.45,
+                0.82
+            );
+
+
+            innerGroup.add(
+                innerHighlight
             );
 
 
             /* Bright core */
 
-            const coreGlow =
+            const core =
                 new THREE.Mesh(
-
-                    new THREE.SphereGeometry(
-                        0.28,
-                        20,
-                        20
-                    ),
-
-                    new THREE.MeshBasicMaterial({
-
-                        color:
-                            0xff4fff,
-
-                        transparent:
-                            true,
-
-                        opacity:
-                            0.4,
-
-                        blending:
-                            THREE.AdditiveBlending,
-
-                        depthWrite:
-                            false
-
-                    })
-
-                );
-
-
-            crystalGroup.add(
-                coreGlow
-            );
-
-
-            /* =================================================
-               SGA GLYPH
-               ================================================= */
-
-            function makeGlyph(
-                character
-            ) {
-
-                const glyphCanvas =
-                    document.createElement(
-                        "canvas"
-                    );
-
-
-                glyphCanvas.width =
-                    256;
-
-                glyphCanvas.height =
-                    256;
-
-
-                const ctx =
-                    glyphCanvas.getContext(
-                        "2d"
-                    );
-
-
-                ctx.clearRect(
-                    0,
-                    0,
-                    256,
-                    256
-                );
-
-
-                ctx.font =
-                    "bold 150px SGA";
-
-
-                ctx.textAlign =
-                    "center";
-
-
-                ctx.textBaseline =
-                    "middle";
-
-
-                ctx.fillStyle =
-                    "#ff66dd";
-
-
-                ctx.shadowColor =
-                    "#ff4fd8";
-
-
-                ctx.shadowBlur =
-                    25;
-
-
-                ctx.fillText(
-                    character,
-                    128,
-                    138
-                );
-
-
-                const texture =
-                    new THREE.CanvasTexture(
-                        glyphCanvas
-                    );
-
-
-                const material =
-                    new THREE.MeshBasicMaterial({
-
-                        map:
-                            texture,
-
-                        transparent:
-                            true,
-
-                        side:
-                            THREE.DoubleSide
-
-                    });
-
-
-                return new THREE.Mesh(
-
-                    new THREE.PlaneGeometry(
-                        0.36,
-                        0.36
-                    ),
-
-                    material
-
-                );
-            }
-
-
-            const glyphs = [
-
-                makeGlyph("A"),
-                makeGlyph("B"),
-                makeGlyph("C"),
-                makeGlyph("D")
-
-            ];
-
-
-            glyphs[0].position.set(
-                0,
-                0,
-                0.61
-            );
-
-
-            glyphs[1].position.set(
-                0,
-                0,
-                -0.61
-            );
-
-
-            glyphs[2].position.set(
-                0.61,
-                0,
-                0
-            );
-
-
-            glyphs[2].rotation.y =
-                Math.PI / 2;
-
-
-            glyphs[3].position.set(
-                -0.61,
-                0,
-                0
-            );
-
-
-            glyphs[3].rotation.y =
-                -Math.PI / 2;
-
-
-            glyphs.forEach(
-                glyph =>
-                    crystalGroup.add(
-                        glyph
-                    )
-            );
-
-
-            /* =================================================
-               CRYSTAL BASE
-               ================================================= */
-
-            const base =
-                new THREE.Mesh(
-
                     new THREE.BoxGeometry(
-                        1.7,
-                        0.22,
-                        1.7
+                        0.20,
+                        0.20,
+                        0.20
                     ),
 
                     new THREE.MeshBasicMaterial({
+                        color: 0xffaaff,
 
-                        color:
-                            0x090711
+                        transparent: true,
 
-                    })
-
-                );
-
-
-            base.position.y =
-                -1.25;
-
-
-            crystalGroup.add(
-                base
-            );
-
-
-            const baseGlow =
-                new THREE.Mesh(
-
-                    new THREE.BoxGeometry(
-                        1.95,
-                        0.045,
-                        1.95
-                    ),
-
-                    new THREE.MeshBasicMaterial({
-
-                        color:
-                            0x8a16ff,
-
-                        transparent:
-                            true,
-
-                        opacity:
-                            0.4,
+                        opacity: 0.95,
 
                         blending:
                             THREE.AdditiveBlending
-
                     })
-
                 );
 
 
-            baseGlow.position.y =
-                -1.11;
-
-
-            crystalGroup.add(
-                baseGlow
+            innerGroup.add(
+                core
             );
 
 
-            /* =================================================
-               BEAM
-               ================================================= */
+            /* =====================
+               SUBTLE GLOW
+               ===================== */
 
-            const beam =
+            const glow =
                 new THREE.Mesh(
-
-                    new THREE.CylinderGeometry(
-                        0.055,
-                        0.055,
-                        5,
-                        16,
-                        1,
-                        true
+                    new THREE.BoxGeometry(
+                        1.65,
+                        1.65,
+                        1.65
                     ),
 
-                    new THREE.MeshBasicMaterial({
-
-                        color:
-                            0xff36ff,
-
-                        transparent:
-                            true,
-
-                        opacity:
-                            0.12,
-
-                        blending:
-                            THREE.AdditiveBlending,
-
-                        depthWrite:
-                            false
-
-                    })
-
+                    glassGlowMaterial
                 );
 
 
-            beam.position.y =
-                1.25;
-
-
-            crystalGroup.add(
-                beam
+            glow.scale.set(
+                0.98,
+                0.98,
+                0.98
             );
 
 
-            /* =================================================
+            glow.position.y = 0;
+
+
+            crystalGroup.add(
+                glow
+            );
+
+
+            /* =====================
                PARTICLES
-               ================================================= */
+               ===================== */
 
-            const particleCount =
-                250;
+            const particleGeometry =
+                new THREE.BufferGeometry();
 
 
-            const particlePositions =
+            const particleCount = 70;
+
+
+            const positions =
                 new Float32Array(
                     particleCount * 3
                 );
@@ -1953,99 +1876,110 @@
                 i++
             ) {
 
-                const radius =
-                    1.0 +
-                    Math.random() * 1.8;
-
-
-                const angle =
-                    Math.random() *
-                    Math.PI *
-                    2;
-
-
-                particlePositions[
+                positions[
                     i * 3
                 ] =
-                    Math.cos(angle) *
-                    radius;
+                    (Math.random() - 0.5) *
+                    2.8;
 
 
-                particlePositions[
+                positions[
                     i * 3 + 1
                 ] =
-                    -1.5 +
-                    Math.random() *
-                    3;
+                    (Math.random() - 0.5) *
+                    3.2;
 
 
-                particlePositions[
+                positions[
                     i * 3 + 2
                 ] =
-                    Math.sin(angle) *
-                    radius;
+                    (Math.random() - 0.5) *
+                    2.8;
 
             }
 
 
-            const particleGeometry =
-                new THREE.BufferGeometry();
-
-
             particleGeometry.setAttribute(
-
                 "position",
 
                 new THREE.BufferAttribute(
-                    particlePositions,
+                    positions,
                     3
                 )
-
             );
 
 
             const particleMaterial =
                 new THREE.PointsMaterial({
+                    color: 0xd477ff,
 
-                    color:
-                        0xd89cff,
+                    size: 0.035,
 
-                    size:
-                        0.055,
+                    transparent: true,
 
-                    transparent:
-                        true,
-
-                    opacity:
-                        0.75,
+                    opacity: 0.65,
 
                     blending:
                         THREE.AdditiveBlending,
 
-                    depthWrite:
-                        false
-
+                    depthWrite: false
                 });
 
 
             const particles =
                 new THREE.Points(
-
                     particleGeometry,
-
                     particleMaterial
-
                 );
 
 
-            scene.add(
+            crystalGroup.add(
                 particles
             );
 
 
-            /* =================================================
+            /* =====================
+               BEAM
+               ===================== */
+
+            const beam =
+                new THREE.Mesh(
+                    new THREE.CylinderGeometry(
+                        0.045,
+                        0.08,
+                        4.5,
+                        12,
+                        1,
+                        true
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+                        color: 0xc66aff,
+
+                        transparent: true,
+
+                        opacity: 0.08,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+                    })
+                );
+
+
+            beam.position.y =
+                -1.7;
+
+
+            crystalGroup.add(
+                beam
+            );
+
+
+            /* =====================
                ANIMATION
-               ================================================= */
+               ===================== */
 
             const clock =
                 new THREE.Clock();
@@ -2062,69 +1996,74 @@
                     clock.getElapsedTime();
 
 
-                /* Cage + crystal rotation */
+                /* Whole crystal */
 
                 crystalGroup.rotation.y =
-                    time * 0.45;
+                    time * 0.32;
 
 
                 /* Floating */
 
                 crystalGroup.position.y =
                     Math.sin(
-                        time * 1.4
-                    ) * 0.10;
+                        time * 1.35
+                    ) * 0.08;
 
 
-                /* Crystal rotation */
+                /* Inner crystal */
 
-                crystalCore.rotation.y =
-                    -time * 0.7;
-
-
-                crystalCore.rotation.x =
-                    Math.sin(
-                        time * 0.7
-                    ) * 0.12;
+                innerGroup.rotation.y =
+                    -time * 0.65;
 
 
-                innerCrystal.rotation.y =
-                    time * 1.2;
+                innerHighlight.rotation.y =
+                    time * 1.0;
 
 
-                /* Pulse */
+                /* Subtle pulse */
 
                 const pulse =
                     1 +
                     Math.sin(
+                        time * 2.2
+                    ) * 0.045;
+
+
+                innerCrystal.scale.set(
+                    0.82 * pulse,
+                    1.42 * pulse,
+                    0.82 * pulse
+                );
+
+
+                innerHighlight.scale.set(
+                    0.82 * pulse,
+                    1.45 * pulse,
+                    0.82 * pulse
+                );
+
+
+                core.scale.setScalar(
+                    pulse
+                );
+
+
+                glow.material.opacity =
+                    0.20 +
+                    Math.sin(
                         time * 2
-                    ) * 0.08;
-
-
-                crystalCore.scale.setScalar(
-                    pulse
-                );
-
-
-                innerCrystal.scale.setScalar(
-                    pulse
-                );
-
-
-                coreGlow.scale.setScalar(
-                    pulse * 1.1
-                );
+                    ) * 0.05;
 
 
                 beam.material.opacity =
-                    0.08 +
+                    0.065 +
                     Math.sin(
                         time * 2
-                    ) * 0.035;
+                    ) * 0.025;
 
 
                 particles.rotation.y =
-                    time * 0.05;
+                    time * 0.04;
 
 
                 renderer.render(
@@ -2138,9 +2077,9 @@
             animate();
 
 
-            /* =================================================
+            /* =====================
                RESIZE
-               ================================================= */
+               ===================== */
 
             window.addEventListener(
                 "resize",
@@ -2159,16 +2098,6 @@
                         window.innerHeight
                     );
 
-
-                    renderer.setPixelRatio(
-
-                        Math.min(
-                            window.devicePixelRatio,
-                            2
-                        )
-
-                    );
-
                 }
             );
 
@@ -2177,5 +2106,4 @@
     </script>
 
 </body>
-
 </html>
