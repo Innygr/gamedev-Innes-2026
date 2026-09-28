@@ -265,6 +265,14 @@
                 </a>
             </li>
 
+            <!-- X Assignments -->
+
+            <li>
+                <a href="https://innygr.itch.io/escape-the-forsaken">
+                    t1ax1-Escape-The-Forsaken
+                </a>
+            </li>
+
             <li>
                 <a href="t1ax4-crystal-Innes.html">
                     t1ax4-crystal-Innes
@@ -292,6 +300,9 @@ v</div>
 
     </div>
 
+
+    <!-- FUN FACTS -->
+
     <script src="funfacts.js"></script>
 
     <script>
@@ -317,6 +328,9 @@ v</div>
             ).textContent = funFacts[factIndex];
         }
     </script>
+
+
+    <!-- THREE.JS -->
 
     <script src="three.min.js"></script>
 
@@ -352,6 +366,7 @@ v</div>
                 7
             );
 
+
             const renderer =
                 new THREE.WebGLRenderer({
                     canvas: canvas,
@@ -371,22 +386,11 @@ v</div>
                 window.innerHeight
             );
 
+
             /*
              * =========================================
-             * END CRYSTAL
+             * CRYSTAL GROUP
              * =========================================
-             *
-             * Smaller and much closer to the reference:
-             *
-             *       /\
-             *      /  \
-             *     / pink\
-             *    ┌──────┐
-             *    │ pink │
-             *    │      │
-             *    └──────┘
-             *       ||
-             *      base
              */
 
             const crystalGroup =
@@ -416,6 +420,7 @@ v</div>
                         THREE.AdditiveBlending
                 });
 
+
             const frameGlowMaterial =
                 new THREE.MeshBasicMaterial({
                     color: 0x9eeaff,
@@ -425,6 +430,7 @@ v</div>
                         THREE.AdditiveBlending,
                     depthWrite: false
                 });
+
 
             const pinkMaterial =
                 new THREE.MeshBasicMaterial({
@@ -436,6 +442,7 @@ v</div>
                         THREE.AdditiveBlending,
                     depthWrite: false
                 });
+
 
             const pinkGlowMaterial =
                 new THREE.MeshBasicMaterial({
@@ -451,7 +458,7 @@ v</div>
 
             /*
              * =========================================
-             * HELPER: CREATE FRAME BAR
+             * FRAME BAR FUNCTION
              * =========================================
              */
 
@@ -474,6 +481,7 @@ v</div>
                     0.5
                 );
 
+
                 const direction =
                     new THREE.Vector3();
 
@@ -482,8 +490,10 @@ v</div>
                     start
                 );
 
+
                 const length =
                     direction.length();
+
 
                 const bar =
                     new THREE.Mesh(
@@ -495,9 +505,11 @@ v</div>
                         material
                     );
 
+
                 bar.position.copy(
                     midpoint
                 );
+
 
                 bar.quaternion.setFromUnitVectors(
                     new THREE.Vector3(
@@ -508,13 +520,14 @@ v</div>
                     direction.normalize()
                 );
 
+
                 return bar;
             }
 
 
             /*
              * =========================================
-             * CRYSTAL FRAME
+             * CRYSTAL POINTS
              * =========================================
              */
 
@@ -525,12 +538,14 @@ v</div>
                     0
                 );
 
+
             const bottomPoint =
                 new THREE.Vector3(
                     0,
                     -1.25,
                     0
                 );
+
 
             const topFront =
                 new THREE.Vector3(
@@ -539,12 +554,14 @@ v</div>
                     0.88
                 );
 
+
             const topRight =
                 new THREE.Vector3(
                     0.88,
                     0.48,
                     0
                 );
+
 
             const topBack =
                 new THREE.Vector3(
@@ -553,12 +570,14 @@ v</div>
                     -0.88
                 );
 
+
             const topLeft =
                 new THREE.Vector3(
                     -0.88,
                     0.48,
                     0
                 );
+
 
             const bottomFront =
                 new THREE.Vector3(
@@ -567,12 +586,14 @@ v</div>
                     0.88
                 );
 
+
             const bottomRight =
                 new THREE.Vector3(
                     0.88,
                     -0.48,
                     0
                 );
+
 
             const bottomBack =
                 new THREE.Vector3(
@@ -581,6 +602,7 @@ v</div>
                     -0.88
                 );
 
+
             const bottomLeft =
                 new THREE.Vector3(
                     -0.88,
@@ -588,6 +610,12 @@ v</div>
                     0
                 );
 
+
+            /*
+             * =========================================
+             * FRAME
+             * =========================================
+             */
 
             const frame =
                 new THREE.Group();
@@ -623,6 +651,7 @@ v</div>
                 [topRight, bottomRight],
                 [topBack, bottomBack],
                 [topLeft, bottomLeft]
+
             ];
 
 
@@ -661,7 +690,7 @@ v</div>
 
             /*
              * =========================================
-             * PINK INNER PANELS
+             * PINK PANELS
              * =========================================
              */
 
@@ -681,13 +710,16 @@ v</div>
                         pinkGlowMaterial
                     );
 
+
                 glow.position.copy(
                     position
                 );
 
+
                 glow.rotation.copy(
                     rotation
                 );
+
 
                 crystalGroup.add(
                     glow
@@ -703,23 +735,22 @@ v</div>
                         pinkMaterial
                     );
 
+
                 panel.position.copy(
                     position
                 );
 
+
                 panel.rotation.copy(
                     rotation
                 );
+
 
                 crystalGroup.add(
                     panel
                 );
             }
 
-
-            /*
-             * Front
-             */
 
             makePanel(
                 new THREE.Vector3(
@@ -739,10 +770,6 @@ v</div>
             );
 
 
-            /*
-             * Right
-             */
-
             makePanel(
                 new THREE.Vector3(
                     0.60,
@@ -761,10 +788,6 @@ v</div>
             );
 
 
-            /*
-             * Back
-             */
-
             makePanel(
                 new THREE.Vector3(
                     0,
@@ -782,10 +805,6 @@ v</div>
                 0.85
             );
 
-
-            /*
-             * Left
-             */
 
             makePanel(
                 new THREE.Vector3(
@@ -807,7 +826,7 @@ v</div>
 
             /*
              * =========================================
-             * TOP PINK PANEL
+             * TOP PANEL
              * =========================================
              */
 
@@ -853,7 +872,7 @@ v</div>
 
             /*
              * =========================================
-             * CENTRAL CORE
+             * CORE
              * =========================================
              */
 
@@ -937,10 +956,12 @@ v</div>
                 glyphCanvas.height =
                     256;
 
+
                 const ctx =
                     glyphCanvas.getContext(
                         "2d"
                     );
+
 
                 ctx.clearRect(
                     0,
@@ -949,23 +970,30 @@ v</div>
                     256
                 );
 
+
                 ctx.font =
                     "bold 150px SGA, Arial";
+
 
                 ctx.textAlign =
                     "center";
 
+
                 ctx.textBaseline =
                     "middle";
+
 
                 ctx.shadowColor =
                     "#ff4fd8";
 
+
                 ctx.shadowBlur =
                     25;
 
+
                 ctx.fillStyle =
                     "#ff66dd";
+
 
                 ctx.fillText(
                     character,
@@ -973,10 +1001,12 @@ v</div>
                     128
                 );
 
+
                 const texture =
                     new THREE.CanvasTexture(
                         glyphCanvas
                     );
+
 
                 const material =
                     new THREE.MeshBasicMaterial({
@@ -987,6 +1017,7 @@ v</div>
                             THREE.AdditiveBlending,
                         depthWrite: false
                     });
+
 
                 return new THREE.Mesh(
                     new THREE.PlaneGeometry(
@@ -1050,12 +1081,15 @@ v</div>
                         sgaGlyphs[i]
                     );
 
+
                 glyph.position.copy(
                     glyphPositions[i][0]
                 );
 
+
                 glyph.rotation.y =
                     glyphPositions[i][1];
+
 
                 crystalGroup.add(
                     glyph
@@ -1206,6 +1240,7 @@ v</div>
             const particleCount =
                 300;
 
+
             const particlePositions =
                 new Float32Array(
                     particleCount * 3
@@ -1222,13 +1257,16 @@ v</div>
                     1.0 +
                     Math.random() * 2.0;
 
+
                 const angle =
                     Math.random() *
                     Math.PI * 2;
 
+
                 const height =
                     -1.5 +
                     Math.random() * 3;
+
 
                 particlePositions[
                     i * 3
@@ -1236,10 +1274,12 @@ v</div>
                     Math.cos(angle) *
                     radius;
 
+
                 particlePositions[
                     i * 3 + 1
                 ] =
                     height;
+
 
                 particlePositions[
                     i * 3 + 2
@@ -1251,6 +1291,7 @@ v</div>
 
             const particleGeometry =
                 new THREE.BufferGeometry();
+
 
             particleGeometry.setAttribute(
                 "position",
@@ -1275,6 +1316,7 @@ v</div>
                     })
                 );
 
+
             crystalGroup.add(
                 particles
             );
@@ -1295,6 +1337,7 @@ v</div>
                 requestAnimationFrame(
                     animate
                 );
+
 
                 const time =
                     clock.getElapsedTime();
@@ -1318,6 +1361,7 @@ v</div>
 
                 coreGroup.rotation.y =
                     -time * 1.25;
+
 
                 coreGroup.rotation.x =
                     time * 0.75;
@@ -1396,7 +1440,9 @@ v</div>
                         window.innerWidth /
                         window.innerHeight;
 
+
                     camera.updateProjectionMatrix();
+
 
                     renderer.setSize(
                         window.innerWidth,
