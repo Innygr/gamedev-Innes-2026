@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>GameDev Innes 2026</title>
 
     <style>
         @font-face {
-            font-family: "SGA";
-            src: url("Sga-Regular.ttf") format("truetype");
+            font-family: SGA;
+            src: url("Sga-Regular.ttf");
         }
 
-        html, body {
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
             margin: 0;
             padding: 0;
-            width: 100%;
             min-height: 100%;
-            background: black;
-            color: white;
             font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
         }
 
         body {
@@ -27,13 +32,13 @@
 
         #space {
             position: fixed;
-            top: 0;
-            left: 0;
+            inset: 0;
             width: 100vw;
             height: 100vh;
-            object-fit: cover;
+            background-image: url("SpaceBG.png");
+            background-size: cover;
+            background-position: center;
             z-index: 0;
-            pointer-events: none;
         }
 
         #crystalCanvas {
@@ -49,7 +54,32 @@
         #page {
             position: relative;
             z-index: 10;
-            padding: 20px;
+            width: min(900px, 92%);
+            margin: 0 auto;
+            padding: 30px 0 80px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow:
+                0 0 10px #00ffff,
+                0 0 20px #00ffff;
+        }
+
+        h2 {
+            margin-top: 35px;
+            color: #00ffff;
+            text-shadow: 0 0 8px #00ffff;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        ul {
+            line-height: 1.8;
         }
 
         #page a,
@@ -67,274 +97,364 @@
             color: #00ffff !important;
         }
 
-        h1 {
-            color: white;
+        .section {
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(0, 255, 255, 0.35);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.12);
+            backdrop-filter: blur(3px);
         }
 
-        #dailyFact {
-            color: yellow;
-            display: inline-block;
-            transform: rotate(-10deg) scale(0.75);
-            transform-origin: center;
-            font-weight: bold;
-            animation: funFactPulse 3s ease-in-out infinite;
+        .profile {
+            text-align: center;
         }
 
-        @keyframes funFactPulse {
-            0%, 100% {
-                transform: rotate(-10deg) scale(0.75);
-            }
-
-            50% {
-                transform: rotate(-10deg) scale(0.9);
-            }
+        .profile img {
+            max-width: 180px;
+            height: auto;
+            border-radius: 12px;
+            margin: 10px;
         }
 
-        #secretFound {
-            color: magenta;
-            font-weight: bold;
-            font-size: 24px;
+        .funFactBox {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        #funFact {
+            min-height: 28px;
+            margin: 12px auto;
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+        #rerollFact {
+            margin-top: 8px;
+            padding: 9px 16px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 15px;
+            transition:
+                background 0.15s,
+                color 0.15s,
+                box-shadow 0.15s,
+                transform 0.15s;
+        }
+
+        #rerollFact:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 12px #00ffff;
+            transform: scale(1.04);
+        }
+
+        #rerollFact:active {
+            transform: scale(0.97);
+        }
+
+        .sga {
+            font-family: SGA, Arial, sans-serif;
         }
 
         .downArrow {
-            font-size: 32px;
-            line-height: 28px;
-            white-space: pre-line;
+            text-align: center;
+            font-size: 28px;
+            line-height: 1;
+            margin: 25px 0;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            opacity: 0.75;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 30px;
+            }
+
+            #page {
+                width: 94%;
+            }
+
+            .section {
+                padding: 15px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <img id="space" src="SpaceBG.png" alt="">
+    <div id="space"></div>
     <canvas id="crystalCanvas"></canvas>
 
-    <div id="page">
+    <main id="page">
 
         <h1>GameDev Innes 2026</h1>
 
-        <p>btw I made the background image on blender</p>
+        <div class="section profile">
+            <h2>About Me</h2>
 
-        <img src="NegInny.png" width="50" alt="">
+            <img src="NegInny.png" alt="NegInny">
 
-        <br>
+            <p>
+                Hi! I'm Innes, also known as Innygr.
+                I'm a game developer and I make various projects using
+                Construct, Roblox, HTML, JavaScript, and other tools.
+            </p>
+        </div>
 
-        <p id="dailyFact">Loading fun fact...</p>
+        <div class="section">
+            <h2>Fun Facts</h2>
 
-        <br><br>
+            <div class="funFactBox">
+                <div id="funFact"></div>
 
-        <p>
-            <a href="https://github.com/Innygr/gamedev-Innes-2026">
-                GitHub
-            </a>
+                <button id="rerollFact" onclick="rerollFact()">
+                    🎲 Re-roll Fact
+                </button>
+            </div>
+        </div>
 
+        <div class="section">
+            <h2>Assignments</h2>
+
+            <ul>
+                <li>
+                    <a href="t1a00-simple-Innes.html">
+                        0th Assignment (Start)
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a01-table-Innes.html">
+                        t1a01-table-Innes
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a02-list-Innes.html">
+                        t1a02-list-Innes
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a03-forms-Innes.html">
+                        t1a03-forms-Innes
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a04-CSS-Innes.html">
+                        t1a04-CSS-Innes
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a05-inputoutput-Innes.html">
+                        t1a05-inputoutput-Innes
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a06-proper-and-variables-Innes.html">
+                        t1a06-proper-and-variables-Innes
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a07-desicion-Innes.html">
+                        t1a07-desicion-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a08-...-Innes.html">
+                        t1a08-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a09-...-Innes.html">
+                        t1a09-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a10-...-Innes.html">
+                        t1a10-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a11-...-Innes.html">
+                        t1a11-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a12-...-Innes.html">
+                        t1a12-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a13-...-Innes.html">
+                        t1a13-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a14-...-Innes.html">
+                        t1a14-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a15-...-Innes.html">
+                        t1a15-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a16-...-Innes.html">
+                        t1a16-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a17-...-Innes.html">
+                        t1a17-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a18-...-Innes.html">
+                        t1a18-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a19-...-Innes.html">
+                        t1a19-...-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1a20-list-Innes.html">
+                        t1a20-list-Innes.html
+                    </a>
+                </li>
+
+                <li>
+                    <a href="https://innygr.itch.io/escape-the-forsaken">
+                        t1ax1-Escape-The-Forsaken
+                    </a>
+                </li>
+
+                <li>
+                    <a href="t1ax4-crystal-Innes.html">
+                        t1ax4-crystal-Innes
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Other Projects</h2>
+
+            <ul>
+                <li>
+                    <a href="https://innygr.github.io/Card-Stuff-Yes/">
+                        Card Stuff Yes
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="downArrow">
+            |
             <br>
+            v
+        </div>
 
-            <a href="https://innygr.github.io/gamedev-Innes-2026/">
-                Website
-            </a>
-        </p>
+        <div class="section">
+            <h2>SGA</h2>
 
-        <h2>Assignments</h2>
+            <p class="sga">
+                This text uses the Standard Galactic Alphabet.
+            </p>
+        </div>
 
-        <ol start="0">
+        <footer>
+            GameDev Innes 2026
+        </footer>
 
-            <li>
-                <a href="t1a00-simple-Innes.html">
-                    0th Assignment (Start)
-                </a>
-            </li>
+    </main>
 
-            <li>
-                <a href="t1a01-table-Innes.html">
-                    t1a01-table-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a02-list-Innes.html">
-                    t1a02-list-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a03-forms-Innes.html">
-                    t1a03-forms-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a04-CSS-Innes.html">
-                    t1a04-CSS-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a05-inputoutput-Innes.html">
-                    t1a05-InputOutput-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a06-proper-and-variables-Innes.html">
-                    t1a06-Proper-and-Variables-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a07-desicion-Innes.html">
-                    t1a07-desicion-Innes.html
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a08-...-Innes.html">
-                    t1a08-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a09-...-Innes.html">
-                    t1a09-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a10-...-Innes.html">
-                    t1a10-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a11-...-Innes.html">
-                    t1a11-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a12-...-Innes.html">
-                    t1a12-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a13-...-Innes.html">
-                    t1a13-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a14-...-Innes.html">
-                    t1a14-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a15-...-Innes.html">
-                    t1a15-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a16-...-Innes.html">
-                    t1a16-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a17-...-Innes.html">
-                    t1a17-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a18-...-Innes.html">
-                    t1a18-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a19-...-Innes.html">
-                    t1a19-...-Innes
-                </a>
-            </li>
-
-            <li>
-                <a href="t1a20-list-Innes.html">
-                    t1a20-list-Innes
-                </a>
-            </li>
-
-            <!-- X Assignments -->
-
-            <li>
-                <a href="https://innygr.itch.io/escape-the-forsaken">
-                    t1ax1-Escape-The-Forsaken
-                </a>
-            </li>
-
-            <li>
-                <a href="t1ax4-crystal-Innes.html">
-                    t1ax4-crystal-Innes
-                </a>
-            </li>
-
-        </ol>
-
-        <br><br><br><br><br><br><br><br><br><br>
-
-        <img src="NegInny.png" width="75" alt="">
-
-        <div class="downArrow">|
-v</div>
-
-        <br><br><br><br><br><br><br><br><br><br>
-
-        <a href="https://innygr.github.io/Card-Stuff-Yes/">
-            Card Stuff Yes
-        </a>
-
-        <p id="secretFound">
-            Secret Found!!
-        </p>
-
-    </div>
-
-
-    <!-- FUN FACTS -->
-
+    <script src="three.min.js"></script>
     <script src="funfacts.js"></script>
 
     <script>
-        const today = new Date();
+        /* =========================
+           FUN FACT SYSTEM
+           ========================= */
 
-        const dayNumber = Math.floor(
-            Date.UTC(
-                today.getFullYear(),
-                today.getMonth(),
-                today.getDate()
-            ) / 86400000
+        let currentFact = -1;
+
+        function showRandomFact() {
+            if (
+                typeof funFacts === "undefined" ||
+                !Array.isArray(funFacts) ||
+                funFacts.length === 0
+            ) {
+                document.getElementById("funFact").textContent =
+                    "No fun facts loaded :(";
+                return;
+            }
+
+            let newFact;
+
+            do {
+                newFact =
+                    Math.floor(
+                        Math.random() * funFacts.length
+                    );
+            } while (
+                funFacts.length > 1 &&
+                newFact === currentFact
+            );
+
+            currentFact = newFact;
+
+            document.getElementById("funFact").textContent =
+                funFacts[currentFact];
+        }
+
+        function rerollFact() {
+            showRandomFact();
+        }
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            showRandomFact
         );
 
-        if (
-            typeof funFacts !== "undefined" &&
-            funFacts.length > 0
-        ) {
-            const factIndex =
-                dayNumber % funFacts.length;
 
-            document.getElementById(
-                "dailyFact"
-            ).textContent = funFacts[factIndex];
-        }
-    </script>
+        /* =========================
+           THREE.JS END CRYSTAL
+           ========================= */
 
-
-    <!-- THREE.JS -->
-
-    <script src="three.min.js"></script>
-
-    <script>
         if (typeof THREE === "undefined") {
 
             console.error(
@@ -344,41 +464,25 @@ v</div>
         } else {
 
             const canvas =
-                document.getElementById(
-                    "crystalCanvas"
-                );
+                document.getElementById("crystalCanvas");
 
             const scene =
                 new THREE.Scene();
 
-
-            /*
-             * =========================================
-             * CAMERA
-             * =========================================
-             */
-
             const camera =
                 new THREE.PerspectiveCamera(
-                    60,
+                    45,
                     window.innerWidth /
                         window.innerHeight,
                     0.1,
-                    1000
+                    100
                 );
 
             camera.position.set(
                 0,
                 0,
-                7
+                6
             );
-
-
-            /*
-             * =========================================
-             * RENDERER
-             * =========================================
-             */
 
             const renderer =
                 new THREE.WebGLRenderer({
@@ -400,11 +504,9 @@ v</div>
             );
 
 
-            /*
-             * =========================================
-             * CRYSTAL GROUP
-             * =========================================
-             */
+            /* =========================
+               CRYSTAL GROUP
+               ========================= */
 
             const crystalGroup =
                 new THREE.Group();
@@ -413,116 +515,64 @@ v</div>
                 0.68
             );
 
-            scene.add(
-                crystalGroup
-            );
+            scene.add(crystalGroup);
 
 
-            /*
-             * =========================================
-             * MATERIALS
-             * =========================================
-             */
+            /* =========================
+               CRYSTAL FRAME
+               ========================= */
 
             const frameMaterial =
                 new THREE.MeshBasicMaterial({
-                    color: 0xd9f7ff,
+                    color: 0xdffcff,
                     transparent: true,
-                    opacity: 0.95,
+                    opacity: 0.92
+                });
+
+            const frameGlowMaterial =
+                new THREE.MeshBasicMaterial({
+                    color: 0x8fffff,
+                    transparent: true,
+                    opacity: 0.3,
                     blending:
                         THREE.AdditiveBlending
                 });
 
 
-            const frameGlowMaterial =
-                new THREE.MeshBasicMaterial({
-                    color: 0x9eeaff,
-                    transparent: true,
-                    opacity: 0.25,
-                    blending:
-                        THREE.AdditiveBlending,
-                    depthWrite: false
-                });
-
-
-            const pinkMaterial =
-                new THREE.MeshBasicMaterial({
-                    color: 0xf02bff,
-                    transparent: true,
-                    opacity: 0.9,
-                    side: THREE.DoubleSide,
-                    blending:
-                        THREE.AdditiveBlending,
-                    depthWrite: false
-                });
-
-
-            const pinkGlowMaterial =
-                new THREE.MeshBasicMaterial({
-                    color: 0xff72ff,
-                    transparent: true,
-                    opacity: 0.22,
-                    side: THREE.DoubleSide,
-                    blending:
-                        THREE.AdditiveBlending,
-                    depthWrite: false
-                });
-
-
-            /*
-             * =========================================
-             * FRAME BAR FUNCTION
-             * =========================================
-             */
-
-            function makeBar(
+            function addBar(
                 start,
                 end,
-                thickness,
-                material
+                thickness = 0.11
             ) {
 
-                const midpoint =
-                    new THREE.Vector3();
-
-                midpoint.addVectors(
-                    start,
-                    end
-                );
-
-                midpoint.multiplyScalar(
-                    0.5
-                );
-
-
                 const direction =
-                    new THREE.Vector3();
-
-                direction.subVectors(
-                    end,
-                    start
-                );
-
+                    new THREE.Vector3()
+                        .subVectors(
+                            end,
+                            start
+                        );
 
                 const length =
                     direction.length();
 
+                const geometry =
+                    new THREE.BoxGeometry(
+                        thickness,
+                        thickness,
+                        length
+                    );
 
                 const bar =
                     new THREE.Mesh(
-                        new THREE.BoxGeometry(
-                            thickness,
-                            thickness,
-                            length
-                        ),
-                        material
+                        geometry,
+                        frameMaterial
                     );
 
-
                 bar.position.copy(
-                    midpoint
-                );
-
+                    start
+                ).add(
+                    end
+                ).multiplyScalar(0.5);
 
                 bar.quaternion.setFromUnitVectors(
                     new THREE.Vector3(
@@ -533,361 +583,341 @@ v</div>
                     direction.normalize()
                 );
 
+                crystalGroup.add(bar);
 
                 return bar;
             }
 
 
-            /*
-             * =========================================
-             * CRYSTAL POINTS
-             * =========================================
-             */
-
             const topPoint =
                 new THREE.Vector3(
                     0,
-                    1.25,
+                    0.95,
                     0
                 );
-
 
             const bottomPoint =
                 new THREE.Vector3(
                     0,
-                    -1.25,
+                    -0.95,
                     0
                 );
 
-
-            const topFront =
+            const ring = [
                 new THREE.Vector3(
+                    0.72,
                     0,
-                    0.48,
-                    0.88
-                );
+                    0.72
+                ),
 
-
-            const topRight =
                 new THREE.Vector3(
-                    0.88,
-                    0.48,
-                    0
-                );
-
-
-            const topBack =
-                new THREE.Vector3(
+                    -0.72,
                     0,
-                    0.48,
-                    -0.88
-                );
+                    0.72
+                ),
 
-
-            const topLeft =
                 new THREE.Vector3(
-                    -0.88,
-                    0.48,
-                    0
-                );
-
-
-            const bottomFront =
-                new THREE.Vector3(
+                    -0.72,
                     0,
-                    -0.48,
-                    0.88
-                );
+                    -0.72
+                ),
 
-
-            const bottomRight =
                 new THREE.Vector3(
-                    0.88,
-                    -0.48,
-                    0
-                );
-
-
-            const bottomBack =
-                new THREE.Vector3(
+                    0.72,
                     0,
-                    -0.48,
-                    -0.88
-                );
-
-
-            const bottomLeft =
-                new THREE.Vector3(
-                    -0.88,
-                    -0.48,
-                    0
-                );
-
-
-            /*
-             * =========================================
-             * FRAME
-             * =========================================
-             */
-
-            const frame =
-                new THREE.Group();
-
-            crystalGroup.add(
-                frame
-            );
-
-
-            const frameEdges = [
-
-                [topPoint, topFront],
-                [topPoint, topRight],
-                [topPoint, topBack],
-                [topPoint, topLeft],
-
-                [topFront, topRight],
-                [topRight, topBack],
-                [topBack, topLeft],
-                [topLeft, topFront],
-
-                [bottomFront, bottomRight],
-                [bottomRight, bottomBack],
-                [bottomBack, bottomLeft],
-                [bottomLeft, bottomFront],
-
-                [bottomPoint, bottomFront],
-                [bottomPoint, bottomRight],
-                [bottomPoint, bottomBack],
-                [bottomPoint, bottomLeft],
-
-                [topFront, bottomFront],
-                [topRight, bottomRight],
-                [topBack, bottomBack],
-                [topLeft, bottomLeft]
-
+                    -0.72
+                )
             ];
 
 
             for (
                 let i = 0;
-                i < frameEdges.length;
+                i < 4;
                 i++
             ) {
 
-                const bar =
-                    makeBar(
-                        frameEdges[i][0],
-                        frameEdges[i][1],
-                        0.105,
-                        frameMaterial
-                    );
-
-                frame.add(
-                    bar
+                addBar(
+                    topPoint,
+                    ring[i]
                 );
 
+                addBar(
+                    bottomPoint,
+                    ring[i]
+                );
 
-                const glow =
-                    makeBar(
-                        frameEdges[i][0],
-                        frameEdges[i][1],
-                        0.19,
-                        frameGlowMaterial
-                    );
-
-                frame.add(
-                    glow
+                addBar(
+                    ring[i],
+                    ring[
+                        (i + 1) % 4
+                    ]
                 );
             }
 
 
-            /*
-             * =========================================
-             * PINK INNER PANELS
-             * =========================================
-             */
+            /* =========================
+               INNER PINK PANELS
+               ========================= */
 
-            function makePanel(
-                position,
-                rotation,
-                width,
-                height
+            const panelMaterial =
+                new THREE.MeshBasicMaterial({
+                    color: 0xff45d4,
+                    transparent: true,
+                    opacity: 0.58,
+                    side: THREE.DoubleSide
+                });
+
+
+            const panelGeometry =
+                new THREE.PlaneGeometry(
+                    1.18,
+                    1.18
+                );
+
+
+            const panelPositions = [
+                [
+                    new THREE.Vector3(
+                        0,
+                        0,
+                        0.62
+                    ),
+                    0
+                ],
+
+                [
+                    new THREE.Vector3(
+                        0.62,
+                        0,
+                        0
+                    ),
+                    Math.PI / 2
+                ],
+
+                [
+                    new THREE.Vector3(
+                        0,
+                        0,
+                        -0.62
+                    ),
+                    Math.PI
+                ],
+
+                [
+                    new THREE.Vector3(
+                        -0.62,
+                        0,
+                        0
+                    ),
+                    -Math.PI / 2
+                ]
+            ];
+
+
+            for (
+                let i = 0;
+                i < panelPositions.length;
+                i++
             ) {
-
-                const glow =
-                    new THREE.Mesh(
-                        new THREE.PlaneGeometry(
-                            width * 1.12,
-                            height * 1.12
-                        ),
-                        pinkGlowMaterial
-                    );
-
-
-                glow.position.copy(
-                    position
-                );
-
-
-                glow.rotation.copy(
-                    rotation
-                );
-
-
-                crystalGroup.add(
-                    glow
-                );
-
 
                 const panel =
                     new THREE.Mesh(
-                        new THREE.PlaneGeometry(
-                            width,
-                            height
-                        ),
-                        pinkMaterial
+                        panelGeometry,
+                        panelMaterial
                     );
 
-
                 panel.position.copy(
-                    position
+                    panelPositions[i][0]
                 );
 
+                panel.rotation.y =
+                    panelPositions[i][1];
 
-                panel.rotation.copy(
-                    rotation
-                );
-
-
-                crystalGroup.add(
-                    panel
-                );
+                crystalGroup.add(panel);
             }
 
 
-            makePanel(
-                new THREE.Vector3(
-                    0,
-                    0,
-                    0.60
-                ),
-
-                new THREE.Euler(
-                    0,
-                    0,
-                    0
-                ),
-
-                1.18,
-                0.85
-            );
-
-
-            makePanel(
-                new THREE.Vector3(
-                    0.60,
-                    0,
-                    0
-                ),
-
-                new THREE.Euler(
-                    0,
-                    Math.PI / 2,
-                    0
-                ),
-
-                1.18,
-                0.85
-            );
-
-
-            makePanel(
-                new THREE.Vector3(
-                    0,
-                    0,
-                    -0.60
-                ),
-
-                new THREE.Euler(
-                    0,
-                    Math.PI,
-                    0
-                ),
-
-                1.18,
-                0.85
-            );
-
-
-            makePanel(
-                new THREE.Vector3(
-                    -0.60,
-                    0,
-                    0
-                ),
-
-                new THREE.Euler(
-                    0,
-                    -Math.PI / 2,
-                    0
-                ),
-
-                1.18,
-                0.85
-            );
-
-
-            /*
-             * =========================================
-             * TOP PANEL
-             * =========================================
-             */
-
-            const topGlow =
-                new THREE.Mesh(
-                    new THREE.PlaneGeometry(
-                        1.15,
-                        1.15
-                    ),
-                    pinkGlowMaterial
-                );
-
-            topGlow.position.y =
-                0.51;
-
-            topGlow.rotation.x =
-                -Math.PI / 2;
-
-            crystalGroup.add(
-                topGlow
-            );
-
+            /* =========================
+               TOP PANEL
+               ========================= */
 
             const topPanel =
                 new THREE.Mesh(
                     new THREE.PlaneGeometry(
-                        0.95,
-                        0.95
+                        1.05,
+                        1.05
                     ),
-                    pinkMaterial
+                    panelMaterial
                 );
-
-            topPanel.position.y =
-                0.515;
 
             topPanel.rotation.x =
                 -Math.PI / 2;
+
+            topPanel.position.y =
+                0.48;
+
+            topPanel.rotation.z =
+                Math.PI / 4;
 
             crystalGroup.add(
                 topPanel
             );
 
 
-            /*
-             * =========================================
-             * SPINNING INNER CORE
-             * =========================================
-             */
+            /* =========================
+               SGA GLYPHS
+               ========================= */
+
+            function createGlyph(
+                character
+            ) {
+
+                const canvas =
+                    document.createElement(
+                        "canvas"
+                    );
+
+                canvas.width = 256;
+                canvas.height = 256;
+
+                const ctx =
+                    canvas.getContext(
+                        "2d"
+                    );
+
+                ctx.clearRect(
+                    0,
+                    0,
+                    256,
+                    256
+                );
+
+                ctx.font =
+                    "bold 150px SGA, Arial";
+
+                ctx.textAlign =
+                    "center";
+
+                ctx.textBaseline =
+                    "middle";
+
+                ctx.fillStyle =
+                    "#ff66dd";
+
+                ctx.shadowColor =
+                    "#ff4fd8";
+
+                ctx.shadowBlur =
+                    25;
+
+                ctx.fillText(
+                    character,
+                    128,
+                    128
+                );
+
+                const texture =
+                    new THREE.CanvasTexture(
+                        canvas
+                    );
+
+                texture.needsUpdate =
+                    true;
+
+                const material =
+                    new THREE.MeshBasicMaterial({
+                        map: texture,
+                        transparent: true,
+                        side: THREE.DoubleSide,
+                        blending:
+                            THREE.AdditiveBlending,
+                        depthWrite: false
+                    });
+
+                return new THREE.Mesh(
+                    new THREE.PlaneGeometry(
+                        0.48,
+                        0.48
+                    ),
+                    material
+                );
+            }
+
+
+            const glyphPositions = [
+                [
+                    new THREE.Vector3(
+                        0,
+                        0,
+                        0.615
+                    ),
+                    0
+                ],
+
+                [
+                    new THREE.Vector3(
+                        0.615,
+                        0,
+                        0
+                    ),
+                    Math.PI / 2
+                ],
+
+                [
+                    new THREE.Vector3(
+                        0,
+                        0,
+                        -0.615
+                    ),
+                    Math.PI
+                ],
+
+                [
+                    new THREE.Vector3(
+                        -0.615,
+                        0,
+                        0
+                    ),
+                    -Math.PI / 2
+                ]
+            ];
+
+
+            const glyphCharacters = [
+                "A",
+                "B",
+                "C",
+                "D"
+            ];
+
+
+            for (
+                let i = 0;
+                i < glyphPositions.length;
+                i++
+            ) {
+
+                const glyph =
+                    createGlyph(
+                        glyphCharacters[i]
+                    );
+
+                glyph.position.copy(
+                    glyphPositions[i][0]
+                );
+
+                glyph.rotation.y =
+                    glyphPositions[i][1];
+
+                crystalGroup.add(
+                    glyph
+                );
+            }
+
+
+            /* =========================
+               CENTER CORE
+               ========================= */
 
             const coreGroup =
                 new THREE.Group();
@@ -940,325 +970,12 @@ v</div>
             );
 
 
-            /*
-             * =========================================
-             * SGA GLYPHS
-             * =========================================
-             */
-
-            const sgaGlyphs = [
-                "ᔑ",
-                "ʖ",
-                "ᓵ",
-                "↸"
-            ];
-
-
-            function makeGlyph(
-                character
-            ) {
-
-                const glyphCanvas =
-                    document.createElement(
-                        "canvas"
-                    );
-
-                glyphCanvas.width =
-                    256;
-
-                glyphCanvas.height =
-                    256;
-
-
-                const ctx =
-                    glyphCanvas.getContext(
-                        "2d"
-                    );
-
-
-                ctx.clearRect(
-                    0,
-                    0,
-                    256,
-                    256
-                );
-
-
-                ctx.font =
-                    "bold 150px SGA, Arial";
-
-
-                ctx.textAlign =
-                    "center";
-
-
-                ctx.textBaseline =
-                    "middle";
-
-
-                ctx.shadowColor =
-                    "#ff4fd8";
-
-
-                ctx.shadowBlur =
-                    25;
-
-
-                ctx.fillStyle =
-                    "#ff66dd";
-
-
-                ctx.fillText(
-                    character,
-                    128,
-                    128
-                );
-
-
-                const texture =
-                    new THREE.CanvasTexture(
-                        glyphCanvas
-                    );
-
-
-                const material =
-                    new THREE.MeshBasicMaterial({
-                        map: texture,
-                        transparent: true,
-                        side: THREE.DoubleSide,
-                        blending:
-                            THREE.AdditiveBlending,
-                        depthWrite: false
-                    });
-
-
-                return new THREE.Mesh(
-                    new THREE.PlaneGeometry(
-                        0.48,
-                        0.48
-                    ),
-                    material
-                );
-            }
-
-
-            /*
-             * These are now on the INSIDE
-             * pink faces rather than outside
-             * the crystal frame.
-             */
-
-            const glyphPositions = [
-
-                [
-                    new THREE.Vector3(
-                        0,
-                        0,
-                        0.615
-                    ),
-                    0
-                ],
-
-                [
-                    new THREE.Vector3(
-                        0.615,
-                        0,
-                        0
-                    ),
-                    Math.PI / 2
-                ],
-
-                [
-                    new THREE.Vector3(
-                        0,
-                        0,
-                        -0.615
-                    ),
-                    Math.PI
-                ],
-
-                [
-                    new THREE.Vector3(
-                        -0.615,
-                        0,
-                        0
-                    ),
-                    -Math.PI / 2
-                ]
-
-            ];
-
-
-            for (
-                let i = 0;
-                i < glyphPositions.length;
-                i++
-            ) {
-
-                const glyph =
-                    makeGlyph(
-                        sgaGlyphs[i]
-                    );
-
-
-                glyph.position.copy(
-                    glyphPositions[i][0]
-                );
-
-
-                glyph.rotation.y =
-                    glyphPositions[i][1];
-
-
-                crystalGroup.add(
-                    glyph
-                );
-            }
-
-
-            /*
-             * =========================================
-             * AURA
-             * =========================================
-             */
-
-            const aura =
-                new THREE.Mesh(
-                    new THREE.SphereGeometry(
-                        1.75,
-                        32,
-                        32
-                    ),
-                    new THREE.MeshBasicMaterial({
-                        color: 0x9b4dff,
-                        transparent: true,
-                        opacity: 0.035,
-                        blending:
-                            THREE.AdditiveBlending,
-                        depthWrite: false
-                    })
-                );
-
-            crystalGroup.add(
-                aura
-            );
-
-
-            /*
-             * =========================================
-             * BEAM
-             * =========================================
-             */
-
-            const beam =
-                new THREE.Mesh(
-                    new THREE.CylinderGeometry(
-                        0.035,
-                        0.035,
-                        7,
-                        16
-                    ),
-                    new THREE.MeshBasicMaterial({
-                        color: 0xd08cff,
-                        transparent: true,
-                        opacity: 0.55,
-                        blending:
-                            THREE.AdditiveBlending,
-                        depthWrite: false
-                    })
-                );
-
-            crystalGroup.add(
-                beam
-            );
-
-
-            const beamGlow =
-                new THREE.Mesh(
-                    new THREE.CylinderGeometry(
-                        0.10,
-                        0.10,
-                        7,
-                        16
-                    ),
-                    new THREE.MeshBasicMaterial({
-                        color: 0xa94dff,
-                        transparent: true,
-                        opacity: 0.09,
-                        blending:
-                            THREE.AdditiveBlending,
-                        depthWrite: false
-                    })
-                );
-
-            crystalGroup.add(
-                beamGlow
-            );
-
-
-            /*
-             * =========================================
-             * BASE
-             * =========================================
-             */
-
-            const baseGroup =
-                new THREE.Group();
-
-            baseGroup.position.y =
-                -1.65;
-
-            crystalGroup.add(
-                baseGroup
-            );
-
-
-            const base =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        1.15,
-                        0.22,
-                        1.15
-                    ),
-                    new THREE.MeshBasicMaterial({
-                        color: 0x181020
-                    })
-                );
-
-            baseGroup.add(
-                base
-            );
-
-
-            const baseTop =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        0.88,
-                        0.14,
-                        0.88
-                    ),
-                    new THREE.MeshBasicMaterial({
-                        color: 0x29183c
-                    })
-                );
-
-            baseTop.position.y =
-                0.17;
-
-            baseGroup.add(
-                baseTop
-            );
-
-
-            /*
-             * =========================================
-             * LARGE PARTICLES
-             * =========================================
-             */
+            /* =========================
+               PARTICLES
+               ========================= */
 
             const particleCount =
                 300;
-
 
             const particlePositions =
                 new Float32Array(
@@ -1273,19 +990,13 @@ v</div>
             ) {
 
                 const radius =
-                    1.0 +
-                    Math.random() * 2.0;
-
+                    1 +
+                    Math.random() * 2;
 
                 const angle =
                     Math.random() *
-                    Math.PI * 2;
-
-
-                const height =
-                    -1.5 +
-                    Math.random() * 3;
-
+                    Math.PI *
+                    2;
 
                 particlePositions[
                     i * 3
@@ -1293,12 +1004,11 @@ v</div>
                     Math.cos(angle) *
                     radius;
 
-
                 particlePositions[
                     i * 3 + 1
                 ] =
-                    height;
-
+                    -1.5 +
+                    Math.random() * 3;
 
                 particlePositions[
                     i * 3 + 2
@@ -1310,7 +1020,6 @@ v</div>
 
             const particleGeometry =
                 new THREE.BufferGeometry();
-
 
             particleGeometry.setAttribute(
                 "position",
@@ -1335,17 +1044,94 @@ v</div>
                     })
                 );
 
-
-            crystalGroup.add(
+            scene.add(
                 particles
             );
 
 
-            /*
-             * =========================================
-             * ANIMATION
-             * =========================================
-             */
+            /* =========================
+               BASE
+               ========================= */
+
+            const base =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        1.7,
+                        0.22,
+                        1.7
+                    ),
+                    new THREE.MeshBasicMaterial({
+                        color: 0x080812
+                    })
+                );
+
+            base.position.y =
+                -1.18;
+
+            crystalGroup.add(
+                base
+            );
+
+
+            const baseGlow =
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        2,
+                        0.05,
+                        2
+                    ),
+                    new THREE.MeshBasicMaterial({
+                        color: 0x801cff,
+                        transparent: true,
+                        opacity: 0.35,
+                        blending:
+                            THREE.AdditiveBlending
+                    })
+                );
+
+            baseGlow.position.y =
+                -1.04;
+
+            crystalGroup.add(
+                baseGlow
+            );
+
+
+            /* =========================
+               BEAM
+               ========================= */
+
+            const beam =
+                new THREE.Mesh(
+                    new THREE.CylinderGeometry(
+                        0.08,
+                        0.08,
+                        5,
+                        16,
+                        1,
+                        true
+                    ),
+                    new THREE.MeshBasicMaterial({
+                        color: 0xff45ff,
+                        transparent: true,
+                        opacity: 0.12,
+                        blending:
+                            THREE.AdditiveBlending,
+                        depthWrite: false
+                    })
+                );
+
+            beam.position.y =
+                1.3;
+
+            crystalGroup.add(
+                beam
+            );
+
+
+            /* =========================
+               ANIMATION
+               ========================= */
 
             const clock =
                 new THREE.Clock();
@@ -1356,7 +1142,6 @@ v</div>
                 requestAnimationFrame(
                     animate
                 );
-
 
                 const time =
                     clock.getElapsedTime();
@@ -1372,24 +1157,18 @@ v</div>
                     ) * 0.10;
 
 
-                frame.rotation.x =
-                    Math.sin(
-                        time * 0.6
-                    ) * 0.025;
-
-
                 coreGroup.rotation.y =
                     -time * 1.25;
-
 
                 coreGroup.rotation.x =
                     time * 0.75;
 
 
                 topPanel.rotation.z =
+                    Math.PI / 4 +
                     Math.sin(
-                        time * 1.5
-                    ) * 0.04;
+                        time
+                    ) * 0.05;
 
 
                 const pulse =
@@ -1398,41 +1177,19 @@ v</div>
                         time * 2
                     ) * 0.08;
 
-
-                aura.scale.setScalar(
+                coreGlow.scale.setScalar(
                     pulse
                 );
 
-
-                aura.material.opacity =
-                    0.025 +
-                    (
-                        Math.sin(
-                            time * 2
-                        ) + 1
-                    ) * 0.012;
-
-
                 beam.material.opacity =
-                    0.45 +
-                    (
-                        Math.sin(
-                            time * 3
-                        ) + 1
-                    ) * 0.10;
-
-
-                beamGlow.material.opacity =
-                    0.06 +
-                    (
-                        Math.sin(
-                            time * 3
-                        ) + 1
-                    ) * 0.025;
+                    0.09 +
+                    Math.sin(
+                        time * 2
+                    ) * 0.04;
 
 
                 particles.rotation.y =
-                    time * 0.06;
+                    time * 0.05;
 
 
                 renderer.render(
@@ -1445,11 +1202,9 @@ v</div>
             animate();
 
 
-            /*
-             * =========================================
-             * RESIZE
-             * =========================================
-             */
+            /* =========================
+               RESIZE
+               ========================= */
 
             window.addEventListener(
                 "resize",
@@ -1459,13 +1214,18 @@ v</div>
                         window.innerWidth /
                         window.innerHeight;
 
-
                     camera.updateProjectionMatrix();
-
 
                     renderer.setSize(
                         window.innerWidth,
                         window.innerHeight
+                    );
+
+                    renderer.setPixelRatio(
+                        Math.min(
+                            window.devicePixelRatio,
+                            2
+                        )
                     );
                 }
             );
