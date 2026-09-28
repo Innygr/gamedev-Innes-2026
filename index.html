@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>GameDev Innes 2026</title>
 
     <style>
@@ -10,9 +12,12 @@
             src: url("Sga-Regular.ttf") format("truetype");
         }
 
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            min-height: 100%;
             background: black;
             color: white;
             font-family: Arial, sans-serif;
@@ -24,9 +29,10 @@
 
         #space {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
             object-fit: cover;
             z-index: 0;
             pointer-events: none;
@@ -34,10 +40,11 @@
 
         #crystalCanvas {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 2;
             pointer-events: none;
         }
 
@@ -47,8 +54,19 @@
             padding: 20px;
         }
 
-        a {
-            color: cyan;
+        #page a,
+        #page a:link,
+        #page a:visited {
+            color: #00ffff !important;
+            text-decoration: underline;
+        }
+
+        #page a:hover {
+            color: #ffffff !important;
+        }
+
+        #page a:active {
+            color: #00ffff !important;
         }
 
         h1 {
@@ -65,7 +83,8 @@
         }
 
         @keyframes funFactPulse {
-            0%, 100% {
+            0%,
+            100% {
                 transform: rotate(-10deg) scale(0.75);
             }
 
@@ -79,12 +98,22 @@
             font-weight: bold;
             font-size: 24px;
         }
+
+        .downArrow {
+            font-size: 32px;
+            line-height: 28px;
+            white-space: pre-line;
+        }
     </style>
 </head>
 
 <body>
 
-    <img id="space" src="SpaceBG.png" alt="">
+    <img
+        id="space"
+        src="SpaceBG.png"
+        alt=""
+    >
 
     <canvas id="crystalCanvas"></canvas>
 
@@ -94,13 +123,18 @@
 
         <p>btw I made the background image on blender</p>
 
-        <img src="NegInny.png" width="50" alt="">
+        <img
+            src="NegInny.png"
+            width="50"
+            alt=""
+        >
 
         <br>
 
         <p id="dailyFact">Loading fun fact...</p>
 
-        <br><br>
+        <br>
+        <br>
 
         <p>
             <a href="https://github.com/Innygr/gamedev-Innes-2026">
@@ -252,13 +286,36 @@
 
         </ol>
 
-        <br><br><br><br><br><br><br><br><br><br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
-        <img src="NegInny.png" width="75" alt="">
+        <img
+            src="NegInny.png"
+            width="75"
+            alt=""
+        >
 
-        ➡️
+        <div class="downArrow">|
+v</div>
 
-        <br><br><br><br><br><br><br><br><br><br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
         <a href="https://innygr.github.io/Card-Stuff-Yes/">
             Card Stuff Yes
@@ -269,6 +326,9 @@
         </p>
 
     </div>
+
+
+    <!-- Fun Facts -->
 
     <script src="funfacts.js"></script>
 
@@ -283,1429 +343,1448 @@
             ) / 86400000
         );
 
-        const factIndex = dayNumber % funFacts.length;
+        if (
+            typeof funFacts !== "undefined" &&
+            funFacts.length > 0
+        ) {
+            const factIndex =
+                dayNumber % funFacts.length;
 
-        document.getElementById("dailyFact").textContent =
-            funFacts[factIndex];
+            document.getElementById(
+                "dailyFact"
+            ).textContent =
+                funFacts[factIndex];
+        }
     </script>
+
+
+    <!-- Three.js -->
 
     <script src="three.min.js"></script>
 
     <script>
-        const canvas = document.getElementById("crystalCanvas");
 
-        const scene = new THREE.Scene();
+        if (typeof THREE === "undefined") {
 
-        const camera = new THREE.PerspectiveCamera(
-            60,
-            window.innerWidth / window.innerHeight,
-            0.1,
-            1000
-        );
-
-        camera.position.z = 7;
-
-        const renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            alpha: true,
-            antialias: true
-        });
-
-        renderer.setPixelRatio(
-            Math.min(window.devicePixelRatio, 2)
-        );
-
-        renderer.setSize(
-            window.innerWidth,
-            window.innerHeight
-        );
-
-        const crystalGroup = new THREE.Group();
-
-        crystalGroup.position.y = 0.1;
-
-        scene.add(crystalGroup);
-
-
-        function createCrystalGeometry(radius, height) {
-
-            const yTop = height * 0.5;
-            const yUpper = height * 0.18;
-            const yLower = -height * 0.18;
-            const yBottom = -height * 0.5;
-
-            const vertices = [
-                0, yTop, 0,
-
-                radius, yUpper, 0,
-                0, yUpper, radius,
-                -radius, yUpper, 0,
-                0, yUpper, -radius,
-
-                radius, yLower, 0,
-                0, yLower, radius,
-                -radius, yLower, 0,
-                0, yLower, -radius,
-
-                0, yBottom, 0
-            ];
-
-            const indices = [
-
-                0, 1, 2,
-                0, 2, 3,
-                0, 3, 4,
-                0, 4, 1,
-
-                1, 5, 6,
-                1, 6, 2,
-
-                2, 6, 7,
-                2, 7, 3,
-
-                3, 7, 8,
-                3, 8, 4,
-
-                4, 8, 5,
-                4, 5, 1,
-
-                9, 6, 5,
-                9, 7, 6,
-                9, 8, 7,
-                9, 5, 8
-            ];
-
-            const geometry = new THREE.BufferGeometry();
-
-            geometry.setAttribute(
-                "position",
-                new THREE.Float32BufferAttribute(
-                    vertices,
-                    3
-                )
+            console.error(
+                "Three.js did not load. Make sure three.min.js is in the same folder as this HTML file."
             );
 
-            geometry.setIndex(indices);
-
-            geometry.computeVertexNormals();
-
-            return geometry;
-        }
-
-
-        const crystalGeometry =
-            createCrystalGeometry(1.05, 3.25);
-
-
-        const crystalMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xb875ff,
-
-                transparent: true,
-
-                opacity: 0.48,
-
-                side: THREE.DoubleSide,
-
-                blending: THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const crystal =
-            new THREE.Mesh(
-                crystalGeometry,
-                crystalMaterial
-            );
-
-        crystalGroup.add(crystal);
-
-
-        const crystalGlowMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xd9a6ff,
-
-                transparent: true,
-
-                opacity: 0.13,
-
-                side: THREE.DoubleSide,
-
-                blending: THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const crystalGlow =
-            new THREE.Mesh(
-                crystalGeometry,
-                crystalGlowMaterial
-            );
-
-        crystalGlow.scale.setScalar(1.08);
-
-        crystalGroup.add(crystalGlow);
-
-
-        const coreGroup =
-            new THREE.Group();
-
-        crystalGroup.add(coreGroup);
-
-
-        const coreGeometry =
-            new THREE.BoxGeometry(
-                0.58,
-                0.58,
-                0.58
-            );
-
-
-        const coreMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xf4e8ff,
-
-                transparent: true,
-
-                opacity: 0.95,
-
-                blending: THREE.AdditiveBlending
-            });
-
-
-        const core =
-            new THREE.Mesh(
-                coreGeometry,
-                coreMaterial
-            );
-
-        coreGroup.add(core);
-
-
-        const coreGlowGeometry =
-            new THREE.BoxGeometry(
-                0.82,
-                0.82,
-                0.82
-            );
-
-
-        const coreGlowMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xc77dff,
-
-                transparent: true,
-
-                opacity: 0.16,
-
-                blending: THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const coreGlow =
-            new THREE.Mesh(
-                coreGlowGeometry,
-                coreGlowMaterial
-            );
-
-        coreGroup.add(coreGlow);
-
-
-        const outerRadius = 1.48;
-
-        const outerHeight = 4.35;
-
-        const glassGeometry =
-            createCrystalGeometry(
-                outerRadius,
-                outerHeight
-            );
-
-
-        const glassMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xb57cff,
-
-                transparent: true,
-
-                opacity: 0.035,
-
-                side: THREE.DoubleSide,
-
-                blending: THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const glassCrystal =
-            new THREE.Mesh(
-                glassGeometry,
-                glassMaterial
-            );
-
-        crystalGroup.add(glassCrystal);
-
-
-        const glassEdges =
-            new THREE.Group();
-
-        crystalGroup.add(glassEdges);
-
-
-        const edgeMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xc58cff,
-
-                transparent: true,
-
-                opacity: 0.72,
-
-                blending: THREE.AdditiveBlending
-            });
-
-
-        const glowEdgeMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xd9aaff,
-
-                transparent: true,
-
-                opacity: 0.18,
-
-                blending: THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        function makeEdge(a, b) {
-
-            const start =
-                new THREE.Vector3(
-                    a.x,
-                    a.y,
-                    a.z
-                );
-
-            const end =
-                new THREE.Vector3(
-                    b.x,
-                    b.y,
-                    b.z
-                );
-
-
-            const midpoint =
-                new THREE.Vector3();
-
-
-            midpoint.addVectors(
-                start,
-                end
-            );
-
-
-            midpoint.multiplyScalar(0.5);
-
-
-            const direction =
-                new THREE.Vector3();
-
-
-            direction.subVectors(
-                end,
-                start
-            );
-
-
-            const length =
-                direction.length();
-
-
-            const geometry =
-                new THREE.BoxGeometry(
-                    0.115,
-                    0.115,
-                    length
-                );
-
-
-            const edge =
-                new THREE.Mesh(
-                    geometry,
-                    edgeMaterial
-                );
-
-
-            edge.position.copy(midpoint);
-
-
-            edge.quaternion.setFromUnitVectors(
-
-                new THREE.Vector3(
-                    0,
-                    0,
-                    1
-                ),
-
-                direction.normalize()
-            );
-
-
-            glassEdges.add(edge);
-
-
-            const glowGeometry =
-                new THREE.BoxGeometry(
-                    0.22,
-                    0.22,
-                    length * 1.01
-                );
-
-
-            const glow =
-                new THREE.Mesh(
-                    glowGeometry,
-                    glowEdgeMaterial
-                );
-
-
-            glow.position.copy(midpoint);
-
-            glow.quaternion.copy(
-                edge.quaternion
-            );
-
-            glassEdges.add(glow);
-
-
-            return {
-                start: start,
-                end: end
-            };
-        }
-
-
-        const h = outerHeight;
-
-        const r = outerRadius;
-
-        const upperY = h * 0.18;
-
-        const lowerY = -h * 0.18;
-
-
-        const top =
-            new THREE.Vector3(
-                0,
-                h / 2,
-                0
-            );
-
-
-        const bottom =
-            new THREE.Vector3(
-                0,
-                -h / 2,
-                0
-            );
-
-
-        const U1 =
-            new THREE.Vector3(
-                r,
-                upperY,
-                0
-            );
-
-
-        const U2 =
-            new THREE.Vector3(
-                0,
-                upperY,
-                r
-            );
-
-
-        const U3 =
-            new THREE.Vector3(
-                -r,
-                upperY,
-                0
-            );
-
-
-        const U4 =
-            new THREE.Vector3(
-                0,
-                upperY,
-                -r
-            );
-
-
-        const L1 =
-            new THREE.Vector3(
-                r,
-                lowerY,
-                0
-            );
-
-
-        const L2 =
-            new THREE.Vector3(
-                0,
-                lowerY,
-                r
-            );
-
-
-        const L3 =
-            new THREE.Vector3(
-                -r,
-                lowerY,
-                0
-            );
-
-
-        const L4 =
-            new THREE.Vector3(
-                0,
-                lowerY,
-                -r
-            );
-
-
-        const edges = [
-
-            [top, U1],
-            [top, U2],
-            [top, U3],
-            [top, U4],
-
-            [U1, U2],
-            [U2, U3],
-            [U3, U4],
-            [U4, U1],
-
-            [U1, L1],
-            [U2, L2],
-            [U3, L3],
-            [U4, L4],
-
-            [L1, L2],
-            [L2, L3],
-            [L3, L4],
-            [L4, L1],
-
-            [bottom, L1],
-            [bottom, L2],
-            [bottom, L3],
-            [bottom, L4]
-        ];
-
-
-        const edgeData = [];
-
-
-        for (
-            let i = 0;
-            i < edges.length;
-            i++
-        ) {
-
-            edgeData.push(
-                makeEdge(
-                    edges[i][0],
-                    edges[i][1]
-                )
-            );
-        }
-
-
-        const battlements =
-            new THREE.Group();
-
-        crystalGroup.add(
-            battlements
-        );
-
-
-        const battlementGeometry =
-            new THREE.BoxGeometry(
-                0.20,
-                0.20,
-                0.20
-            );
-
-
-        const battlementMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xd39aff,
-
-                transparent: true,
-
-                opacity: 0.92,
-
-                blending: THREE.AdditiveBlending
-            });
-
-
-        const battlementGlowGeometry =
-            new THREE.BoxGeometry(
-                0.31,
-                0.31,
-                0.31
-            );
-
-
-        const battlementGlowMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xd9aaff,
-
-                transparent: true,
-
-                opacity: 0.17,
-
-                blending: THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        function addBattlement(a, b, t) {
-
-            const position =
-                new THREE.Vector3();
-
-
-            position.lerpVectors(
-                a,
-                b,
-                t
-            );
-
-
-            const block =
-                new THREE.Mesh(
-                    battlementGeometry,
-                    battlementMaterial
-                );
-
-
-            block.position.copy(
-                position
-            );
-
-
-            const direction =
-                new THREE.Vector3();
-
-
-            direction.subVectors(
-                b,
-                a
-            ).normalize();
-
-
-            block.quaternion.setFromUnitVectors(
-
-                new THREE.Vector3(
-                    0,
-                    1,
-                    0
-                ),
-
-                direction
-            );
-
-
-            battlements.add(block);
-
-
-            const glow =
-                new THREE.Mesh(
-                    battlementGlowGeometry,
-                    battlementGlowMaterial
-                );
-
-
-            glow.position.copy(
-                position
-            );
-
-
-            glow.quaternion.copy(
-                block.quaternion
-            );
-
-
-            battlements.add(glow);
-        }
-
-
-        for (
-            let i = 0;
-            i < edgeData.length;
-            i++
-        ) {
-
-            const edge =
-                edgeData[i];
-
-            addBattlement(
-                edge.start,
-                edge.end,
-                0.28
-            );
-
-            addBattlement(
-                edge.start,
-                edge.end,
-                0.50
-            );
-
-            addBattlement(
-                edge.start,
-                edge.end,
-                0.72
-            );
-        }
-
-
-        const sgaGlyphs = [
-            "ᔑ",
-            "ʖ",
-            "ᓵ",
-            "↸",
-            "ᒷ",
-            "⎓",
-            "⊣",
-            "⍑"
-        ];
-
-
-        function makeGlyph(character) {
+        } else {
 
             const canvas =
-                document.createElement(
-                    "canvas"
+                document.getElementById(
+                    "crystalCanvas"
                 );
 
 
-            canvas.width = 256;
+            const scene =
+                new THREE.Scene();
 
-            canvas.height = 256;
 
-
-            const ctx =
-                canvas.getContext(
-                    "2d"
+            const camera =
+                new THREE.PerspectiveCamera(
+                    60,
+                    window.innerWidth /
+                        window.innerHeight,
+                    0.1,
+                    1000
                 );
 
 
-            ctx.clearRect(
+            camera.position.set(
                 0,
                 0,
-                256,
-                256
+                7
             );
 
 
-            ctx.font =
-                "bold 150px SGA, Arial";
+            const renderer =
+                new THREE.WebGLRenderer({
+                    canvas: canvas,
+                    alpha: true,
+                    antialias: true
+                });
 
 
-            ctx.textAlign =
-                "center";
-
-
-            ctx.textBaseline =
-                "middle";
-
-
-            ctx.shadowColor =
-                "#ff4fd8";
-
-
-            ctx.shadowBlur =
-                25;
-
-
-            ctx.fillStyle =
-                "#ff66dd";
-
-
-            ctx.fillText(
-                character,
-                128,
-                128
+            renderer.setPixelRatio(
+                Math.min(
+                    window.devicePixelRatio,
+                    2
+                )
             );
 
 
-            const texture =
-                new THREE.CanvasTexture(
-                    canvas
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+
+            const crystalGroup =
+                new THREE.Group();
+
+
+            crystalGroup.position.set(
+                0,
+                0,
+                0
+            );
+
+
+            scene.add(
+                crystalGroup
+            );
+
+
+            /*
+                Crystal geometry
+            */
+
+            function createCrystalGeometry(
+                radius,
+                height
+            ) {
+
+                const yTop =
+                    height * 0.5;
+
+                const yUpper =
+                    height * 0.18;
+
+                const yLower =
+                    -height * 0.18;
+
+                const yBottom =
+                    -height * 0.5;
+
+
+                const vertices = [
+
+                    0, yTop, 0,
+
+                    radius, yUpper, 0,
+
+                    0, yUpper, radius,
+
+                    -radius, yUpper, 0,
+
+                    0, yUpper, -radius,
+
+                    radius, yLower, 0,
+
+                    0, yLower, radius,
+
+                    -radius, yLower, 0,
+
+                    0, yLower, -radius,
+
+                    0, yBottom, 0
+
+                ];
+
+
+                const indices = [
+
+                    0, 1, 2,
+                    0, 2, 3,
+                    0, 3, 4,
+                    0, 4, 1,
+
+                    1, 5, 6,
+                    1, 6, 2,
+
+                    2, 6, 7,
+                    2, 7, 3,
+
+                    3, 7, 8,
+                    3, 8, 4,
+
+                    4, 8, 5,
+                    4, 5, 1,
+
+                    9, 6, 5,
+                    9, 7, 6,
+                    9, 8, 7,
+                    9, 5, 8
+
+                ];
+
+
+                const geometry =
+                    new THREE.BufferGeometry();
+
+
+                geometry.setAttribute(
+                    "position",
+                    new THREE.Float32BufferAttribute(
+                        vertices,
+                        3
+                    )
                 );
 
 
-            texture.needsUpdate =
-                true;
+                geometry.setIndex(
+                    indices
+                );
 
 
-            const material =
+                geometry.computeVertexNormals();
+
+
+                return geometry;
+            }
+
+
+            /*
+                Main crystal
+            */
+
+            const crystalGeometry =
+                createCrystalGeometry(
+                    1.05,
+                    3.25
+                );
+
+
+            const crystalMaterial =
                 new THREE.MeshBasicMaterial({
 
-                    map: texture,
+                    color: 0xb875ff,
 
                     transparent: true,
 
-                    side: THREE.DoubleSide,
+                    opacity: 0.55,
+
+                    side:
+                        THREE.DoubleSide,
 
                     blending:
                         THREE.AdditiveBlending,
 
                     depthWrite: false
+
                 });
 
 
-            const geometry =
-                new THREE.PlaneGeometry(
-                    0.52,
-                    0.52
+            const crystal =
+                new THREE.Mesh(
+                    crystalGeometry,
+                    crystalMaterial
                 );
 
 
-            return new THREE.Mesh(
-                geometry,
-                material
+            crystalGroup.add(
+                crystal
             );
-        }
 
 
-        const glyphPositions = [
+            /*
+                Crystal glow
+            */
 
-            {
-                pos:
+            const glowMaterial =
+                new THREE.MeshBasicMaterial({
+
+                    color: 0xd9a6ff,
+
+                    transparent: true,
+
+                    opacity: 0.16,
+
+                    side:
+                        THREE.DoubleSide,
+
+                    blending:
+                        THREE.AdditiveBlending,
+
+                    depthWrite: false
+
+                });
+
+
+            const crystalGlow =
+                new THREE.Mesh(
+                    crystalGeometry,
+                    glowMaterial
+                );
+
+
+            crystalGlow.scale.setScalar(
+                1.08
+            );
+
+
+            crystalGroup.add(
+                crystalGlow
+            );
+
+
+            /*
+                Inner cube
+            */
+
+            const coreGroup =
+                new THREE.Group();
+
+
+            crystalGroup.add(
+                coreGroup
+            );
+
+
+            const core =
+                new THREE.Mesh(
+
+                    new THREE.BoxGeometry(
+                        0.58,
+                        0.58,
+                        0.58
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: 0xf4e8ff,
+
+                        transparent: true,
+
+                        opacity: 1,
+
+                        blending:
+                            THREE.AdditiveBlending
+
+                    })
+
+                );
+
+
+            coreGroup.add(
+                core
+            );
+
+
+            const coreGlow =
+                new THREE.Mesh(
+
+                    new THREE.BoxGeometry(
+                        0.85,
+                        0.85,
+                        0.85
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: 0xc77dff,
+
+                        transparent: true,
+
+                        opacity: 0.2,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+
+                    })
+
+                );
+
+
+            coreGroup.add(
+                coreGlow
+            );
+
+
+            /*
+                Outer glass shell
+            */
+
+            const outerRadius =
+                1.48;
+
+
+            const outerHeight =
+                4.35;
+
+
+            const glassGeometry =
+                createCrystalGeometry(
+                    outerRadius,
+                    outerHeight
+                );
+
+
+            const glass =
+                new THREE.Mesh(
+
+                    glassGeometry,
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: 0xb57cff,
+
+                        transparent: true,
+
+                        opacity: 0.045,
+
+                        side:
+                            THREE.DoubleSide,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+
+                    })
+
+                );
+
+
+            crystalGroup.add(
+                glass
+            );
+
+
+            /*
+                Thick outer edges
+            */
+
+            const glassEdges =
+                new THREE.Group();
+
+
+            crystalGroup.add(
+                glassEdges
+            );
+
+
+            const edgeMaterial =
+                new THREE.MeshBasicMaterial({
+
+                    color: 0xc58cff,
+
+                    transparent: true,
+
+                    opacity: 0.85,
+
+                    blending:
+                        THREE.AdditiveBlending
+
+                });
+
+
+            const edgeGlowMaterial =
+                new THREE.MeshBasicMaterial({
+
+                    color: 0xd9aaff,
+
+                    transparent: true,
+
+                    opacity: 0.2,
+
+                    blending:
+                        THREE.AdditiveBlending,
+
+                    depthWrite: false
+
+                });
+
+
+            function makeEdge(
+                a,
+                b
+            ) {
+
+                const start =
+                    a.clone();
+
+
+                const end =
+                    b.clone();
+
+
+                const midpoint =
+                    new THREE.Vector3();
+
+
+                midpoint.addVectors(
+                    start,
+                    end
+                );
+
+
+                midpoint.multiplyScalar(
+                    0.5
+                );
+
+
+                const direction =
+                    new THREE.Vector3();
+
+
+                direction.subVectors(
+                    end,
+                    start
+                );
+
+
+                const length =
+                    direction.length();
+
+
+                const edge =
+                    new THREE.Mesh(
+
+                        new THREE.BoxGeometry(
+                            0.14,
+                            0.14,
+                            length
+                        ),
+
+                        edgeMaterial
+
+                    );
+
+
+                edge.position.copy(
+                    midpoint
+                );
+
+
+                edge.quaternion.setFromUnitVectors(
+
+                    new THREE.Vector3(
+                        0,
+                        0,
+                        1
+                    ),
+
+                    direction.normalize()
+
+                );
+
+
+                glassEdges.add(
+                    edge
+                );
+
+
+                const glow =
+                    new THREE.Mesh(
+
+                        new THREE.BoxGeometry(
+                            0.25,
+                            0.25,
+                            length * 1.01
+                        ),
+
+                        edgeGlowMaterial
+
+                    );
+
+
+                glow.position.copy(
+                    midpoint
+                );
+
+
+                glow.quaternion.copy(
+                    edge.quaternion
+                );
+
+
+                glassEdges.add(
+                    glow
+                );
+
+
+                return {
+                    start: start,
+                    end: end
+                };
+            }
+
+
+            const h =
+                outerHeight;
+
+
+            const r =
+                outerRadius;
+
+
+            const upperY =
+                h * 0.18;
+
+
+            const lowerY =
+                -h * 0.18;
+
+
+            /* Renamed from "top" and "bottom"
+               to avoid browser/global name conflicts. */
+
+            const crystalTop =
+                new THREE.Vector3(
+                    0,
+                    h / 2,
+                    0
+                );
+
+
+            const crystalBottom =
+                new THREE.Vector3(
+                    0,
+                    -h / 2,
+                    0
+                );
+
+
+            const U1 =
+                new THREE.Vector3(
+                    r,
+                    upperY,
+                    0
+                );
+
+
+            const U2 =
+                new THREE.Vector3(
+                    0,
+                    upperY,
+                    r
+                );
+
+
+            const U3 =
+                new THREE.Vector3(
+                    -r,
+                    upperY,
+                    0
+                );
+
+
+            const U4 =
+                new THREE.Vector3(
+                    0,
+                    upperY,
+                    -r
+                );
+
+
+            const L1 =
+                new THREE.Vector3(
+                    r,
+                    lowerY,
+                    0
+                );
+
+
+            const L2 =
+                new THREE.Vector3(
+                    0,
+                    lowerY,
+                    r
+                );
+
+
+            const L3 =
+                new THREE.Vector3(
+                    -r,
+                    lowerY,
+                    0
+                );
+
+
+            const L4 =
+                new THREE.Vector3(
+                    0,
+                    lowerY,
+                    -r
+                );
+
+
+            const edges = [
+
+                [crystalTop, U1],
+                [crystalTop, U2],
+                [crystalTop, U3],
+                [crystalTop, U4],
+
+                [U1, U2],
+                [U2, U3],
+                [U3, U4],
+                [U4, U1],
+
+                [U1, L1],
+                [U2, L2],
+                [U3, L3],
+                [U4, L4],
+
+                [L1, L2],
+                [L2, L3],
+                [L3, L4],
+                [L4, L1],
+
+                [crystalBottom, L1],
+                [crystalBottom, L2],
+                [crystalBottom, L3],
+                [crystalBottom, L4]
+
+            ];
+
+
+            const edgeData = [];
+
+
+            for (
+                let i = 0;
+                i < edges.length;
+                i++
+            ) {
+
+                edgeData.push(
+                    makeEdge(
+                        edges[i][0],
+                        edges[i][1]
+                    )
+                );
+
+            }
+
+
+            /*
+                Castle-wall blocks
+            */
+
+            const battlements =
+                new THREE.Group();
+
+
+            crystalGroup.add(
+                battlements
+            );
+
+
+            const battlementMaterial =
+                new THREE.MeshBasicMaterial({
+
+                    color: 0xd39aff,
+
+                    transparent: true,
+
+                    opacity: 0.95,
+
+                    blending:
+                        THREE.AdditiveBlending
+
+                });
+
+
+            const battlementGlowMaterial =
+                new THREE.MeshBasicMaterial({
+
+                    color: 0xd9aaff,
+
+                    transparent: true,
+
+                    opacity: 0.2,
+
+                    blending:
+                        THREE.AdditiveBlending,
+
+                    depthWrite: false
+
+                });
+
+
+            function addBattlement(
+                a,
+                b,
+                t
+            ) {
+
+                const position =
+                    new THREE.Vector3();
+
+
+                position.lerpVectors(
+                    a,
+                    b,
+                    t
+                );
+
+
+                const block =
+                    new THREE.Mesh(
+
+                        new THREE.BoxGeometry(
+                            0.22,
+                            0.22,
+                            0.22
+                        ),
+
+                        battlementMaterial
+
+                    );
+
+
+                block.position.copy(
+                    position
+                );
+
+
+                battlements.add(
+                    block
+                );
+
+
+                const glow =
+                    new THREE.Mesh(
+
+                        new THREE.BoxGeometry(
+                            0.34,
+                            0.34,
+                            0.34
+                        ),
+
+                        battlementGlowMaterial
+
+                    );
+
+
+                glow.position.copy(
+                    position
+                );
+
+
+                battlements.add(
+                    glow
+                );
+            }
+
+
+            for (
+                let i = 0;
+                i < edgeData.length;
+                i++
+            ) {
+
+                addBattlement(
+                    edgeData[i].start,
+                    edgeData[i].end,
+                    0.28
+                );
+
+
+                addBattlement(
+                    edgeData[i].start,
+                    edgeData[i].end,
+                    0.50
+                );
+
+
+                addBattlement(
+                    edgeData[i].start,
+                    edgeData[i].end,
+                    0.72
+                );
+
+            }
+
+
+            /*
+                SGA glyphs
+            */
+
+            const sgaGlyphs = [
+                "ᔑ",
+                "ʖ",
+                "ᓵ",
+                "↸"
+            ];
+
+
+            function makeGlyph(
+                character
+            ) {
+
+                const glyphCanvas =
+                    document.createElement(
+                        "canvas"
+                    );
+
+
+                glyphCanvas.width =
+                    256;
+
+
+                glyphCanvas.height =
+                    256;
+
+
+                const ctx =
+                    glyphCanvas.getContext(
+                        "2d"
+                    );
+
+
+                ctx.clearRect(
+                    0,
+                    0,
+                    256,
+                    256
+                );
+
+
+                ctx.font =
+                    "bold 150px SGA, Arial";
+
+
+                ctx.textAlign =
+                    "center";
+
+
+                ctx.textBaseline =
+                    "middle";
+
+
+                ctx.shadowColor =
+                    "#ff4fd8";
+
+
+                ctx.shadowBlur =
+                    25;
+
+
+                ctx.fillStyle =
+                    "#ff66dd";
+
+
+                ctx.fillText(
+                    character,
+                    128,
+                    128
+                );
+
+
+                const texture =
+                    new THREE.CanvasTexture(
+                        glyphCanvas
+                    );
+
+
+                const material =
+                    new THREE.MeshBasicMaterial({
+
+                        map: texture,
+
+                        transparent: true,
+
+                        side:
+                            THREE.DoubleSide,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+
+                    });
+
+
+                return new THREE.Mesh(
+
+                    new THREE.PlaneGeometry(
+                        0.52,
+                        0.52
+                    ),
+
+                    material
+
+                );
+            }
+
+
+            const glyphPositions = [
+
+                [
                     new THREE.Vector3(
                         0,
                         0.05,
                         1.04
                     ),
+                    0
+                ],
 
-                rot:
-                    new THREE.Euler(
-                        0,
-                        0,
-                        0
-                    )
-            },
-
-            {
-                pos:
+                [
                     new THREE.Vector3(
                         1.04,
                         0.05,
                         0
                     ),
+                    Math.PI / 2
+                ],
 
-                rot:
-                    new THREE.Euler(
-                        0,
-                        Math.PI / 2,
-                        0
-                    )
-            },
-
-            {
-                pos:
+                [
                     new THREE.Vector3(
                         0,
                         0.05,
                         -1.04
                     ),
+                    Math.PI
+                ],
 
-                rot:
-                    new THREE.Euler(
-                        0,
-                        Math.PI,
-                        0
-                    )
-            },
-
-            {
-                pos:
+                [
                     new THREE.Vector3(
                         -1.04,
                         0.05,
                         0
                     ),
+                    -Math.PI / 2
+                ]
 
-                rot:
-                    new THREE.Euler(
-                        0,
-                        -Math.PI / 2,
-                        0
-                    )
-            }
-        ];
+            ];
 
 
-        for (
-            let i = 0;
-            i < glyphPositions.length;
-            i++
-        ) {
+            for (
+                let i = 0;
+                i < glyphPositions.length;
+                i++
+            ) {
 
-            const glyph =
-                makeGlyph(
-                    sgaGlyphs[i]
+                const glyph =
+                    makeGlyph(
+                        sgaGlyphs[i]
+                    );
+
+
+                glyph.position.copy(
+                    glyphPositions[i][0]
                 );
 
 
-            glyph.position.copy(
-                glyphPositions[i].pos
-            );
+                glyph.rotation.y =
+                    glyphPositions[i][1];
 
 
-            glyph.rotation.copy(
-                glyphPositions[i].rot
-            );
+                crystalGroup.add(
+                    glyph
+                );
+
+            }
+
+
+            /*
+                Purple aura
+            */
+
+            const aura =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        2.25,
+                        32,
+                        32
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: 0x9b4dff,
+
+                        transparent: true,
+
+                        opacity: 0.04,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+
+                    })
+
+                );
 
 
             crystalGroup.add(
-                glyph
-            );
-        }
-
-
-        const auraGeometry =
-            new THREE.SphereGeometry(
-                2.25,
-                32,
-                32
+                aura
             );
 
 
-        const auraMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0x9b4dff,
-
-                transparent: true,
-
-                opacity: 0.035,
-
-                blending:
-                    THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const aura =
-            new THREE.Mesh(
-                auraGeometry,
-                auraMaterial
-            );
-
-
-        crystalGroup.add(
-            aura
-        );
-
-
-        const beamGeometry =
-            new THREE.CylinderGeometry(
-                0.055,
-                0.055,
-                10,
-                16
-            );
-
-
-        const beamMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xd08cff,
-
-                transparent: true,
-
-                opacity: 0.72,
-
-                blending:
-                    THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const beam =
-            new THREE.Mesh(
-                beamGeometry,
-                beamMaterial
-            );
-
-
-        beam.position.y =
-            -0.1;
-
-
-        crystalGroup.add(
-            beam
-        );
-
-
-        const beamGlowGeometry =
-            new THREE.CylinderGeometry(
-                0.15,
-                0.15,
-                10,
-                16
-            );
-
-
-        const beamGlowMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0xa94dff,
-
-                transparent: true,
-
-                opacity: 0.10,
-
-                blending:
-                    THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const beamGlow =
-            new THREE.Mesh(
-                beamGlowGeometry,
-                beamGlowMaterial
-            );
-
-
-        beamGlow.position.y =
-            -0.1;
-
-
-        crystalGroup.add(
-            beamGlow
-        );
-
-
-        const baseGroup =
-            new THREE.Group();
-
-
-        baseGroup.position.y =
-            -2.15;
-
-
-        crystalGroup.add(
-            baseGroup
-        );
-
-
-        const baseMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0x181020,
-
-                transparent: true,
-
-                opacity: 0.95
-            });
-
-
-        const baseGeometry =
-            new THREE.BoxGeometry(
-                1.65,
-                0.32,
-                1.65
-            );
-
-
-        const base =
-            new THREE.Mesh(
-                baseGeometry,
-                baseMaterial
-            );
-
-
-        baseGroup.add(
-            base
-        );
-
-
-        const baseTopGeometry =
-            new THREE.BoxGeometry(
-                1.25,
-                0.20,
-                1.25
-            );
-
-
-        const baseTopMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0x29183c,
-
-                transparent: true,
-
-                opacity: 0.98
-            });
-
-
-        const baseTop =
-            new THREE.Mesh(
-                baseTopGeometry,
-                baseTopMaterial
-            );
-
-
-        baseTop.position.y =
-            0.22;
-
-
-        baseGroup.add(
-            baseTop
-        );
-
-
-        const baseEdgeMaterial =
-            new THREE.MeshBasicMaterial({
-
-                color: 0x7040a0,
-
-                transparent: true,
-
-                opacity: 0.65,
-
-                blending:
-                    THREE.AdditiveBlending
-            });
-
-
-        const baseEdgeSize =
-            1.67;
-
-
-        const baseEdgeHeight =
-            0.05;
-
-
-        const baseEdges = [
-
-            {
-                x: 0,
-                z: baseEdgeSize / 2,
-                sx: baseEdgeSize,
-                sz: baseEdgeHeight
-            },
-
-            {
-                x: 0,
-                z: -baseEdgeSize / 2,
-                sx: baseEdgeSize,
-                sz: baseEdgeHeight
-            },
-
-            {
-                x: baseEdgeSize / 2,
-                z: 0,
-                sx: baseEdgeHeight,
-                sz: baseEdgeSize
-            },
-
-            {
-                x: -baseEdgeSize / 2,
-                z: 0,
-                sx: baseEdgeHeight,
-                sz: baseEdgeSize
-            }
-        ];
-
-
-        for (
-            let i = 0;
-            i < baseEdges.length;
-            i++
-        ) {
-
-            const e =
-                baseEdges[i];
-
-
-            const geometry =
-                new THREE.BoxGeometry(
-                    e.sx,
-                    0.07,
-                    e.sz
-                );
-
-
-            const mesh =
+            /*
+                Beam
+            */
+
+            const beam =
                 new THREE.Mesh(
-                    geometry,
-                    baseEdgeMaterial
+
+                    new THREE.CylinderGeometry(
+                        0.055,
+                        0.055,
+                        10,
+                        16
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: 0xd08cff,
+
+                        transparent: true,
+
+                        opacity: 0.75,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+
+                    })
+
                 );
 
 
-            mesh.position.set(
-                e.x,
-                0.18,
-                e.z
+            crystalGroup.add(
+                beam
             );
+
+
+            const beamGlow =
+                new THREE.Mesh(
+
+                    new THREE.CylinderGeometry(
+                        0.15,
+                        0.15,
+                        10,
+                        16
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: 0xa94dff,
+
+                        transparent: true,
+
+                        opacity: 0.12,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+
+                    })
+
+                );
+
+
+            crystalGroup.add(
+                beamGlow
+            );
+
+
+            /*
+                Base
+            */
+
+            const baseGroup =
+                new THREE.Group();
+
+
+            baseGroup.position.y =
+                -2.15;
+
+
+            crystalGroup.add(
+                baseGroup
+            );
+
+
+            const base =
+                new THREE.Mesh(
+
+                    new THREE.BoxGeometry(
+                        1.65,
+                        0.32,
+                        1.65
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: 0x181020
+
+                    })
+
+                );
 
 
             baseGroup.add(
-                mesh
-            );
-        }
-
-
-        const particleCount =
-            500;
-
-
-        const particlePositions =
-            new Float32Array(
-                particleCount * 3
+                base
             );
 
 
-        for (
-            let i = 0;
-            i < particleCount;
-            i++
-        ) {
+            const baseTop =
+                new THREE.Mesh(
 
-            const radius =
-                1.5 +
-                Math.random() * 2.7;
+                    new THREE.BoxGeometry(
+                        1.25,
+                        0.20,
+                        1.25
+                    ),
 
+                    new THREE.MeshBasicMaterial({
 
-            const angle =
-                Math.random() *
-                Math.PI * 2;
+                        color: 0x29183c
 
+                    })
 
-            const height =
-                -2 +
-                Math.random() * 4;
+                );
 
 
-            particlePositions[
-                i * 3
-            ] =
-                Math.cos(angle) *
-                radius;
+            baseTop.position.y =
+                0.22;
 
 
-            particlePositions[
-                i * 3 + 1
-            ] =
-                height;
-
-
-            particlePositions[
-                i * 3 + 2
-            ] =
-                Math.sin(angle) *
-                radius;
-        }
-
-
-        const particleGeometry =
-            new THREE.BufferGeometry();
-
-
-        particleGeometry.setAttribute(
-            "position",
-            new THREE.BufferAttribute(
-                particlePositions,
-                3
-            )
-        );
-
-
-        const particleMaterial =
-            new THREE.PointsMaterial({
-
-                color: 0xd89cff,
-
-                size: 0.035,
-
-                transparent: true,
-
-                opacity: 0.75,
-
-                blending:
-                    THREE.AdditiveBlending,
-
-                depthWrite: false
-            });
-
-
-        const particles =
-            new THREE.Points(
-                particleGeometry,
-                particleMaterial
+            baseGroup.add(
+                baseTop
             );
 
 
-        crystalGroup.add(
-            particles
-        );
+            /*
+                Particles
+            */
+
+            const particleCount =
+                500;
 
 
-        const clock =
-            new THREE.Clock();
+            const particlePositions =
+                new Float32Array(
+                    particleCount * 3
+                );
 
 
-        function animate() {
+            for (
+                let i = 0;
+                i < particleCount;
+                i++
+            ) {
 
-            requestAnimationFrame(
-                animate
+                const radius =
+                    1.5 +
+                    Math.random() * 2.7;
+
+
+                const angle =
+                    Math.random() *
+                    Math.PI * 2;
+
+
+                const height =
+                    -2 +
+                    Math.random() * 4;
+
+
+                particlePositions[
+                    i * 3
+                ] =
+                    Math.cos(angle) *
+                    radius;
+
+
+                particlePositions[
+                    i * 3 + 1
+                ] =
+                    height;
+
+
+                particlePositions[
+                    i * 3 + 2
+                ] =
+                    Math.sin(angle) *
+                    radius;
+
+            }
+
+
+            const particleGeometry =
+                new THREE.BufferGeometry();
+
+
+            particleGeometry.setAttribute(
+                "position",
+                new THREE.BufferAttribute(
+                    particlePositions,
+                    3
+                )
             );
 
 
-            const time =
-                clock.getElapsedTime();
+            const particles =
+                new THREE.Points(
+
+                    particleGeometry,
+
+                    new THREE.PointsMaterial({
+
+                        color: 0xd89cff,
+
+                        size: 0.035,
+
+                        transparent: true,
+
+                        opacity: 0.75,
+
+                        blending:
+                            THREE.AdditiveBlending,
+
+                        depthWrite: false
+
+                    })
+
+                );
 
 
-            crystal.rotation.y =
-                time * 0.55;
-
-
-            crystal.rotation.x =
-                Math.sin(
-                    time * 0.45
-                ) * 0.06;
-
-
-            crystalGlow.rotation.y =
-                time * 0.55;
-
-
-            glassCrystal.rotation.y =
-                -time * 0.30;
-
-
-            glassEdges.rotation.y =
-                -time * 0.30;
-
-
-            battlements.rotation.y =
-                -time * 0.30;
-
-
-            coreGroup.rotation.y =
-                -time * 1.15;
-
-
-            coreGroup.rotation.x =
-                time * 0.75;
-
-
-            const floatAmount =
-                Math.sin(
-                    time * 1.4
-                ) * 0.10;
-
-
-            crystalGroup.position.y =
-                0.1 + floatAmount;
-
-
-            const pulse =
-                1 +
-                Math.sin(
-                    time * 2
-                ) * 0.08;
-
-
-            aura.scale.setScalar(
-                pulse
+            crystalGroup.add(
+                particles
             );
 
 
-            aura.material.opacity =
-                0.025 +
-                (
+            /*
+                Animation
+            */
+
+            const clock =
+                new THREE.Clock();
+
+
+            function animate() {
+
+                requestAnimationFrame(
+                    animate
+                );
+
+
+                const time =
+                    clock.getElapsedTime();
+
+
+                crystal.rotation.y =
+                    time * 0.55;
+
+
+                crystal.rotation.x =
+                    Math.sin(
+                        time * 0.45
+                    ) * 0.06;
+
+
+                crystalGlow.rotation.y =
+                    time * 0.55;
+
+
+                glass.rotation.y =
+                    -time * 0.30;
+
+
+                glassEdges.rotation.y =
+                    -time * 0.30;
+
+
+                battlements.rotation.y =
+                    -time * 0.30;
+
+
+                coreGroup.rotation.y =
+                    -time * 1.15;
+
+
+                coreGroup.rotation.x =
+                    time * 0.75;
+
+
+                crystalGroup.position.y =
+                    Math.sin(
+                        time * 1.4
+                    ) * 0.10;
+
+
+                const pulse =
+                    1 +
                     Math.sin(
                         time * 2
-                    ) + 1
-                ) * 0.012;
+                    ) * 0.08;
 
 
-            beam.material.opacity =
-                0.58 +
-                (
-                    Math.sin(
-                        time * 3
-                    ) + 1
-                ) * 0.12;
+                aura.scale.setScalar(
+                    pulse
+                );
 
 
-            beamGlow.material.opacity =
-                0.07 +
-                (
-                    Math.sin(
-                        time * 3
-                    ) + 1
-                ) * 0.035;
+                aura.material.opacity =
+                    0.025 +
+                    (
+                        Math.sin(
+                            time * 2
+                        ) + 1
+                    ) * 0.012;
 
 
-            particles.rotation.y =
-                time * 0.06;
+                beam.material.opacity =
+                    0.58 +
+                    (
+                        Math.sin(
+                            time * 3
+                        ) + 1
+                    ) * 0.12;
 
 
-            renderer.render(
-                scene,
-                camera
-            );
-        }
+                beamGlow.material.opacity =
+                    0.07 +
+                    (
+                        Math.sin(
+                            time * 3
+                        ) + 1
+                    ) * 0.035;
 
 
-        animate();
+                particles.rotation.y =
+                    time * 0.06;
 
 
-        window.addEventListener(
-            "resize",
-            function () {
-
-                camera.aspect =
-                    window.innerWidth /
-                    window.innerHeight;
-
-
-                camera.updateProjectionMatrix();
-
-
-                renderer.setSize(
-                    window.innerWidth,
-                    window.innerHeight
+                renderer.render(
+                    scene,
+                    camera
                 );
             }
-        );
+
+
+            animate();
+
+
+            /*
+                Resize
+            */
+
+            window.addEventListener(
+                "resize",
+                function () {
+
+                    camera.aspect =
+                        window.innerWidth /
+                        window.innerHeight;
+
+
+                    camera.updateProjectionMatrix();
+
+
+                    renderer.setSize(
+                        window.innerWidth,
+                        window.innerHeight
+                    );
+
+                }
+            );
+
+        }
+
     </script>
 
 </body>
