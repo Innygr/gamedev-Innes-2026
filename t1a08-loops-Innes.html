@@ -27,19 +27,18 @@ weird number: <input id="myWeird" type=number value="2"><br>
   document.getElementById('myDiv01').innerHTML = myTemp
   }">
 
-  <input type=button value="Even number identifier" onclick="{
+<input type=button value="Even number identifier" onclick="{
     document.getElementById('myDiv01').innerHTML
     let myTemp = ''
 
     let myMax = parseInt(document.getElementById('myNum01').value
 
     for (let myLoop = 0; myLoop < myMax; myLoop++ ){
-    if (myLoop %2 == 0){
-    myTemp+= 'Even Number, '
-    }
+      if (myLoop %2 == 0){
+        myTemp+= 'Even Number, '
+     }
     myTemp += "Loop number: ' + myLoop + '<br>'
-    }
-    document.getElementById('myDiv01').innerHTML = myTemp
-    }">
-
-    <div id="myDiv01"><font color=red>...</font></div></p>
+   }
+   document.getElementById('myDiv01').innerHTML = myTemp
+}">
+<div id="myDiv01"><font color=red>...</font></div></p>
