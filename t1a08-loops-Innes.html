@@ -1,44 +1,78 @@
-<p><h2 align=center>t1a08: Loops by Innes.html</h2>
+<p>
+  <h2 align="center">t1a08: Loops by Innes.html</h2>
 
-<a href="">Would be a good reference to loops in JS, if there was a link </a><br>
+  <a href="">
+    Would be a good reference to loops in JS, if there was a link
+  </a>
+  <br>
 
   <h4>Example for input output</h4>
+
   <pre>
-    for (let myLoop = 0; myLoop < myMax; myLoop++ ){
-                                  //code or smth
+for (let myLoop = 0; myLoop &lt; myMax; myLoop++) {
+  // code or smth
+}
+  </pre>
+
+  <br>
+
+  <h4>Example code</h4>
+  <br>
+
+  Max loops:
+  <input id="myNum01" type="number" value="4">
+  <br>
+
+  weird number:
+  <input id="myWeird" type="number" value="2">
+  <br>
+  <br>
+
+  <input
+    type="button"
+    value="Basic For loop with Desicions"
+    onclick="{
+      document.getElementById('myDiv01').innerHTML = '';
+
+      let myTemp = '';
+      let myMax = parseInt(document.getElementById('myNum01').value);
+
+      for (let myLoop = 0; myLoop < myMax; myLoop++) {
+        if (myLoop * 2 > myMax) {
+          myTemp += 'cool ';
+        }
+
+        myTemp += 'Loop number: ' + myLoop + '<br>';
       }
-  </pre><br>
 
-<h4>Example code</h4><br>
-Max loops: <input id="myNum01" type=number value="4"><br>
-weird number: <input id="myWeird" type=number value="2"><br>
+      document.getElementById('myDiv01').innerHTML = myTemp;
+    }"
+  >
 
-<input type=button value="Basic For loop with Desicions" onclick="{
-  document.getElementById('myDiv01').innerHTML = ''
-  let myTemp = ''
-  let myMax = parseInt(document.getElementById('myNum01').value
+  <br>
 
-  for (let myLoop = 0; myLoop < myMax myLoop++){
-  if (myLoop * 2 > myMax){
-  myTemp += ' cool '
-  }
-  myTemp += 'Loop number: ' + myLoop + '<br>'
-  }
-  document.getElementById('myDiv01').innerHTML = myTemp
-  }">
+  <input
+    type="button"
+    value="Even number identifier"
+    onclick="{
+      document.getElementById('myDiv01').innerHTML = '';
 
-<input type=button value="Even number identifier" onclick="{
-    document.getElementById('myDiv01').innerHTML
-    let myTemp = ''
+      let myTemp = '';
+      let myMax = parseInt(document.getElementById('myNum01').value);
 
-    let myMax = parseInt(document.getElementById('myNum01').value
+      for (let myLoop = 0; myLoop < myMax; myLoop++) {
+        if (myLoop % 2 == 0) {
+          myTemp += 'Even Number, ';
+        }
 
-    for (let myLoop = 0; myLoop < myMax; myLoop++ ){
-      if (myLoop %2 == 0){
-        myTemp+= 'Even Number, '
-     }
-    myTemp += "Loop number: ' + myLoop + '<br>'
-   }
-   document.getElementById('myDiv01').innerHTML = myTemp
-}">
-<div id="myDiv01"><font color=red>...</font></div></p>
+        myTemp += 'Loop number: ' + myLoop + '<br>';
+      }
+
+      document.getElementById('myDiv01').innerHTML = myTemp;
+    }"
+  >
+
+  <div id="myDiv01">
+    <font color="red">...</font>
+  </div>
+</p>
