@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lua Playground | GameDev Innes 2026</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top, #291044 0%, #0b0712 45%, #050507 100%);
+    color: #eee;
+    font-family: 'Fira Code', monospace;
+    padding: 20px;
+}
+
+.container {
+    width: min(1050px, 100%);
+    margin: auto;
+}
+
+/* HEADER */
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+h1 {
+    margin: 0;
+    color: #bd6cff;
+    font-size: 2.3rem;
+    text-shadow: 0 0 18px rgba(180, 90, 255, 0.6);
+}
+
+.subtitle {
+    margin-top: 8px;
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* GENERAL PANELS */
+
+.panel {
+    background: rgba(13, 9, 21, 0.94);
+    border: 1px solid #7137a5;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 0 18px rgba(110, 50, 170, 0.18);
+}
+
+.panel-title {
+    color: #d69aff;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+}
+
+/* COMMANDS */
+
+.commands {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    gap: 10px;
+}
+
+.command {
+    background: #160d21;
+    border: 1px solid #4d2870;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.command:hover {
+    border-color: #bd6cff;
+    background: #241034;
+    transform: translateY(-2px);
+}
+
+.command-name {
+    color: #d58cff;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.command-description {
+    color: #888;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* EDITOR */
+
+textarea {
+    width: 100%;
+    min-height: 350px;
+
+    resize: vertical;
+
+    background: #060509;
+    color: #e7d5ff;
+
+    border: 1px solid #4f2b6d;
+    border-radius: 8px;
+
+    padding: 16px;
+
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+
+    outline: none;
+}
+
+textarea:focus {
+    border-color: #bd6cff;
+    box-shadow: 0 0 12px rgba(189,108,255,0.2);
+}
+
+/* BUTTONS */
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+button {
+    font-family: 'Fira Code', monospace;
+    color: #ead8ff;
+
+    background: #241332;
+    border: 1px solid #7137a5;
+
+    border-radius: 7px;
+    padding: 9px 15px;
+
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+button:hover {
+    background: #38204d;
+    border-color: #bd6cff;
+}
+
+.run {
+    background: #5b2188;
+    border-color: #bd6cff;
+}
+
+.run:hover {
+    background: #7730ad;
+}
+
+/* OUTPUT */
+
+#output {
+    min-height: 170px;
+    max-height: 400px;
+
+    overflow-y: auto;
+
+    background: #030303;
+    border: 1px solid #333;
+    border-radius: 8px;
+
+    padding: 15px;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    color: #d8ffd8;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.output-placeholder {
+    color: #666;
+}
+
+.error {
+    color: #ff7070;
+}
+
+/* INFO */
+
+.tip {
+    color: #999;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+code {
+    color: #d894ff;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    color: #555;
+    font-size: 12px;
+    margin-top: 30px;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    textarea {
+        min-height: 300px;
+        font-size: 13px;
+    }
+
+    .commands {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+    <h1>Lua Playground</h1>
+
+    <div class="subtitle">
+        GameDev Innes 2026 // Lua Sub-Class
+    </div>
+
+</header>
+
+
+<!-- COMMANDS -->
+
+<section class="panel">
+
+    <div class="panel-title">
+        &gt; COMMANDS
+    </div>
+
+    <div class="commands">
+
+        <div class="command" onclick="insertCommand('print')">
+            <div class="command-name">print()</div>
+            <div class="command-description">
+                Display something in the output.
+            </div>
+        </div>
+
+        <div class="command" onclick="insertCommand('variable')">
+            <div class="command-name">local</div>
+            <div class="command-description">
+                Create a variable.
+            </div>
+        </div>
+
+        <div class="command" onclick="insertCommand('if')">
+            <div class="command-name">if / else</div>
+            <div class="command-description">
+                Make decisions.
+            </div>
+        </div>
+
+        <div class="command" onclick="insertCommand('for')">
+            <div class="command-name">for</div>
+            <div class="command-description">
+                Repeat code.
+            </div>
+        </div>
+
+        <div class="command" onclick="insertCommand('while')">
+            <div class="command-name">while</div>
+            <div class="command-description">
+                Repeat while something is true.
+            </div>
+        </div>
+
+        <div class="command" onclick="insertCommand('function')">
+            <div class="command-name">function</div>
+            <div class="command-description">
+                Create reusable code.
+            </div>
+        </div>
+
+        <div class="command" onclick="insertCommand('remainder')">
+            <div class="command-name">%</div>
+            <div class="command-description">
+                Find the remainder.
+            </div>
+        </div>
+
+        <div class="command" onclick="insertCommand('table')">
+            <div class="command-name">table</div>
+            <div class="command-description">
+                Store multiple values.
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CODE EDITOR -->
+
+<section class="panel">
+
+    <div class="panel-title">
+        &gt; MESS AROUND
+    </div>
+
+    <textarea id="code">print("Hello, world!")
+
+local x = 10
+local y = 3
+
+print("x + y =", x + y)
+print("x % y =", x % y)</textarea>
+
+    <div class="buttons">
+
+        <button class="run" onclick="runLua()">
+            ▶ Run Lua
+        </button>
+
+        <button onclick="clearCode()">
+            Clear
+        </button>
+
+        <button onclick="resetCode()">
+            Reset
+        </button>
+
+    </div>
+
+    <div class="tip">
+        Tip: press <code>Ctrl + Enter</code> to run your code.
+    </div>
+
+</section>
+
+
+<!-- OUTPUT -->
+
+<section class="panel">
+
+    <div class="panel-title">
+        &gt; OUTPUT
+    </div>
+
+    <div id="output">
+        <span class="output-placeholder">
+            Run some Lua code to see the output here...
+        </span>
+    </div>
+
+</section>
+
+
+<footer>
+    GameDev Innes 2026 • Lua Sub-Class
+</footer>
+
+</div>
+
+
+<!-- FENGARI LUA -->
+
+<script src="https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.js"></script>
+
+<script>
+
+const defaultCode =
+`print("Hello, world!")
+
+local x = 10
+local y = 3
+
+print("x + y =", x + y)
+print("x % y =", x % y)`;
+
+
+/*
+    COMMAND EXAMPLES
+*/
+
+const commands = {
+
+    print:
+`print("Hello!")
+
+-- Try changing the message above`,
+
+    variable:
+`local name = "Innes"
+local age = 15
+
+print(name)
+print(age)`,
+
+    if:
+`local score = 75
+
+if score >= 50 then
+    print("You passed!")
+else
+    print("You failed!")
+end`,
+
+    for:
+`for i = 1, 10 do
+    print(i)
+end`,
+
+    while:
+`local x = 1
+
+while x <= 5 do
+    print(x)
+    x = x + 1
+end`,
+
+    function:
+`function add(a, b)
+    return a + b
+end
+
+local result = add(10, 20)
+
+print(result)`,
+
+    remainder:
+`local number = 17
+local divisor = 5
+
+print(number % divisor)`,
+
+    table:
+`local celestans = {
+    "NegInny",
+    "Boltlight",
+    "Red Square"
+}
+
+for i, name in ipairs(celestans) do
+    print(i, name)
+end`
+
+};
+
+
+/*
+    INSERT COMMAND
+*/
+
+function insertCommand(command) {
+
+    document.getElementById("code").value =
+        commands[command];
+
+}
+
+
+/*
+    CLEAR
+*/
+
+function clearCode() {
+
+    document.getElementById("code").value = "";
+
+}
+
+
+/*
+    RESET
+*/
+
+function resetCode() {
+
+    document.getElementById("code").value =
+        defaultCode;
+
+}
+
+
+/*
+    OUTPUT
+*/
+
+function clearOutput() {
+
+    document.getElementById("output").innerHTML =
+        '<span class="output-placeholder">' +
+        'Run some Lua code to see the output here...' +
+        '</span>';
+
+}
+
+
+function writeOutput(text) {
+
+    const output =
+        document.getElementById("output");
+
+    if (
+        output.querySelector(".output-placeholder")
+    ) {
+        output.innerHTML = "";
+    }
+
+    output.textContent += text + "\n";
+
+}
+
+
+/*
+    RUN LUA
+*/
+
+function runLua() {
+
+    clearOutput();
+
+    const code =
+        document.getElementById("code").value;
+
+    if (!code.trim()) {
+
+        writeOutput("Nothing to run.");
+
+        return;
+    }
+
+
+    try {
+
+        /*
+            Create a new Lua state.
+        */
+
+        const L =
+            fengari.lauxlib.luaL_newstate();
+
+        fengari.lualib.luaL_openlibs(L);
+
+
+        /*
+            Give Lua access to JavaScript's
+            output function.
+        */
+
+        fengari.lua.lua_pushjsfunction(
+            L,
+            function(L) {
+
+                const count =
+                    fengari.lua.lua_gettop(L);
+
+                let values = [];
+
+                for (
+                    let i = 1;
+                    i <= count;
+                    i++
+                ) {
+
+                    values.push(
+                        fengari.lua.lua_tojsstring(
+                            L,
+                            i
+                        )
+                    );
+
+                }
+
+                writeOutput(
+                    values.join("\t")
+                );
+
+                return 0;
+
+            }
+        );
+
+
+        fengari.lua.lua_setglobal(
+            L,
+            fengari.to_luastring("__js_print")
+        );
+
+
+        /*
+            Replace Lua's print() with our
+            browser output function.
+        */
+
+        const wrappedCode = `
+
+function print(...)
+
+    __js_print(...)
+
+end
+
+${code}
+`;
+
+
+        const result =
+            fengari.lauxlib.luaL_dostring(
+                L,
+                fengari.to_luastring(wrappedCode)
+            );
+
+
+        /*
+            Show Lua errors.
+        */
+
+        if (
+            result !== fengari.lua.LUA_OK
+        ) {
+
+            const error =
+                fengari.lua.lua_tojsstring(
+                    L,
+                    -1
+                );
+
+            document.getElementById(
+                "output"
+            ).innerHTML =
+                '<span class="error">' +
+                escapeHTML(error) +
+                '</span>';
+
+        }
+
+
+        fengari.lua.lua_close(L);
+
+    }
+
+    catch (error) {
+
+        document.getElementById(
+            "output"
+        ).innerHTML =
+            '<span class="error">' +
+            escapeHTML(
+                error.message || error
+            ) +
+            '</span>';
+
+    }
+
+}
+
+
+/*
+    Prevent HTML from being inserted
+    into the output.
+*/
+
+function escapeHTML(text) {
+
+    return String(text)
+
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/*
+    Ctrl + Enter
+*/
+
+document
+    .getElementById("code")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.ctrlKey &&
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                runLua();
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
