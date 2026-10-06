@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lua Sub-Class — GameDev Innes 2026</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&display=swap'); * { box-sizing: border-box; } html { scroll-behavior: smooth; } body { margin: 0; background: radial-gradient(circle at top, #24113d 0%, #0d0714 45%, #050507 100%); color: #e9ddff; font-family: "Fira Code", monospace; min-height: 100vh; } /* Header */ header { text-align: center; padding: 55px 20px 30px; } header h1 { margin: 0; font-size: clamp(2rem, 7vw, 4.5rem); color: #c77dff; text-shadow: 0 0 8px #8b3dff, 0 0 25px #6a20c9; } header p { color: #a995c7; font-size: 0.95rem; } /* Main */ main { width: min(1100px, 94%); margin: auto; } /* Sections */ .section { margin: 25px 0; padding: 25px; border: 1px solid #7c3aed; border-radius: 14px; background: rgba(25, 12, 40, 0.78); box-shadow: 0 0 20px rgba(124, 58, 237, 0.12), inset 0 0 25px rgba(124, 58, 237, 0.04); } .section h2 { margin-top: 0; color: #d8b4fe; } /* NegInny */ #negInnyContainer { width: 100%; height: 430px; border: 1px solid #9333ea; border-radius: 12px; overflow: hidden; background: radial-gradient(circle, #291341 0%, #0b0710 70%); position: relative; } .model-status { position: absolute; left: 15px; bottom: 12px; z-index: 5; color: #a78bfa; font-size: 0.75rem; background: rgba(0, 0, 0, 0.55); padding: 6px 10px; border-radius: 6px; } /* Terminal */ .terminal { background: #050505; border: 1px solid #3f2161; border-radius: 10px; padding: 18px; color: #b7ffcf; overflow-x: auto; } .prompt { color: #c084fc; } .command { color: #f0abfc; } /* Assignments */ .assignment { display: block; padding: 13px 15px; margin: 8px 0; border: 1px solid #42215e; border-radius: 8px; color: #d8b4fe; text-decoration: none; background: rgba(20, 10, 32, 0.7); transition: 0.2s ease; } .assignment:hover { transform: translateX(5px); border-color: #a855f7; color: #ffffff; background: rgba(88, 28, 135, 0.25); box-shadow: 0 0 12px rgba(168, 85, 247, 0.2); } /* Code */ code { color: #f0abfc; } pre { background: #08050b; border-left: 3px solid #a855f7; padding: 15px; overflow-x: auto; border-radius: 6px; } /* Footer */ footer { text-align: center; padding: 35px 15px; color: #725d8d; font-size: 0.8rem; } /* Mobile */ @media (max-width: 600px) { header { padding-top: 35px; } .section { padding: 17px; } #negInnyContainer { height: 330px; } .assignment { font-size: 0.85rem; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Lua Sub-Class</h1>
+      <p>GameDev Innes 2026 // Lua branch</p>
+    </header>
+    <main>
+      <!-- NEG INNY -->
+      <section class="section">
+        <h2>◆ NegInny</h2>
+        <div id="negInnyContainer">
+          <div class="model-status" id="modelStatus">
+            Loading NegInny.fbx...
+          </div>
+        </div>
+      </section>
+      <!-- LUA TERMINAL -->
+      <section class="section">
+        <h2>◆ Lua Terminal</h2>
+        <div class="terminal">
+          <span class="prompt">Innygr@Lua:~$</span>
+          <span class="command"> print("Hello, Lua!")</span> <br /><br />
+          <span>Hello, Lua!</span>
+        </div>
+      </section>
+      <!-- ASSIGNMENTS -->
+      <section class="section">
+        <h2>◆ Assignments</h2>
+        <a class="assignment" href="t1a01-input-output-Innes.html">
+          T1A01 — Input / Output
+        </a>
+        <a class="assignment" href="t1a02-objects-Innes.html">
+          T1A02 — Objects
+        </a>
+        <a class="assignment" href="t1a03-loops-Innes.html"> T1A03 — Loops </a>
+        <a class="assignment" href="t1a04-decisions-Innes.html">
+          T1A04 — Decisions
+        </a>
+        <a class="assignment" href="t1a05-arrays-Innes.html">
+          T1A05 — Arrays
+        </a>
+        <a class="assignment" href="t1a06-proper-and-variables-Innes.html">
+          T1A06 — Proper Variables
+        </a>
+        <a class="assignment" href="t1a07-decision-Innes.html">
+          T1A07 — Decision
+        </a>
+        <a class="assignment" href="t1a08-loops-Innes.html"> T1A08 — Loops </a>
+        <div
+          style=" text-align:center; padding:18px; color:#725d8d; font-size:1.3rem; "
+        >
+          ...
+        </div>
+      </section>
+      <!-- LUA NOTES -->
+      <section class="section">
+        <h2>◆ Lua Notes</h2>
+        <p>
+          Lua uses <code>%</code> for the remainder/modulo operation, just like
+          the JavaScript work we've already touched on.
+        </p>
+        <pre><code>local remainder = 10 % 3 print(remainder) -- 1</code></pre>
+      </section>
+      <!-- QUICK START -->
+      <section class="section">
+        <h2>◆ Lua Quick Start</h2>
+        <pre><code>local name = "Inny" print("Hello " .. name) local number = 10 if number > 5 then print("Big number") else print("Small number") end</code></pre>
+      </section>
+    </main>
+    <footer>GameDev Innes 2026 // Lua Sub-Class</footer>
+    <!-- THREE.JS -->
+    <script type="importmap">
+      { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/" } }
+    </script>
+    <script type="module">
+      import * as THREE from "three"; import { FBXLoader } from "three/addons/loaders/FBXLoader.js"; /* ------------------------- Scene ------------------------- */ const container = document.getElementById("negInnyContainer"); const status = document.getElementById("modelStatus"); const scene = new THREE.Scene(); scene.background = new THREE.Color(0x09050f); /* ------------------------- Camera ------------------------- */ const camera = new THREE.PerspectiveCamera( 45, container.clientWidth / container.clientHeight, 0.1, 1000 ); camera.position.set(0, 2, 8); /* ------------------------- Renderer ------------------------- */ const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); renderer.setPixelRatio( Math.min(window.devicePixelRatio, 2) ); renderer.setSize( container.clientWidth, container.clientHeight ); renderer.shadowMap.enabled = true; container.appendChild(renderer.domElement); /* ------------------------- Lights ------------------------- */ const ambientLight = new THREE.AmbientLight( 0xffffff, 1.8 ); scene.add(ambientLight); const keyLight = new THREE.DirectionalLight( 0xffffff, 3 ); keyLight.position.set(4, 7, 6); keyLight.castShadow = true; scene.add(keyLight); const purpleLight = new THREE.PointLight( 0xa855f7, 18, 20 ); purpleLight.position.set( -4, 2, 4 ); scene.add(purpleLight); /* ------------------------- Floor ------------------------- */ const floorGeometry = new THREE.CircleGeometry(4, 64); const floorMaterial = new THREE.MeshStandardMaterial({ color: 0x13091c, roughness: 0.8, metalness: 0.2 }); const floor = new THREE.Mesh( floorGeometry, floorMaterial ); floor.rotation.x = -Math.PI / 2; floor.position.y = -2.2; floor.receiveShadow = true; scene.add(floor); /* ------------------------- FBX ------------------------- */ let negInny = null; const loader = new FBXLoader(); loader.load( "NegInny.fbx", function(model) { negInny = model; /* * FBX models often use much larger * units than Three.js scenes, so this * keeps the model at a reasonable size. */ negInny.scale.set( 0.01, 0.01, 0.01 ); negInny.position.set( 0, -1.8, 0 ); negInny.traverse(function(child) { if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; if (child.material) { child.material.needsUpdate = true; } } }); scene.add(negInny); status.textContent = "NegInny.fbx // ONLINE"; }, function(progress) { if (progress.total > 0) { const percent = Math.round( progress.loaded / progress.total * 100 ); status.textContent = "Loading NegInny.fbx... " + percent + "%"; } }, function(error) { console.error( "Could not load NegInny.fbx:", error ); status.textContent = "ERROR // NegInny.fbx could not load"; } ); /* ------------------------- Animation ------------------------- */ const clock = new THREE.Clock(); function animate() { requestAnimationFrame(animate); const time = clock.getElapsedTime(); if (negInny) { // Slow Celestan rotation negInny.rotation.y = time * 0.35; // Small floating movement negInny.position.y = -1.8 + Math.sin(time * 1.5) * 0.12; } renderer.render( scene, camera ); } animate(); /* ------------------------- Resize ------------------------- */ window.addEventListener( "resize", function() { const width = container.clientWidth; const height = container.clientHeight; camera.aspect = width / height; camera.updateProjectionMatrix(); renderer.setSize( width, height ); } );
+    </script>
+  </body>
+</html>
