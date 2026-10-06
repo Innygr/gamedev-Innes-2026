@@ -15,18 +15,20 @@ if (!outputElement) {
 throw new Error("Luau output element was not found.");
 }
 
-outputElement.textContent = "Loading Luau runtime...";
+outputElement.textContent =
+"Loading Luau runtime...";
 
 try {
 
 ```
 /* Create a fresh Luau state */
 
-const state = await LuauState.createAsync();
+const state =
+  await LuauState.createAsync();
 
 
 /*
- * Replace Luau's print() with a browser
+ * Replace print() with a browser
  * output function.
  */
 
@@ -53,18 +55,35 @@ outputElement.textContent = "";
  * Compile the Luau code.
  */
 
-const run = state.loadstring(
-  code,
-  "main.luau",
-  true
-);
+const result =
+  state.loadstring(
+    code,
+    "main.luau",
+    true
+  );
 
 
 /*
- * Execute the compiled Luau code.
+ * loadstring returns the compiled
+ * result directly in luau-web.
+ *
+ * Do not call the result as a
+ * JavaScript function.
  */
 
-await run();
+if (result instanceof Error) {
+  throw result;
+}
+
+
+/*
+ * Execute the loaded Luau chunk
+ * through the Luau state.
+ */
+
+state.call(
+  result
+);
 ```
 
 } catch (error) {
