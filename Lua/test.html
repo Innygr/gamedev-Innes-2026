@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Luau Runtime Test</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      background: #0d0714;
+      color: #e9ddff;
+      font-family: monospace;
+    }
+
+    h1 {
+      color: #c77dff;
+    }
+
+    button {
+      padding: 10px 18px;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    #output {
+      background: #050505;
+      border: 1px solid #7c3aed;
+      border-radius: 8px;
+      padding: 15px;
+      min-height: 150px;
+      white-space: pre-wrap;
+    }
+
+    .error {
+      color: #ff7777;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Luau Runtime Test</h1>
+
+<button id="runButton">Run test.lua</button>
+
+  <div id="output">Waiting...</div>
+
+  <script type="module">
+
+    import {
+      LuauState
+    } from "https://cdn.jsdelivr.net/gh/xNasuni/luau-web@main/dist/luauweb.min.js";
+
+
+    const output = document.getElementById("output");
+    const runButton = document.getElementById("runButton");
+
+
+    async function runLua() {
+
+      output.textContent = "Loading Luau runtime...";
+
+
+      try {
+
+        /* Load test.lua */
+
+        const response = await fetch("./test.lua");
+
+        if (!response.ok) {
+          throw new Error(
+            "Could not load test.lua (" +
+            response.status +
+            ")"
+          );
+        }
+
+        const code = await response.text();
+
+
+        /* Create Luau state */
+
+        const state = await LuauState.createAsync();
+
+
+        /* Capture print() */
+
+        state.env.set(
+          "print",
+          (...args) => {
+
+            const line = args
+              .map(value => String(value))
+              .join("\t");
+
+            output.textContent +=
+              line + "\n";
+          },
+          true
+        );
+
+
+        output.textContent = "";
+
+
+        /* Compile and run */
+
+        const run = state.loadstring(
+          code,
+          "test.lua",
+          true
+        );
+
+
+        await run();
+
+
+      } catch (error) {
+
+        output.innerHTML =
+          '<span class="error">' +
+          "ERROR:\n" +
+          String(error) +
+          "</span>";
+
+        console.error(error);
+
+      }
+
+    }
+
+
+    runButton.addEventListener(
+      "click",
+      runLua
+    );
+
+  </script>
+
+</body>
+</html>
