@@ -1,0 +1,27 @@
+<script>
+
+  function myExampleFunction(){
+    let myIn01 = parseInt(document.getElementById('myText01').value)
+    let myIn02 = parseInt(document.getElementById('myText02').value)
+    let mySum = myIn01 + myIn02
+    let myReply = myIn01 + ' + ' + myIn02 + ' = ' + mySum
+    return myReply
+  }
+
+</script>
+
+<h2 align=center>t1a09-functions-by-Fred</h2>
+
+<a href="https://www.w3schools.com/js/js_functions.asp"> Good reference to JS functions</a><br>
+
+Functions are used to organize code. They can also be "called" to use them, they can be used multiple times. You can also give them information in the <pre>function myShow()</pre><--- 
+<h4>Example working code</h4>
+
+<input type=number id="myText01" value=3><br>
+<input type=number id="myText02" value=6><br>
+
+<input type=button value="Function Example" onclick="{
+  document.getElementById('myDiv01').innerHTML = myExampleFunction()
+  }">
+
+  <div id="myDiv01">...</div>
