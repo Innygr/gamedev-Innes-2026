@@ -128,6 +128,83 @@
             margin: 7px 0;
         }
 
+
+        /* =========================
+           CHECKLIST
+           ========================= */
+
+        #checklist {
+            position: sticky;
+            top: 10px;
+            z-index: 100000;
+            margin: 0 0 18px 0;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.88);
+            border: 1px solid rgba(0, 255, 255, 0.35);
+            border-radius: 8px;
+            box-shadow: 0 0 14px rgba(0, 255, 255, 0.12);
+            backdrop-filter: blur(5px);
+        }
+
+        #checklist h2 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+        }
+
+        #checklistItems {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px 14px;
+        }
+
+        .checkItem {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .checkItem input[type="checkbox"] {
+            width: 17px;
+            height: 17px;
+            accent-color: #00ffff;
+            cursor: pointer;
+        }
+
+        .checkItem span {
+            cursor: pointer;
+        }
+
+        .checkItem input:checked + span {
+            text-decoration: line-through;
+            opacity: 0.55;
+        }
+
+        .removeCheck {
+            padding: 1px 6px;
+            margin-left: 2px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        #checklistControls {
+            display: flex;
+            gap: 7px;
+            margin-top: 9px;
+            flex-wrap: wrap;
+        }
+
+        #checklistControls input {
+            flex: 1 1 180px;
+            min-width: 150px;
+            padding: 5px 8px;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fff;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
         /* =========================
            LINKS
            ========================= */
@@ -1002,7 +1079,31 @@
         <h1>
             GameDev Innes 2026
         </h1><br>
-        <h3>Needing checking: t1a06, t1a07 (fixed links); t1a08: added to the list; you should go to the bottom, there is a new thing there :D</h3>
+
+
+        <!-- =====================
+             CHECKLIST
+             ===================== -->
+
+        <div id="checklist">
+
+            <h2>Checklist</h2>
+
+            <div id="checklistItems"></div>
+
+            <div id="checklistControls">
+                <input
+                    id="newChecklistItem"
+                    type="text"
+                    placeholder="Add something to check..."
+                    maxlength="100"
+                    onkeydown="if (event.key === 'Enter') addChecklistItem();"
+                >
+
+                <button onclick="addChecklistItem()">Add</button>
+            </div>
+
+        </div>
 
 
         <!-- =====================
@@ -1644,6 +1745,92 @@
             "DOMContentLoaded",
             showRandomFact
         );
+
+
+        /* =========================
+           CHECKLIST
+           ========================= */
+
+        const checklistStorageKey = "gamedevInnesChecklist";
+
+        let checklistItems = JSON.parse(
+            localStorage.getItem(checklistStorageKey) || "null"
+        );
+
+        if (!Array.isArray(checklistItems)) {
+            checklistItems = [
+                { text: "t1a06", checked: false },
+                { text: "t1a07 (fixed links)", checked: false },
+                { text: "t1a08 (added to the list)", checked: false }
+            ];
+        }
+
+        function saveChecklist() {
+            localStorage.setItem(
+                checklistStorageKey,
+                JSON.stringify(checklistItems)
+            );
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById("checklistItems");
+            container.innerHTML = "";
+
+            checklistItems.forEach((item, index) => {
+                const wrapper = document.createElement("label");
+                wrapper.className = "checkItem";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = item.checked;
+
+                checkbox.addEventListener("change", () => {
+                    checklistItems[index].checked = checkbox.checked;
+                    saveChecklist();
+                    renderChecklist();
+                });
+
+                const text = document.createElement("span");
+                text.textContent = item.text;
+
+                const remove = document.createElement("button");
+                remove.type = "button";
+                remove.className = "removeCheck";
+                remove.textContent = "×";
+                remove.title = "Remove this item";
+
+                remove.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    checklistItems.splice(index, 1);
+                    saveChecklist();
+                    renderChecklist();
+                });
+
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(text);
+                wrapper.appendChild(remove);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function addChecklistItem() {
+            const input = document.getElementById("newChecklistItem");
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            checklistItems.push({
+                text: text,
+                checked: false
+            });
+
+            input.value = "";
+            saveChecklist();
+            renderChecklist();
+            input.focus();
+        }
+
+        renderChecklist();
 
     </script>
 
