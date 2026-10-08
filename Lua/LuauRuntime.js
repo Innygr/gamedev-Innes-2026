@@ -4,7 +4,7 @@ import {
 
 let state = null;
 
-async function createState(outputElement) {
+async function createState(outputElement, bridge = {}) {
     state = await LuauState.createAsync();
 
     state.env.set("print", (...args) => {
@@ -20,16 +20,29 @@ async function createState(outputElement) {
         console.log("[Luau]", line);
     }, true);
 
+    for (const [name, fn] of Object.entries(bridge)) {
+        state.env.set(name, fn, true);
+    }
+
     return state;
 }
 
-export async function runLuau(code, outputElement = null) {
+export async function runLuau(
+    code,
+    outputElement = null,
+    bridge = {}
+) {
     if (outputElement) {
         outputElement.textContent = "";
     }
 
     try {
-        const luauState = state ?? await createState(outputElement);
+        const luauState =
+            state ?? await createState(outputElement, bridge);
+
+        for (const [name, fn] of Object.entries(bridge)) {
+            luauState.env.set(name, fn, true);
+        }
 
         const run = luauState.loadstring(
             code,
