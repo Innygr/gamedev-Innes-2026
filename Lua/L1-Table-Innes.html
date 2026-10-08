@@ -33,33 +33,24 @@
       width: 100%;
       min-height: 300px;
       box-sizing: border-box;
-
       padding: 15px;
-
       background: #08050b;
       color: #e9ddff;
-
       border: 1px solid #7c3aed;
       border-radius: 8px;
-
       font-family: "Fira Code", monospace;
       font-size: 14px;
-
       resize: vertical;
     }
 
     button {
       margin-top: 12px;
       margin-right: 8px;
-
       padding: 10px 18px;
-
       background: #24113d;
       color: #e9ddff;
-
       border: 1px solid #a855f7;
       border-radius: 7px;
-
       cursor: pointer;
     }
 
@@ -69,17 +60,12 @@
 
     #output {
       min-height: 100px;
-
       padding: 15px;
-
       background: #050505;
-
       border: 1px solid #7c3aed;
       border-radius: 8px;
-
       white-space: pre-wrap;
       overflow-x: auto;
-
       color: #b7ffcf;
     }
 
@@ -120,30 +106,27 @@
 
   <div class="section">
 
-```
-<h2>◆ Luau Code</h2>
+    <h2>◆ Luau Code</h2>
 
-<textarea id="code">local table1 = {
-{"A", 1}
-```
-
+    <textarea id="code">local table1 = {
+    {"A", 1}
 }
 
 local table2 = {
-{1, "A"},
-{2, "B"}
+    {1, "A"},
+    {2, "B"}
 }
 
 local table3 = {
-{1, "A", "yes"},
-{2, "B", "hi"}
+    {1, "A", "yes"},
+    {2, "B", "hi"}
 }
 
 local celestans = {
-{1, "A", "Celestans"},
-{2, "B", "Brightstar"},
-{3, "C", "NegInny"},
-{4, "D", "Boltlight"}
+    {1, "A", "Celestans"},
+    {2, "B", "Brightstar"},
+    {3, "C", "NegInny"},
+    {4, "D", "Boltlight"}
 }
 
 print("Table examples created!")
@@ -153,35 +136,29 @@ displayTable(table2)
 displayTable(table3)
 displayTable(celestans)</textarea>
 
-```
-<br>
+    <br>
 
-<button id="runButton">
-  ▶ Run Luau
-</button>
+    <button id="runButton">
+      ▶ Run Luau
+    </button>
 
-<button id="clearButton">
-  Clear
-</button>
+    <button id="clearButton">
+      Clear
+    </button>
 
-<button id="resetButton">
-  Reset
-</button>
-```
+    <button id="resetButton">
+      Reset
+    </button>
 
   </div>
 
   <div class="section">
 
-```
-<h2>◆ Output</h2>
+    <h2>◆ Output</h2>
 
-<div id="output">
-  Ready.
-</div>
+    <div id="output">Ready.</div>
 
-<div id="tableOutput"></div>
-```
+    <div id="tableOutput"></div>
 
   </div>
 
@@ -214,27 +191,19 @@ displayTable(celestans)</textarea>
       code.value;
 
 
-    /*
-     * Convert a Luau table into an
-     * HTML table.
-     */
-
     function renderTable(data) {
 
       if (!Array.isArray(data)) {
         return;
       }
 
-
       const htmlTable =
         document.createElement("table");
-
 
       for (const row of data) {
 
         const htmlRow =
           document.createElement("tr");
-
 
         if (!Array.isArray(row)) {
 
@@ -245,23 +214,16 @@ displayTable(celestans)</textarea>
             String(row);
 
           htmlRow.appendChild(cell);
-
           htmlTable.appendChild(htmlRow);
 
           continue;
-
         }
-
 
         for (const value of row) {
 
           const cell =
             document.createElement("td");
 
-
-          /*
-           * Special image values.
-           */
 
           if (
             typeof value === "string" &&
@@ -276,22 +238,13 @@ displayTable(celestans)</textarea>
             const image =
               document.createElement("img");
 
-            image.src =
-              value;
-
+            image.src = value;
             image.width = 25;
-
-            image.alt =
-              value;
+            image.alt = value;
 
             cell.appendChild(image);
 
           }
-
-
-          /*
-           * Special link values.
-           */
 
           else if (
             typeof value === "string" &&
@@ -301,23 +254,13 @@ displayTable(celestans)</textarea>
             const link =
               document.createElement("a");
 
-            link.href =
-              value;
-
-            link.textContent =
-              "Cool thing here!";
-
-            link.target =
-              "_blank";
+            link.href = value;
+            link.textContent = "Cool thing here!";
+            link.target = "_blank";
 
             cell.appendChild(link);
 
           }
-
-
-          /*
-           * Normal text/number.
-           */
 
           else {
 
@@ -326,102 +269,55 @@ displayTable(celestans)</textarea>
 
           }
 
-
           htmlRow.appendChild(cell);
-
         }
 
-
         htmlTable.appendChild(htmlRow);
-
       }
 
-
-      tableOutput.appendChild(
-        htmlTable
-      );
-
+      tableOutput.appendChild(htmlTable);
     }
 
-
-    /*
-     * Give Luau access to displayTable().
-     */
 
     function setupTableBridge() {
 
       return {
-
-        displayTable
-
+        displayTable: renderTable
       };
 
     }
 
-
-    /*
-     * Run button.
-     */
 
     runButton.addEventListener(
       "click",
       async () => {
 
         output.textContent = "";
-
         tableOutput.innerHTML = "";
 
         runButton.disabled = true;
 
-
-        try {
-
-          await runLuau(
-            code.value,
-            output,
-            setupTableBridge
-          );
-
-        }
-
-        catch (error) {
-
-          output.innerHTML =
-            '<span class="error">' +
-            "ERROR:\n" +
-            String(error) +
-            "</span>";
-
-          console.error(error);
-
-        }
-
+        await runLuau(
+          code.value,
+          output,
+          setupTableBridge()
+        );
 
         runButton.disabled = false;
-
       }
     );
 
-
-    /*
-     * Clear button.
-     */
 
     clearButton.addEventListener(
       "click",
       () => {
 
         output.textContent = "";
-
         tableOutput.innerHTML = "";
 
       }
     );
 
-
-    /*
-     * Reset button.
-     */
 
     resetButton.addEventListener(
       "click",
