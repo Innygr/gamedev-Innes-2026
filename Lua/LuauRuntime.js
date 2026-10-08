@@ -8,10 +8,13 @@ async function createState(outputElement) {
     state = await LuauState.createAsync();
 
     state.env.set("print", (...args) => {
-        const line = args.map(value => String(value)).join("\t");
+        const line = args
+            .map(value => String(value))
+            .join("\t");
 
         if (outputElement) {
             outputElement.textContent += line + "\n";
+            outputElement.scrollTop = outputElement.scrollHeight;
         }
 
         console.log("[Luau]", line);
@@ -37,6 +40,7 @@ export async function runLuau(code, outputElement = null) {
         await run();
 
         return true;
+
     } catch (error) {
         const message = error instanceof Error
             ? error.message
