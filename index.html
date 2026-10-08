@@ -133,6 +133,10 @@
            CHECKLIST
            ========================= */
 
+        #xAssignments {
+            scroll-margin-top: 90px;
+        }
+
         #checklist {
             position: sticky;
             top: 10px;
@@ -149,6 +153,39 @@
         #checklist h2 {
             margin: 0 0 8px 0;
             font-size: 20px;
+        }
+
+        #skipToX {
+            padding: 8px 13px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ffff;
+            border: 1px solid #00ffff;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
+        }
+
+        #skipToX:hover {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 12px #00ffff;
+            transform: scale(1.04);
+        }
+
+        #skipToX:active {
+            transform: scale(0.97);
+        }
+
+        #githubStatus {
+            margin-top: 10px;
+            padding: 9px 12px;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            border-radius: 7px;
+            background: rgba(0, 0, 0, 0.45);
+            font-size: 13px;
+            line-height: 1.5;
         }
 
         #checklistItems {
@@ -1078,7 +1115,6 @@
 
         <h1>
             GameDev Innes 2026
-            Scroll to bottom for X assignments
         </h1><br>
 
 
@@ -1102,6 +1138,17 @@
                 >
 
                 <button onclick="addChecklistItem()">Add</button>
+
+                <button
+                    id="skipToX"
+                    onclick="document.getElementById('xAssignments').scrollIntoView({ behavior: 'smooth', block: 'start' });"
+                >
+                    Skip to X-Assignments
+                </button>
+            </div>
+
+            <div id="githubStatus">
+                Checking GitHub...
             </div>
 
         </div>
@@ -1349,10 +1396,10 @@
              OTHER PROJECTS
              ===================== -->
 
-        <div class="section">
+        <div class="section" id="xAssignments">
 
             <h2>
-                Other Projects
+                X-Assignments / Other Projects
             </h2>
 
             <ul>
@@ -2690,7 +2737,73 @@
 
         }
 
-    </script>
+    
+        async function updateGitHubStatus() {
+            const status = document.getElementById("githubStatus");
+            const repo = "Innygr/gamedev-Innes-2026";
+
+            try {
+                const headers = {
+                    "Accept": "application/vnd.github+json"
+                };
+
+                const [commitsResponse, eventsResponse] = await Promise.all([
+                    fetch(`https://api.github.com/repos/${repo}/commits?per_page=1`, { headers }),
+                    fetch(`https://api.github.com/repos/${repo}/events?per_page=100`, { headers })
+                ]);
+
+                if (!commitsResponse.ok) {
+                    throw new Error("GitHub commits request failed");
+                }
+
+                const commits = await commitsResponse.json();
+                const latestCommit = commits[0];
+
+                let latestPush = null;
+
+                if (eventsResponse.ok) {
+                    const events = await eventsResponse.json();
+                    latestPush = events.find(
+                        event => event.type === "PushEvent"
+                    );
+                }
+
+                const commitDate = new Date(
+                    latestCommit.commit.committer.date ||
+                    latestCommit.commit.author.date
+                );
+
+                const pushDate = latestPush
+                    ? new Date(latestPush.created_at)
+                    : null;
+
+                const formatDate = date =>
+                    date.toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit"
+                    });
+
+                status.innerHTML =
+                    `<strong>GitHub status</strong><br>` +
+                    `Latest commit: ${formatDate(commitDate)} ` +
+                    `(<a href="${latestCommit.html_url}" target="_blank" rel="noopener">view commit</a>)<br>` +
+                    (
+                        pushDate
+                            ? `Latest push: ${formatDate(pushDate)}`
+                            : `Latest push: not available from GitHub's recent public events`
+                    );
+            } catch (error) {
+                status.textContent =
+                    "GitHub status unavailable right now.";
+            }
+        }
+
+        updateGitHubStatus();
+
+</script>
 
 </body>
 </html>
