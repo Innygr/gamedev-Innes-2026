@@ -2,766 +2,1184 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>L10 - Gaster Fractal | Luau</title>
 
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#03040b;color:#f4f6ff;font-family:system-ui,sans-serif}
-#myCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
-#myPanel{position:absolute;z-index:5;top:12px;left:12px;width:min(310px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;padding:14px;border:1px solid #ffffff26;border-radius:14px;background:#080b18ed;backdrop-filter:blur(12px)}
-h1{font-size:19px;margin:0 0 5px}
-.sub{font-size:12px;color:#aeb8d5;margin-bottom:12px}
-.control{margin:12px 0}
-label{display:flex;justify-content:space-between;gap:8px;margin-bottom:5px;font-size:12px;color:#dce3ff}
-select,button,input{font:inherit}
-select,button{width:100%;color:#f4f6ff;background:#171d32;border:1px solid #ffffff25;border-radius:8px;padding:8px}
-button{cursor:pointer}
-button:hover{background:#252e4d}
-button.active{background:#4b3da1;border-color:#a79aff}
-input[type=range]{width:100%;accent-color:#9a8aff}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
-.status{border-top:1px solid #ffffff20;margin-top:12px;padding-top:9px;color:#b9c4e6;font-size:11px;line-height:1.7;overflow-wrap:anywhere}
-#hint{position:absolute;bottom:12px;left:12px;z-index:3;max-width:calc(100vw - 24px);padding:8px 11px;color:#dce3ff;background:#080b18d9;border:1px solid #ffffff1a;border-radius:8px;font-size:11px;pointer-events:none}
-#zoomBox{position:absolute;z-index:2;width:170px;height:120px;border:1px solid #b5a8ff;background:#9580ff12;pointer-events:none;display:none}
-#zoomHandle{position:absolute;width:17px;height:17px;right:-5px;bottom:-5px;background:#c5baff;border:2px solid white;border-radius:4px;pointer-events:auto;cursor:nwse-resize}
-#overlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none}
-#overlayCard{padding:14px 20px;text-align:center;border:1px solid #ffffff25;border-radius:12px;background:#080b18e8;font-size:13px}
-@media(max-width:600px){#myPanel{width:255px;padding:11px}h1{font-size:16px}}
+:root {
+    --bg: #050509;
+    --panel: #101018;
+    --border: #343448;
+    --text: #e7e7f2;
+    --muted: #88889f;
+    --purple: #a78bfa;
+    --cyan: #67e8f9;
+    --red: #ff5268;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Consolas, "Courier New", monospace;
+}
+
+header {
+    padding: 18px;
+    border-bottom: 1px solid var(--border);
+    background: #0b0b12;
+}
+
+header h1 {
+    margin: 0 0 8px;
+    font-size: clamp(20px, 4vw, 32px);
+    letter-spacing: 2px;
+    color: var(--purple);
+}
+
+header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+main {
+    width: min(1200px, 100%);
+    margin: auto;
+    padding: 14px;
+}
+
+.screen-wrap {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 260px;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+#screen {
+    display: block;
+    width: 100%;
+    height: min(65vh, 620px);
+    min-height: 260px;
+    cursor: crosshair;
+}
+
+#overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 3px,
+            #00000016 4px
+        );
+}
+
+#loading {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    color: var(--cyan);
+    background: #000b;
+    padding: 7px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+#loading.hidden {
+    display: none;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    min-width: 0;
+}
+
+.stat span {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 5px;
+}
+
+.stat strong {
+    color: var(--cyan);
+    overflow-wrap: anywhere;
+    font-size: 13px;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    margin: 12px 0;
+}
+
+.panel h2 {
+    margin: 0 0 14px;
+    color: var(--purple);
+    font-size: 16px;
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+.control {
+    min-width: 0;
+}
+
+.control label {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.control output {
+    color: var(--cyan);
+}
+
+select,
+button,
+input[type="range"] {
+    width: 100%;
+}
+
+select,
+button {
+    background: #191927;
+    color: var(--text);
+    border: 1px solid #41415b;
+    padding: 10px;
+    border-radius: 5px;
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:hover {
+    border-color: var(--purple);
+    background: #24243a;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+}
+
+input[type="range"] {
+    accent-color: var(--purple);
+    cursor: pointer;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+}
+
+#soundButton.active {
+    border-color: var(--cyan);
+    color: var(--cyan);
+}
+
+#status {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.help {
+    color: #b8b8cb;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+kbd {
+    display: inline-block;
+    padding: 1px 5px;
+    background: #252538;
+    border: 1px solid #45455b;
+    border-radius: 3px;
+    color: white;
+}
+
+footer {
+    padding: 18px 0 8px;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: center;
+}
 </style>
 </head>
 
 <body>
-<canvas id="myCanvas"></canvas>
+<header>
+    <h1>GASTER FRACTAL</h1>
+    <p>ENTRY 17 // LUAAU COMPUTATION ENGINE // REALITY NOT FOUND</p>
+</header>
 
-<div id="myPanel">
-<h1>GASTER FRACTAL</h1>
-<div class="sub">LX10 · Luau-powered reality distortion</div>
+<main>
+    <div class="screen-wrap" id="screenWrap">
+        <canvas id="screen"></canvas>
+        <div id="overlay"></div>
+        <div id="loading">INITIALIZING THE VOID...</div>
+    </div>
 
-<div class="control">
-<label for="fractal">Fractal type</label>
-<select id="fractal">
-<option value="gaster">THE GASTER FRACTAL ▓</option>
-<option value="mandelbrot">Mandelbrot Set</option>
-<option value="julia">Julia Set</option>
-<option value="burningShip">Burning Ship</option>
-<option value="tricorn">Tricorn</option>
-<option value="newton">Newton Fractal</option>
-<option value="sierpinski">Sierpiński's Gasket</option>
-</select>
-</div>
+    <div class="stats">
+        <div class="stat">
+            <span>FRACTAL MODE</span>
+            <strong id="modeReadout">GASTER</strong>
+        </div>
+        <div class="stat">
+            <span>MAGNIFICATION</span>
+            <strong id="zoomReadout">1.00×</strong>
+        </div>
+        <div class="stat">
+            <span>COMPLEX COORDINATES</span>
+            <strong id="coordReadout">0.000, 0.000</strong>
+        </div>
+        <div class="stat">
+            <span>RENDER ENGINE</span>
+            <strong id="engineReadout">Luau-Web</strong>
+        </div>
+    </div>
 
-<div class="control">
-<label for="speed">Auto-zoom speed <span id="speedValue">1.50×</span></label>
-<input id="speed" type="range" min="1.05" max="3" step=".05" value="1.5">
-</div>
+    <section class="panel">
+        <h2>01 // FRACTAL PARAMETERS</h2>
 
-<div class="control">
-<label for="detail">Detail <span id="detailValue">70</span></label>
-<input id="detail" type="range" min="30" max="180" step="10" value="70">
-</div>
+        <div class="controls">
+            <div class="control">
+                <label for="mode">Fractal mode</label>
+                <select id="mode">
+                    <option value="gaster">Gaster Fractal</option>
+                    <option value="mandelbrot">Mandelbrot Set</option>
+                    <option value="julia">Julia Set</option>
+                    <option value="burning">Burning Ship</option>
+                    <option value="tricorn">Tricorn</option>
+                </select>
+            </div>
 
-<div class="control">
-<label for="color">Color shift <span id="colorValue">210°</span></label>
-<input id="color" type="range" min="0" max="360" value="210">
-</div>
+            <div class="control">
+                <label for="detail">
+                    Detail
+                </label>
+                <select id="detail">
+                    <option value="0">LOW — faster</option>
+                    <option value="1" selected>BALANCED</option>
+                    <option value="2">HIGH</option>
+                    <option value="3">ULTRA — slower</option>
+                </select>
+            </div>
 
-<div class="buttons">
-<button id="autoButton" class="active">Auto-zoom: ON (Z)</button>
-<button id="boxButton">Zoom box: OFF</button>
-<button id="resetButton">Reset view</button>
-<button id="fullscreenButton">Fullscreen</button>
-<button id="seedButton">Recalculate Gaster (R)</button>
-</div>
+            <div class="control">
+                <label for="zoomSpeed">
+                    Auto-zoom speed
+                    <output id="zoomSpeedOut">1.0</output>
+                </label>
+                <input id="zoomSpeed" type="range"
+                    min="0.1" max="4" step="0.1" value="1">
+            </div>
 
-<div class="status">
-<div>Zoom: <span id="zoomReadout">1×</span></div>
-<div>Center: <span id="centerReadout">0, 0</span></div>
-<div>Iterations: <span id="iterationReadout">70</span></div>
-<div>Render: <span id="renderReadout">Starting...</span></div>
-<div>Gaster: <span id="gasterStatus">FIELD ACTIVE</span></div>
-<div>Engine: Luau + canvas bridge</div>
-</div>
-</div>
+            <div class="control">
+                <label for="colorPhase">
+                    Color phase
+                    <output id="colorPhaseOut">180°</output>
+                </label>
+                <input id="colorPhase" type="range"
+                    min="0" max="360" step="1" value="180">
+            </div>
 
-<div id="overlay"><div id="overlayCard">Loading Luau fractal engine...</div></div>
-<div id="zoomBox"><div id="zoomHandle"></div></div>
-<div id="hint">Scroll: zoom · Click: zoom in · Shift-click: zoom out · Z: auto-zoom · R: new Gaster seed · Esc: close zoom box</div>
+            <div class="control">
+                <label for="faceDetail">
+                    Gaster face influence
+                    <output id="faceDetailOut">1.0</output>
+                </label>
+                <input id="faceDetail" type="range"
+                    min="0.2" max="2" step="0.1" value="1">
+            </div>
+        </div>
 
-<script src="./LuauRuntime.js"></script>
-<script>
-"use strict";
+        <div class="button-grid">
+            <button id="autoButton">AUTO-ZOOM: OFF</button>
+            <button id="pauseButton">PAUSE: OFF</button>
+            <button id="resetButton">RESET FRACTAL</button>
+            <button id="soundButton" class="active">PIRATE GASTER: ON</button>
+            <button id="fullscreenButton">FULLSCREEN</button>
+        </div>
 
-/*
-  JAVASCRIPT JOBS:
-  - Browser controls, events, canvas, and rendering progress.
-  - It passes settings to Luau and displays the pixels Luau calculates.
+        <p id="status" aria-live="polite">
+            Loading Luau runtime...
+        </p>
+    </section>
 
-  LUAU JOBS:
-  - Fractal iteration, escape tests, Gaster geometry, and pixel colours.
-*/
+    <section class="panel">
+        <h2>02 // CONTROLS</h2>
+        <div class="help">
+            <b>Mouse wheel:</b> zoom toward the cursor.<br>
+            <b>Left-click:</b> zoom in at the cursor.<br>
+            <b>Shift + click:</b> zoom out at the cursor.<br>
+            <b>Mouse movement:</b> steer the auto-zoom target.<br>
+            <kbd>Z</kbd> toggle auto-zoom.
+            <kbd>R</kbd> reset.
+            <kbd>Space</kbd> pause/resume.
+            <kbd>F</kbd> fullscreen.
+            <kbd>+</kbd>/<kbd>-</kbd> zoom in/out.
+        </div>
+    </section>
 
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d", {alpha:false});
-const fractal = document.getElementById("fractal");
-const speed = document.getElementById("speed");
-const detail = document.getElementById("detail");
-const color = document.getElementById("color");
-const zoomBox = document.getElementById("zoomBox");
-const overlay = document.getElementById("overlay");
-const overlayCard = document.getElementById("overlayCard");
+    <footer>
+        THE VOID IS CALCULATED IN LUAU. THE BROWSER ONLY DISPLAYS IT.
+    </footer>
+</main>
 
-let width = innerWidth;
-let height = innerHeight;
+<audio
+    id="pirateAudio"
+    src="https://www.myinstants.com/media/sounds/pirate-gaster_Jzylxv4.mp3"
+    loop
+    preload="auto">
+</audio>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+const canvas = document.getElementById("screen");
+const ctx = canvas.getContext("2d", { alpha: false });
+
+const smallCanvas = document.createElement("canvas");
+const smallCtx = smallCanvas.getContext("2d", { alpha: false });
+
+const loading = document.getElementById("loading");
+const statusEl = document.getElementById("status");
+
+const modeSelect = document.getElementById("mode");
+const detailSelect = document.getElementById("detail");
+const zoomSpeed = document.getElementById("zoomSpeed");
+const colorPhase = document.getElementById("colorPhase");
+const faceDetail = document.getElementById("faceDetail");
+
+const audio = document.getElementById("pirateAudio");
+const soundButton = document.getElementById("soundButton");
+
 let centerX = 0;
 let centerY = 0;
-let scale = 2.4;
-let pointerX = width/2;
-let pointerY = height/2;
-let autoZoom = true;
-let boxMode = false;
-let resizing = false;
-let boxWidth = 170;
-let boxHeight = 120;
-let seed = 1984;
-let renderId = 0;
-let lastTime = 0;
-let lastZoom = 0;
-let stateReady = false;
-let renderBusy = false;
-let queuedRender = false;
+let zoom = 1;
+
+let autoZoom = false;
+let paused = false;
+let soundEnabled = true;
+
+let targetX = 0;
+let targetY = 0;
+
+let renderGeneration = 0;
+let renderQueued = false;
+let lastRenderRequest = 0;
+
+let renderWidth = 180;
+let renderHeight = 100;
+
+let lastCanvasWidth = 0;
+let lastCanvasHeight = 0;
+
+const detailSettings = [
+    { iterations: 32, width: 0.55 },
+    { iterations: 48, width: 0.70 },
+    { iterations: 68, width: 0.85 },
+    { iterations: 88, width: 1.00 }
+];
+
+function setStatus(message) {
+    statusEl.textContent = message;
+}
+
+function updateReadouts() {
+    document.getElementById("modeReadout").textContent =
+        modeSelect.options[modeSelect.selectedIndex].text.toUpperCase();
+
+    document.getElementById("zoomReadout").textContent =
+        zoom.toLocaleString(undefined, {
+            maximumFractionDigits: 2
+        }) + "×";
+
+    document.getElementById("coordReadout").textContent =
+        centerX.toFixed(5) + ", " + centerY.toFixed(5);
+
+    document.getElementById("zoomSpeedOut").textContent =
+        Number(zoomSpeed.value).toFixed(1);
+
+    document.getElementById("colorPhaseOut").textContent =
+        colorPhase.value + "°";
+
+    document.getElementById("faceDetailOut").textContent =
+        Number(faceDetail.value).toFixed(1);
+
+    document.getElementById("autoButton").textContent =
+        "AUTO-ZOOM: " + (autoZoom ? "ON" : "OFF");
+
+    document.getElementById("pauseButton").textContent =
+        "PAUSE: " + (paused ? "ON" : "OFF");
+}
+
+function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+
+    const width = Math.max(1, Math.floor(rect.width));
+    const height = Math.max(1, Math.floor(rect.height));
+
+    if (width === lastCanvasWidth && height === lastCanvasHeight) {
+        return;
+    }
+
+    lastCanvasWidth = width;
+    lastCanvasHeight = height;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, width, height);
+
+    requestRender();
+}
+
+function getRenderDimensions() {
+    const setting = detailSettings[Number(detailSelect.value)] ||
+        detailSettings[1];
+
+    const baseWidth = Math.max(
+        120,
+        Math.min(280, Math.floor(canvas.width * 0.55))
+    );
+
+    renderWidth = Math.max(
+        100,
+        Math.floor(baseWidth * setting.width)
+    );
+
+    renderHeight = Math.max(
+        60,
+        Math.floor(renderWidth * canvas.height / canvas.width)
+    );
+
+    smallCanvas.width = renderWidth;
+    smallCanvas.height = renderHeight;
+}
+
+function requestRender() {
+    if (paused) return;
+
+    renderGeneration++;
+    renderQueued = true;
+
+    loading.classList.remove("hidden");
+    loading.textContent = "CALCULATING THE VOID...";
+
+    if (!requestRender.scheduled) {
+        requestRender.scheduled = true;
+
+        requestAnimationFrame(() => {
+            requestRender.scheduled = false;
+            renderFractal();
+        });
+    }
+}
+
+function screenToWorld(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+
+    const nx = (clientX - rect.left) / rect.width - 0.5;
+    const ny = (clientY - rect.top) / rect.height - 0.5;
+
+    const aspect = rect.width / rect.height;
+    const visibleHeight = 2.4 / zoom;
+    const visibleWidth = visibleHeight * aspect;
+
+    return {
+        x: centerX + nx * visibleWidth,
+        y: centerY + ny * visibleHeight
+    };
+}
+
+function zoomAt(clientX, clientY, factor) {
+    const before = screenToWorld(clientX, clientY);
+
+    zoom = Math.max(0.000001, Math.min(1e12, zoom * factor));
+
+    const after = screenToWorld(clientX, clientY);
+
+    centerX += before.x - after.x;
+    centerY += before.y - after.y;
+
+    updateReadouts();
+    requestRender();
+}
+
+function resetFractal() {
+    centerX = 0;
+    centerY = 0;
+    zoom = 1;
+
+    autoZoom = false;
+    paused = false;
+
+    updateReadouts();
+    requestRender();
+
+    setStatus("Fractal reset. The void is ready.");
+}
+
+function updateAudio() {
+    const shouldPlay = soundEnabled && modeSelect.value === "gaster";
+
+    audio.loop = true;
+
+    if (shouldPlay) {
+        audio.play().then(() => {
+            soundButton.classList.add("active");
+            soundButton.textContent = "PIRATE GASTER: ON";
+        }).catch(() => {
+            setStatus(
+                "Audio is ready but your browser blocked playback. " +
+                "Click PIRATE GASTER to start the loop."
+            );
+        });
+    } else {
+        audio.pause();
+        audio.currentTime = 0;
+    }
+
+    if (!soundEnabled) {
+        soundButton.classList.remove("active");
+        soundButton.textContent = "PIRATE GASTER: OFF";
+    }
+}
 
 /*
-  Keep the fractal calculations in Lua.
-  The bridge transfers a packed colour row to JavaScript.
-  One row is sent at a time rather than making a JS call per pixel.
-*/
-const luaSource = String.raw`
+ * The fractal's calculations happen in Luau.
+ *
+ * Luau calculates each row's RGB values and passes that row to
+ * JavaScript as a comma-separated string. JavaScript only transfers
+ * those colors to the canvas.
+ */
+function makeLuauSource(startRow, endRow, settings) {
+    return `
+local startRow = ${startRow}
+local endRow = ${endRow}
+
+local rw = ${renderWidth}
+local rh = ${renderHeight}
+
+local cx = ${settings.centerX}
+local cy = ${settings.centerY}
+local zoom = ${settings.zoom}
+
+local phase = ${settings.phase}
+local faceStrength = ${settings.faceStrength}
+local maxIterations = ${settings.iterations}
+
+local mode = "${settings.mode}"
+
+local aspect = rw / rh
+local visibleHeight = 2.4 / zoom
+local visibleWidth = visibleHeight * aspect
+
+local pi = math.pi
+local sin = math.sin
+local cos = math.cos
+local abs = math.abs
+local sqrt = math.sqrt
+local min = math.min
+local max = math.max
+local floor = math.floor
+
 local function clamp(v, lo, hi)
-    return math.max(lo, math.min(hi, v))
+    return max(lo, min(hi, v))
 end
 
-local function hsl(h, s, l)
-    h = ((h % 360) + 360) % 360 / 60
-    local c = (1 - math.abs(2*l - 1))*s
-    local x = c*(1 - math.abs(h % 2 - 1))
-    local m = l - c/2
-    local r,g,b
-
-    if h < 1 then r,g,b=c,x,0
-    elseif h < 2 then r,g,b=x,c,0
-    elseif h < 3 then r,g,b=0,c,x
-    elseif h < 4 then r,g,b=0,x,c
-    elseif h < 5 then r,g,b=x,0,c
-    else r,g,b=c,0,x end
-
-    return math.floor((r+m)*255),
-           math.floor((g+m)*255),
-           math.floor((b+m)*255)
-end
-
-local function segmentDistance(px, py, ax, ay, bx, by)
-    local dx,dy = bx-ax,by-ay
-    local den = dx*dx + dy*dy
-    local t = 0
-
-    if den > 0 then
-        t = clamp(((px-ax)*dx+(py-ay)*dy)/den,0,1)
-    end
-
-    local dx2 = px-ax-t*dx
-    local dy2 = py-ay-t*dy
-    return math.sqrt(dx2*dx2+dy2*dy2)
-end
-
-local function gasterGeometry(x,y)
-    local head = (math.sqrt((x/.39)^2+((y+.10)/.57)^2)-1)*.39
-    local inside = head < 0
-
-    local leftEye = ((x+.145)/.105)^2+((y+.115)/.145)^2 < 1
-    local rightEye = ((x-.145)/.105)^2+((y+.115)/.145)^2 < 1
-    local eyes = leftEye or rightEye
-
-    local mouth = math.abs(x)<.295
-        and y > -.005+.045*(x/.29)^2
-        and y < .18-.035*(x/.29)^2
-
-    local eyeGlint = math.min(
-        segmentDistance(x,y,-.22,-.19,-.17,-.13),
-        segmentDistance(x,y,.08,-.19,.13,-.13)
+local function faceMask(x, y, detail)
+    local head = sqrt(
+        (abs(x) * 0.88) ^ 2 +
+        (y + 0.035) ^ 2
     )
 
-    local teeth = 1e9
-    for i=-4,4 do
-        local tx=i*.058
-        local top=-.005+.045*(tx/.29)^2
-        local bottom=.18-.035*(tx/.29)^2
-        teeth=math.min(teeth,segmentDistance(x,y,tx,top,tx+.004,bottom))
-    end
+    local skull = abs(head - 0.39)
+    local forehead = abs(y + 0.19 + 0.025 * cos(x * 13))
 
-    local cracks = 1e9
-    for _,side in ipairs({-1,1}) do
-        local paths = {
-            {{side*.08,-.60},{side*.025,-.49},{side*.065,-.39},{side*.015,-.30},{side*.07,-.21}},
-            {{side*.34,-.20},{side*.25,-.14},{side*.29,-.06},{side*.20,.015}},
-            {{side*.28,.16},{side*.21,.22},{side*.24,.29}}
-        }
+    local d = min(skull, forehead * 0.72)
 
-        for _,path in ipairs(paths) do
-            for i=1,#path-1 do
-                cracks=math.min(cracks,segmentDistance(
-                    x,y,path[i][1],path[i][2],
-                    path[i+1][1],path[i+1][2]
-                ))
-            end
+    for _, side in ipairs({-1, 1}) do
+        local ex = x - side * 0.155
+        local ey = y + 0.065
+
+        local eye = abs(
+            sqrt(ex * ex * 1.15 + ey * ey * 0.8) - 0.095
+        )
+
+        d = min(d, eye)
+
+        local crackX = x - side * 0.24
+        local crackY = y - 0.08
+
+        local crack = abs(
+            crackY - (0.45 * crackX + 0.025 * sin(crackX * 24))
+        )
+
+        if abs(crackX) < 0.07
+            and crackY > -0.02
+            and crackY < 0.12 then
+            d = min(d, crack * 0.45)
         end
     end
 
-    local jaw = math.min(
-        segmentDistance(x,y,-.30,.20,-.23,.39),
-        segmentDistance(x,y,-.23,.39,0,.45),
-        segmentDistance(x,y,0,.45,.23,.39),
-        segmentDistance(x,y,.23,.39,.30,.20)
-    )
+    local grinY = 0.135 + 0.04 * cos(x * 8)
 
-    local hands = 1e9
-    for _,side in ipairs({-1,1}) do
-        local lines = {
-            {.36,.43,.52,.31},{.52,.31,.65,.25},
-            {.65,.25,.75,.28},{.62,.25,.62,.04},
-            {.67,.23,.72,0},{.72,.24,.83,.06},
-            {.76,.26,.92,.15},{.52,.31,.49,.20},
-            {.54,.29,.58,.17},{.57,.28,.65,.17},
-            {.58,.20,.70,.18},{.54,.25,.66,.23}
-        }
+    if abs(x) < 0.25 then
+        d = min(d, abs(y - grinY))
 
-        for _,line in ipairs(lines) do
-            hands=math.min(hands,segmentDistance(
-                x,y,side*line[1],line[2],side*line[3],line[4]
-            ))
-        end
+        local tooth = abs(sin(x * 55))
 
-        for _,knot in ipairs({{.62,.04},{.72,0},{.83,.06},{.92,.15}}) do
-            hands=math.min(hands,
-                math.abs(math.sqrt((x-side*knot[1])^2+(y-knot[2])^2)-.024))
-        end
+        d = min(
+            d,
+            abs(y - (grinY + 0.022)) * 0.7 + tooth * 0.008
+        )
     end
 
-    local branches = 1e9
-    for arm=0,5 do
-        local angle=arm*math.pi/3+math.pi/6
-        local px=math.cos(angle)*.40
-        local py=math.sin(angle)*.40
-        angle=angle+math.pi
-        local length=.47
-
-        for level=0,4 do
-            local nx=px+math.cos(angle)*length
-            local ny=py+math.sin(angle)*length
-            branches=math.min(branches,segmentDistance(x,y,px,py,nx,ny))
-
-            for _,side in ipairs({-1,1}) do
-                local a=angle+side*2.45
-                branches=math.min(branches,segmentDistance(
-                    x,y,nx,ny,
-                    nx+math.cos(a)*length*.42,
-                    ny+math.sin(a)*length*.42
-                ))
-            end
-
-            px,py=nx,ny
-            angle=angle+(level%2==0 and -.66 or .66)
-            length=length*.57
-        end
+    if y < -0.20 and y > -0.35 then
+        local crack = abs(x - 0.025 * sin(y * 42))
+        d = min(d, crack * 0.5)
     end
 
-    return inside,math.abs(head),eyes,eyeGlint,mouth,teeth,cracks,jaw,hands,branches
+    local neck = min(abs(abs(x) - 0.105), abs(y - 0.37))
+
+    if y > 0.30 and y < 0.48 and abs(x) < 0.3 then
+        d = min(d, neck * 0.7)
+    end
+
+    return d * (1.4 / detail)
 end
 
-local function gasterPixel(x,y,iterations,seedValue)
-    local zr,zi=0,0
-    local trap=1e9
-    local escaped=false
-    local smooth=0
+local function fractal(px, py)
+    local x = px
+    local y = py
 
-    local ar=.018+(seedValue%256)/255*.025
-    local ai=.013
-    local br,bi=-.18,.11
+    local zx = 0
+    local zy = 0
 
-    for i=0,iterations-1 do
-        local r2=zr*zr+zi*zi
-        local dr=r2+br
-        local di=2*zr*zi+bi
-        local den=dr*dr+di*di+1e-12
-        local invR=(dr*ar+di*ai)/den
-        local invI=(dr*ai-di*ar)/den
+    local cr = x
+    local ci = y
 
-        local nr=zr*zr-zi*zi+x+invR
-        local ni=2*zr*zi+y+invI
-        zr,zi=nr,ni
+    if mode == "julia" then
+        zx = x
+        zy = y
 
-        local mag=math.sqrt(zr*zr+zi*zi)
-        trap=math.min(trap,math.abs(zr*zi+.12*math.sin(zr*4+zi*3)))
+        cr = -0.745 + 0.08 * cos(phase)
+        ci = 0.186 + 0.08 * sin(phase)
+    elseif mode == "burning" then
+        zx = 0
+        zy = 0
+        cr = x
+        ci = y
+    elseif mode == "tricorn" then
+        zx = 0
+        zy = 0
+        cr = x
+        ci = y
+    elseif mode == "mandelbrot" then
+        zx = 0
+        zy = 0
+        cr = x
+        ci = y
+    elseif mode == "gaster" then
+        zx = 0
+        zy = 0
+        cr = x * 0.91 - 0.025
+        ci = y * 0.91
+    end
 
-        if mag>24 then
-            escaped=true
-            smooth=i+1-math.log(math.max(1e-9,math.log(mag)))/math.log(2)
-            break
+    local trap = 10
+    local faceTrap = 10
+    local escaped = false
+    local iterations = maxIterations
+
+    local hue = phase * 2 * pi
+    local faceScale = 1 + faceStrength * 0.04
+
+    for i = 1, maxIterations do
+        if mode == "burning" then
+            zx = abs(zx)
+            zy = abs(zy)
+        elseif mode == "tricorn" then
+            zy = -zy
         end
 
-        if mag~=mag or mag==math.huge then
-            escaped=true
-            smooth=i
+        if mode == "gaster" then
+            local ox = zx
+            local oy = zy
+
+            local r2 = ox * ox + oy * oy
+            local warp = 0.025 * faceStrength / (1 + r2)
+
+            zx = zx + warp * sin(oy * 5.1 + hue)
+            zy = zy + warp * sin(ox * 5.1 - hue)
+
+            local fd = faceMask(
+                ox * faceScale,
+                oy * faceScale,
+                faceStrength
+            )
+
+            faceTrap = min(faceTrap, fd)
+
+            local ring = abs(sqrt(r2) - 0.39)
+            trap = min(trap, fd, ring * 0.72)
+        end
+
+        local nextX = zx * zx - zy * zy + cr
+        local nextY = 2 * zx * zy + ci
+
+        zx = nextX
+        zy = nextY
+
+        local r2 = zx * zx + zy * zy
+
+        if mode ~= "gaster" then
+            trap = min(trap, abs(sqrt(r2) - 0.5))
+        end
+
+        if r2 > 256 then
+            escaped = true
+            iterations = i
             break
         end
     end
 
-    local glow=math.exp(-math.min(60,trap*20))
-    local r,g,b
+    local smooth = iterations
 
-    if not escaped then
-        local v=math.floor(7+glow*20)
-        r,g,b=v,v,v+12
-    else
-        local t=smooth*.095+math.atan2(zi,zr)*.14+glow*.25
-        local band=(math.sin(t*6.28318530718+seedValue%31)+1)*.5
-        r=math.floor(12+40*band+70*glow)
-        g=math.floor(10+20*(1-band)+30*glow)
-        b=math.floor(28+65*(1-band)+75*glow)
+    if escaped then
+        local mag = sqrt(zx * zx + zy * zy)
+
+        if mag > 1 then
+            smooth = iterations + 1 - math.log(math.log(mag)) / math.log(2)
+        end
     end
 
-    local inside,headEdge,eyes,eyeGlint,mouth,teeth,cracks,jaw,hands,branches =
-        gasterGeometry(x,y)
+    local glow = math.exp(-trap * 18)
+    local faceGlow = math.exp(-faceTrap * 32)
 
-    local halo=math.exp(-headEdge*22)
-    r=math.min(255,r+12*halo)
-    g=math.min(255,g+10*halo)
-    b=math.min(255,b+28*halo)
+    if mode == "gaster" then
+        local base = smooth * 0.105 + hue
+        local edge = faceGlow * 1.8 + glow * 0.6
 
-    if branches<.006 and not inside and hands>.025 then
-        r,g,b=65,48,100
-    end
+        local r = 15 + 120 * (0.5 + 0.5 * sin(base + 0.4))
+        local g = 5 + 45 * (0.5 + 0.5 * sin(base + 2.4))
+        local b = 30 + 190 * (0.5 + 0.5 * sin(base + 4.3))
 
-    if hands<.018 then
-        local bright=math.max(0,1-hands/.018)
-        r,g,b=145+100*bright,145+100*bright,160+90*bright
-    end
+        r = r + edge * 125
+        g = g + edge * 55
+        b = b + edge * 95
 
-    if inside then
-        local shade=174+24*math.sin(x*29+y*17+seedValue%13)
-        r,g,b=shade,shade,shade+4
-
-        if cracks<.009 then r,g,b=23,21,30 end
-        if eyes then r,g,b=4,3,8 end
-        if eyes and eyeGlint<.009 then r,g,b=100,96,120 end
-
-        if mouth then
-            r,g,b=4,3,7
-            if teeth<.009 then r,g,b=232,229,235 end
+        if faceTrap < 0.015 then
+            r = r + 55
+            g = g + 85
+            b = b + 110
         end
 
-        if jaw<.012 then r,g,b=32,29,39 end
-        if headEdge<.012 then r,g,b=220,218,230 end
+        if not escaped then
+            r = r * 0.32
+            g = g * 0.32
+            b = b * 0.42
+        end
+
+        return
+            clamp(floor(r), 0, 255),
+            clamp(floor(g), 0, 255),
+            clamp(floor(b), 0, 255)
     end
 
-    local glitch=math.sin((x*91+y*137+seedValue%97)*18)
-    if inside and cracks<.004 and glitch>.96 then
-        r,g,b=125,85,175
-    end
+    local t = smooth * 0.12 + hue
+    local brightness = escaped and 0.85 or 0.08
 
-    return math.floor(clamp(r,0,255)),
-           math.floor(clamp(g,0,255)),
-           math.floor(clamp(b,0,255))
+    local r = brightness * (125 + 125 * sin(t))
+    local g = brightness * (125 + 125 * sin(t + 2.1))
+    local b = brightness * (125 + 125 * sin(t + 4.2))
+
+    r = r + glow * 70
+    g = g + glow * 70
+    b = b + glow * 70
+
+    return
+        clamp(floor(r), 0, 255),
+        clamp(floor(g), 0, 255),
+        clamp(floor(b), 0, 255)
 end
 
-local function pixel(x,y,kind,iterations,hue,scale,seedValue)
-    if kind=="gaster" then
-        return gasterPixel(x,y,iterations,seedValue)
+for py = startRow, endRow do
+    if shouldCancel() then
+        return
     end
 
-    if kind=="sierpinski" then
-        local u=(x+1.5)/3
-        local v=(y+1.5)/3
-        if u<0 or u>1 or v<0 or v>1 or u+v>1 then
-            return 3,4,13
-        end
+    local pieces = {}
 
-        local a=math.floor(u*1048576)
-        local b=math.floor(v*1048576)
-        if bit32.band(a,b)~=0 then return 3,4,13 end
-        return hsl(hue+math.log(scale+1)/math.log(2)*20,.9,.48)
+    for px = 0, rw - 1 do
+        local nx = (px / (rw - 1)) - 0.5
+        local ny = (py / (rh - 1)) - 0.5
+
+        local worldX = cx + nx * visibleWidth
+        local worldY = cy + ny * visibleHeight
+
+        local r, g, b = fractal(worldX, worldY)
+
+        pieces[#pieces + 1] = tostring(r)
+        pieces[#pieces + 1] = tostring(g)
+        pieces[#pieces + 1] = tostring(b)
     end
 
-    if kind=="newton" then
-        local zr,zi=x,y
-
-        for i=1,iterations do
-            local r2=zr*zr
-            local i2=zi*zi
-            local dr=r2-i2
-            local di=2*zr*zi
-            local den=dr*dr+di*di
-            if den<1e-18 then break end
-
-            zr=(2*zr+dr/den)/3
-            zi=(2*zi-di/den)/3
-
-            if math.abs(zr*zr*zr-3*zr*zi*zi-1)<1e-7 then break end
-        end
-
-        local root=math.atan2(zi,zr)
-        return hsl(hue+root*57+180,.9,.5)
-    end
-
-    local zr,zi,cr,ci
-    if kind=="julia" then
-        zr,zi,cr,ci=x,y,-.745,.186
-    else
-        zr,zi,cr,ci=0,0,x,y
-    end
-
-    local i=0
-    local mag=0
-
-    while i<iterations and mag<256 do
-        if kind=="burningShip" then
-            zr,zi=math.abs(zr),math.abs(zi)
-        end
-
-        local rr=zr*zr
-        local ii=zi*zi
-        local ni=(kind=="tricorn" and -2 or 2)*zr*zi+ci
-        zr=rr-ii+cr
-        zi=ni
-        mag=zr*zr+zi*zi
-        i=i+1
-    end
-
-    if i>=iterations then return 3,4,13 end
-
-    local shade=(hue+i*13+math.log(math.max(1,mag))/math.log(2)*20)%360
-    return hsl(shade,.88,.48)
-end
-
--- Render a small row batch and send packed RGB strings to JavaScript.
-for py=startRow,endRow do
-    local pieces={}
-    local wy=centerY+(py/renderHeight*2-1)*(scale/2)
-
-    for px=0,renderWidth-1 do
-        local wx=centerX+(px/renderWidth*2-1)*(scale/2)*renderWidth/renderHeight
-        local r,g,b=pixel(wx,wy,fractalType,iterations,hue,scale,seedValue)
-        pieces[#pieces+1]=string.char(r,g,b)
-    end
-
-    sendRow(py,table.concat(pieces))
+    sendRow(py, table.concat(pieces, ","))
 end
 `;
-
-function resizeCanvas(){
-  width=innerWidth;
-  height=innerHeight;
-  canvas.width=width;
-  canvas.height=height;
-  canvas.style.width=width+"px";
-  canvas.style.height=height+"px";
-  updateBox();
-  render();
 }
 
-function getWorldPoint(x,y){
-  const halfH=scale/2;
-  const halfW=halfH*width/height;
-  return {
-    x:centerX+(x/width*2-1)*halfW,
-    y:centerY+(y/height*2-1)*halfH
-  };
-}
+async function renderFractal() {
+    if (!renderQueued || paused) return;
 
-function updateReadouts(){
-  document.getElementById("zoomReadout").textContent=(3.4/scale).toExponential(3)+"×";
-  document.getElementById("centerReadout").textContent=centerX.toPrecision(6)+", "+centerY.toPrecision(6);
-  document.getElementById("iterationReadout").textContent=iterations();
-  document.getElementById("gasterStatus").textContent=fractal.value==="gaster"
-    ?(scale<.01?"ANOMALY DETECTED":"FIELD ACTIVE · CONVERGENCE UNKNOWN")
-    :"Not selected";
-}
+    renderQueued = false;
 
-function iterations(){
-  return Math.min(180,Math.floor(Number(detail.value)+Math.max(0,Math.log2(3.4/scale))*8));
-}
+    const thisGeneration = renderGeneration;
 
-function setAutoZoom(enabled){
-  autoZoom=enabled;
-  const button=document.getElementById("autoButton");
-  button.classList.toggle("active",enabled);
-  button.textContent="Auto-zoom: "+(enabled?"ON":"OFF")+" (Z)";
-}
+    getRenderDimensions();
 
-function updateBox(){
-  zoomBox.style.width=boxWidth+"px";
-  zoomBox.style.height=boxHeight+"px";
-  zoomBox.style.left=Math.max(0,Math.min(pointerX-boxWidth/2,width-boxWidth))+"px";
-  zoomBox.style.top=Math.max(0,Math.min(pointerY-boxHeight/2,height-boxHeight))+"px";
-}
+    const image = smallCtx.createImageData(renderWidth, renderHeight);
 
-function zoomAt(x,y,factor){
-  const before=getWorldPoint(x,y);
-  scale/=factor;
-  const after=getWorldPoint(x,y);
-  centerX+=before.x-after.x;
-  centerY+=before.y-after.y;
-  updateReadouts();
-  render();
-}
+    const settings = {
+        centerX,
+        centerY,
+        zoom,
+        phase: Number(colorPhase.value) * Math.PI / 180,
+        faceStrength: Number(faceDetail.value),
+        iterations: detailSettings[Number(detailSelect.value)].iterations,
+        mode: modeSelect.value
+    };
 
-function resetView(){
-  centerX=-.5;
-  centerY=0;
-  scale=3.4;
+    const rowsPerChunk = 4;
 
-  if(fractal.value==="newton"){centerX=0;scale=4}
-  if(fractal.value==="gaster"){centerX=0;centerY=0;scale=2.4}
+    setStatus("Luau is calculating fractal pixels...");
 
-  updateReadouts();
-  render();
-}
+    try {
+        for (
+            let startRow = 0;
+            startRow < renderHeight;
+            startRow += rowsPerChunk
+        ) {
+            if (thisGeneration !== renderGeneration || paused) {
+                return;
+            }
 
-/*
-  The browser bridge accepts one packed row from Luau.
-  Each three characters are the red, green and blue values.
-*/
-function makeBridge(imageData, renderWidth, renderHeight, id){
-  return {
-    sendRow:function(row, packed){
-      if(id!==renderId) return;
+            const endRow = Math.min(
+                renderHeight - 1,
+                startRow + rowsPerChunk - 1
+            );
 
-      for(let x=0;x<renderWidth;x++){
-        const src=x*3;
-        const dst=(row*renderWidth+x)*4;
-        imageData.data[dst]=packed.charCodeAt(src);
-        imageData.data[dst+1]=packed.charCodeAt(src+1);
-        imageData.data[dst+2]=packed.charCodeAt(src+2);
-        imageData.data[dst+3]=255;
-      }
+            const bridge = {
+                shouldCancel: () => (
+                    thisGeneration !== renderGeneration || paused
+                ),
+
+                sendRow: (row, csv) => {
+                    if (thisGeneration !== renderGeneration) return;
+
+                    const values = csv.split(",").map(Number);
+                    let sourceIndex = 0;
+                    let targetIndex = row * renderWidth * 4;
+
+                    for (let x = 0; x < renderWidth; x++) {
+                        image.data[targetIndex++] = values[sourceIndex++];
+                        image.data[targetIndex++] = values[sourceIndex++];
+                        image.data[targetIndex++] = values[sourceIndex++];
+                        image.data[targetIndex++] = 255;
+                    }
+                }
+            };
+
+            const source = makeLuauSource(
+                startRow,
+                endRow,
+                settings
+            );
+
+            const success = await runLuau(source, null, bridge);
+
+            if (!success) {
+                setStatus(
+                    "Luau error. Check that LuauRuntime.js loads correctly."
+                );
+                loading.textContent = "LUAAU ERROR";
+                return;
+            }
+
+            await new Promise(resolve => requestAnimationFrame(resolve));
+        }
+
+        if (thisGeneration !== renderGeneration || paused) {
+            return;
+        }
+
+        smallCtx.putImageData(image, 0, 0);
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(
+            smallCanvas,
+            0, 0,
+            canvas.width,
+            canvas.height
+        );
+
+        loading.classList.add("hidden");
+
+        setStatus(
+            "Rendered " + renderWidth + " × " + renderHeight +
+            " pixels using Luau. Pirate Gaster loops in Gaster mode."
+        );
+
+        updateReadouts();
+    } catch (error) {
+        console.error(error);
+
+        loading.textContent = "RENDER FAILED";
+
+        setStatus(
+            "Render failed: " +
+            (error instanceof Error ? error.message : String(error))
+        );
     }
-  };
 }
 
-async function render(){
-  const id=++renderId;
-  if(renderBusy){
-    queuedRender=true;
-    return;
-  }
+function toggleAutoZoom() {
+    autoZoom = !autoZoom;
+    updateReadouts();
 
-  renderBusy=true;
-  queuedRender=false;
-  overlay.style.display="flex";
-  overlayCard.textContent="Rendering "+fractal.options[fractal.selectedIndex].text+" with Luau...";
-  document.getElementById("renderReadout").textContent="Rendering...";
-
-  const factor=Math.min(1,640/width,420/height);
-  const rw=Math.max(1,Math.floor(width*factor));
-  const rh=Math.max(1,Math.floor(height*factor));
-  const image=ctx.createImageData(rw,rh);
-
-  try{
-    const state=await LuauState.createAsync();
-    const bridge=makeBridge(image,rw,rh,id);
-    const batchSize=5;
-
-    for(let start=0;start<rh;start+=batchSize){
-      if(id!==renderId) break;
-
-      const end=Math.min(rh-1,start+batchSize-1);
-      const settings=`
-local startRow=${start}
-local endRow=${end}
-local renderWidth=${rw}
-local renderHeight=${rh}
-local centerX=${centerX}
-local centerY=${centerY}
-local scale=${scale}
-local iterations=${iterations()}
-local hue=${Number(color.value)}
-local seedValue=${seed}
-local fractalType=${JSON.stringify(fractal.value)}
-`;
-
-      const code=settings+luaSource;
-      const run=state.loadstring(code,"GasterFractal.lua",true);
-      await run(bridge);
-
-      if(id!==renderId) break;
-
-      ctx.putImageData(image,0,0);
-      document.getElementById("renderReadout").textContent=
-        "Rendering "+Math.floor((end+1)/rh*100)+"%";
-
-      await new Promise(resolve=>requestAnimationFrame(resolve));
+    if (autoZoom) {
+        setStatus("Auto-zoom enabled. The void is expanding.");
+    } else {
+        setStatus("Auto-zoom disabled.");
     }
-
-    if(id===renderId){
-      ctx.imageSmoothingEnabled=false;
-      const temp=document.createElement("canvas");
-      temp.width=rw;
-      temp.height=rh;
-      temp.getContext("2d").putImageData(image,0,0);
-      ctx.clearRect(0,0,width,height);
-      ctx.drawImage(temp,0,0,width,height);
-      document.getElementById("renderReadout").textContent="Complete";
-      overlay.style.display="none";
-      updateReadouts();
-    }
-
-    state.destroy?.();
-  }catch(error){
-    console.error(error);
-    overlayCard.textContent="Luau error: "+error.message;
-    document.getElementById("renderReadout").textContent="Error";
-  }finally{
-    renderBusy=false;
-    if(queuedRender && id===renderId){
-      queuedRender=false;
-      render();
-    }
-  }
 }
 
-canvas.addEventListener("pointermove",event=>{
-  pointerX=event.clientX;
-  pointerY=event.clientY;
-  if(boxMode&&!resizing)updateBox();
+modeSelect.addEventListener("change", () => {
+    updateAudio();
+    updateReadouts();
+    requestRender();
 });
 
-canvas.addEventListener("wheel",event=>{
-  event.preventDefault();
-  zoomAt(event.clientX,event.clientY,event.deltaY<0?1.22:1/1.22);
-},{passive:false});
+detailSelect.addEventListener("change", requestRender);
+colorPhase.addEventListener("input", () => {
+    updateReadouts();
+    requestRender();
+});
+faceDetail.addEventListener("input", () => {
+    updateReadouts();
+    requestRender();
+});
+zoomSpeed.addEventListener("input", updateReadouts);
 
-canvas.addEventListener("click",event=>{
-  if(resizing)return;
+document.getElementById("autoButton").addEventListener(
+    "click",
+    toggleAutoZoom
+);
 
-  if(boxMode){
-    const x=parseFloat(zoomBox.style.left)+boxWidth/2;
-    const y=parseFloat(zoomBox.style.top)+boxHeight/2;
-    zoomAt(x,y,Math.max(1.2,Math.min(width/boxWidth,height/boxHeight)));
-  }else{
-    zoomAt(event.clientX,event.clientY,event.shiftKey?1/1.7:1.7);
-  }
+document.getElementById("pauseButton").addEventListener("click", () => {
+    paused = !paused;
+
+    updateReadouts();
+
+    if (paused) {
+        renderGeneration++;
+        renderQueued = false;
+        loading.classList.add("hidden");
+        setStatus("Rendering paused.");
+    } else {
+        setStatus("Rendering resumed.");
+        requestRender();
+    }
 });
 
-const handle=document.getElementById("zoomHandle");
-handle.addEventListener("pointerdown",event=>{
-  event.preventDefault();
-  event.stopPropagation();
-  resizing=true;
-  handle.setPointerCapture(event.pointerId);
-  handle.startX=event.clientX;
-  handle.startY=event.clientY;
-  handle.startW=boxWidth;
-  handle.startH=boxHeight;
+document.getElementById("resetButton").addEventListener(
+    "click",
+    resetFractal
+);
+
+soundButton.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    updateAudio();
+
+    if (soundEnabled && modeSelect.value === "gaster") {
+        audio.play().catch(() => {
+            setStatus("Click again if your browser blocks audio playback.");
+        });
+    }
 });
 
-handle.addEventListener("pointermove",event=>{
-  if(!resizing)return;
-  boxWidth=Math.max(50,Math.min(width,handle.startW+event.clientX-handle.startX));
-  boxHeight=Math.max(50,Math.min(height,handle.startH+event.clientY-handle.startY));
-  updateBox();
+document.getElementById("fullscreenButton").addEventListener(
+    "click",
+    async () => {
+        try {
+            if (!document.fullscreenElement) {
+                await document.getElementById("screenWrap").requestFullscreen();
+            } else {
+                await document.exitFullscreen();
+            }
+        } catch (error) {
+            setStatus("Fullscreen is unavailable in this browser.");
+        }
+    }
+);
+
+canvas.addEventListener("wheel", event => {
+    event.preventDefault();
+
+    const factor = event.deltaY < 0 ? 1.35 : 1 / 1.35;
+
+    zoomAt(event.clientX, event.clientY, factor);
+}, { passive: false });
+
+canvas.addEventListener("click", event => {
+    const factor = event.shiftKey ? 1 / 1.6 : 1.6;
+
+    zoomAt(event.clientX, event.clientY, factor);
 });
 
-handle.addEventListener("pointerup",()=>resizing=false);
-handle.addEventListener("pointercancel",()=>resizing=false);
+canvas.addEventListener("mousemove", event => {
+    const point = screenToWorld(event.clientX, event.clientY);
 
-document.getElementById("autoButton").addEventListener("click",()=>setAutoZoom(!autoZoom));
-
-document.getElementById("boxButton").addEventListener("click",()=>{
-  boxMode=!boxMode;
-  zoomBox.style.display=boxMode?"block":"none";
-  const button=document.getElementById("boxButton");
-  button.classList.toggle("active",boxMode);
-  button.textContent="Zoom box: "+(boxMode?"ON":"OFF");
-  updateBox();
+    targetX = point.x;
+    targetY = point.y;
 });
 
-document.getElementById("resetButton").addEventListener("click",resetView);
-
-document.getElementById("fullscreenButton").addEventListener("click",()=>{
-  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(()=>{});
-  else document.exitFullscreen?.().catch(()=>{});
-});
-
-function changeSeed(){
-  seed=Math.floor(Math.random()*4294967295);
-  if(fractal.value==="gaster")render();
-}
-
-document.getElementById("seedButton").addEventListener("click",changeSeed);
-
-fractal.addEventListener("change",resetView);
-
-detail.addEventListener("input",()=>{
-  document.getElementById("detailValue").textContent=detail.value;
-  render();
-});
-
-color.addEventListener("input",()=>{
-  document.getElementById("colorValue").textContent=color.value+"°";
-  render();
-});
-
-speed.addEventListener("input",()=>{
-  document.getElementById("speedValue").textContent=Number(speed.value).toFixed(2)+"×";
-});
-
-window.addEventListener("keydown",event=>{
-  if(event.ctrlKey||event.altKey||event.metaKey)return;
-  if(["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName))return;
-
-  if(event.key.toLowerCase()==="z")setAutoZoom(!autoZoom);
-  if(event.key.toLowerCase()==="r")changeSeed();
-
-  if(event.key==="Escape"){
-    boxMode=false;
-    zoomBox.style.display="none";
-    document.getElementById("boxButton").textContent="Zoom box: OFF";
-    document.getElementById("boxButton").classList.remove("active");
-  }
-});
-
-window.addEventListener("resize",resizeCanvas);
-
-function animationLoop(time){
-  if(!lastTime)lastTime=time;
-  const delta=Math.min(.05,(time-lastTime)/1000);
-  lastTime=time;
-
-  if(autoZoom&&time-lastZoom>120){
-    lastZoom=time;
-    let x=pointerX;
-    let y=pointerY;
-
-    if(boxMode){
-      x=parseFloat(zoomBox.style.left)+boxWidth/2;
-      y=parseFloat(zoomBox.style.top)+boxHeight/2;
+window.addEventListener("keydown", event => {
+    if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLSelectElement
+    ) {
+        return;
     }
 
-    zoomAt(x,y,Math.pow(Number(speed.value),Math.max(delta,.016)));
-  }
+    if (event.code === "Space") {
+        event.preventDefault();
+        document.getElementById("pauseButton").click();
+    } else if (event.key.toLowerCase() === "z") {
+        toggleAutoZoom();
+    } else if (event.key.toLowerCase() === "r") {
+        resetFractal();
+    } else if (event.key.toLowerCase() === "f") {
+        document.getElementById("fullscreenButton").click();
+    } else if (event.key === "+" || event.key === "=") {
+        zoomAt(
+            canvas.getBoundingClientRect().left + canvas.clientWidth / 2,
+            canvas.getBoundingClientRect().top + canvas.clientHeight / 2,
+            1.5
+        );
+    } else if (event.key === "-") {
+        zoomAt(
+            canvas.getBoundingClientRect().left + canvas.clientWidth / 2,
+            canvas.getBoundingClientRect().top + canvas.clientHeight / 2,
+            1 / 1.5
+        );
+    }
+});
 
-  requestAnimationFrame(animationLoop);
+window.addEventListener("resize", resizeCanvas);
+
+function animationLoop() {
+    if (autoZoom && !paused) {
+        const speed = Number(zoomSpeed.value);
+
+        zoom = Math.min(1e12, zoom * (1 + 0.0025 * speed));
+
+        centerX += (targetX - centerX) * 0.012;
+        centerY += (targetY - centerY) * 0.012;
+
+        updateReadouts();
+
+        const now = performance.now();
+
+        if (now - lastRenderRequest > 180) {
+            lastRenderRequest = now;
+            requestRender();
+        }
+    }
+
+    requestAnimationFrame(animationLoop);
 }
 
-document.getElementById("detailValue").textContent=detail.value;
-document.getElementById("colorValue").textContent=color.value+"°";
-document.getElementById("speedValue").textContent=Number(speed.value).toFixed(2)+"×";
+async function initialize() {
+    resizeCanvas();
 
-canvas.width=width;
-canvas.height=height;
-updateReadouts();
-resetView();
-requestAnimationFrame(animationLoop);
+    updateReadouts();
+    updateAudio();
+
+    setStatus("Initializing Luau runtime...");
+
+    try {
+        /*
+         * This first small program checks that the runtime and bridge
+         * work before starting the full fractal renderer.
+         */
+        const success = await runLuau(
+            'print("GASTER FRACTAL: LUAAU ONLINE")',
+            null,
+            {}
+        );
+
+        if (!success) {
+            throw new Error("Luau runtime initialization failed.");
+        }
+
+        setStatus("Luau runtime online. Preparing the fractal...");
+        requestRender();
+        animationLoop();
+    } catch (error) {
+        console.error(error);
+
+        loading.textContent = "RUNTIME ERROR";
+
+        setStatus(
+            "Could not initialize Luau. Verify ./LuauRuntime.js and its import."
+        );
+    }
+}
+
+initialize();
 </script>
 </body>
 </html>
