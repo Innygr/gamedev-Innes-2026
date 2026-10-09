@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L4 — CSS — Innes</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #0d0714;
+            color: #e9ddff;
+            font-family: "Fira Code", monospace;
+        }
+
+        h1 { color: #c77dff; }
+
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(25, 12, 40, 0.85);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+        }
+
+        #code {
+            width: 100%;
+            min-height: 300px;
+            box-sizing: border-box;
+            padding: 15px;
+            background: #08050b;
+            color: #e9ddff;
+            border: 1px solid #7c3aed;
+            border-radius: 8px;
+            font: 14px "Fira Code", monospace;
+        }
+
+        button {
+            margin: 12px 8px 0 0;
+            padding: 10px 18px;
+            background: #24113d;
+            color: #e9ddff;
+            border: 1px solid #a855f7;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        #output {
+            min-height: 50px;
+            padding: 15px;
+            background: #050505;
+            border: 1px solid #7c3aed;
+            border-radius: 8px;
+            color: #b7ffcf;
+            white-space: pre-wrap;
+        }
+
+        #preview {
+            padding: 20px;
+            background: #fff;
+            color: #111;
+            border-radius: 8px;
+        }
+
+        #myB1 {
+            color: #00ff00;
+            background-color: blue;
+        }
+
+        #movingText {
+            position: relative;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 50px;
+            background: #eee;
+            color: #111;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>L4 — CSS</h1>
+
+    <div class="section">
+        <h2>◆ Luau Code</h2>
+
+        <textarea id="code">print("CSS demonstration")
+
+-- Change the italic text's colours.
+changeStyle("myB1", "red", "yellow")
+
+-- Move the textarea.
+moveTextarea(30, 10)
+
+print("CSS changes applied!")</textarea>
+
+        <button id="runButton">▶ Run Luau</button>
+        <button id="clearButton">Clear</button>
+        <button id="resetButton">Reset</button>
+    </div>
+
+    <div class="section">
+        <h2>◆ Output</h2>
+        <pre id="output">Ready.</pre>
+    </div>
+
+    <div class="section">
+        <h2>◆ CSS Demonstration</h2>
+
+        <div id="preview">
+            Version 0.0.1
+
+            <h1 style="color: blue; text-align: center;">t1a04: CSS; Innes</h1>
+
+            Reference Link:
+            <a href="https://w3schools.com/cssref/default.asp" target="_blank" rel="noopener noreferrer">W3Schools</a>
+
+            <p>
+                Cascading Style Sheets (CSS) is supposed to be done using a
+                .css file containing all the commands for your website; but
+                for minor things you can do it in your HTML document.
+            </p>
+
+            <p>Here is the typical way of doing it in document style:</p>
+
+            <pre>b {
+    color: #00ff00;
+}</pre>
+
+            <p>Doing CSS inside the tag overpowers all the other methods.</p>
+
+            <i>This is Italized</i><br><br>
+
+            <i id="myB1">This is Italized text with a different color and a background color (wow so cool)</i>
+
+            <br><br>
+
+            <textarea id="movingText">Advanced see if you move this textarea</textarea>
+
+            <br><br><br>
+
+            <img src="../myImage01.jpg" width="200" style="border-radius: 200px" alt="Example image"><br>
+            fih<br>
+            <img src="../myFih.jpg" width="100" alt="Fih">
+        </div>
+    </div>
+
+    <script type="module">
+        import { runLuau } from "./LuauRuntime.js";
+
+        const code = document.getElementById("code");
+        const output = document.getElementById("output");
+        const originalCode = code.value;
+
+        function changeStyle(id, color, backgroundColor) {
+            const element = document.getElementById(id);
+            if (!element) return;
+
+            element.style.color = color;
+            element.style.backgroundColor = backgroundColor;
+        }
+
+        function moveTextarea(left, top) {
+            const element = document.getElementById("movingText");
+            element.style.left = `${left}px`;
+            element.style.top = `${top}px`;
+        }
+
+        document.getElementById("runButton").addEventListener("click", async () => {
+            output.textContent = "";
+
+            await runLuau(code.value, output, {
+                changeStyle,
+                moveTextarea
+            });
+        });
+
+        document.getElementById("clearButton").addEventListener("click", () => {
+            output.textContent = "";
+        });
+
+        document.getElementById("resetButton").addEventListener("click", () => {
+            code.value = originalCode;
+            output.textContent = "Ready.";
+
+            document.getElementById("myB1").style.color = "#00ff00";
+            document.getElementById("myB1").style.backgroundColor = "blue";
+
+            document.getElementById("movingText").style.left = "0px";
+            document.getElementById("movingText").style.top = "0px";
+        });
+    </script>
+</body>
+</html>
