@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L2 — List — Innes</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #0d0714;
+            color: #e9ddff;
+            font-family: "Fira Code", monospace;
+        }
+
+        h1 {
+            color: #c77dff;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(25, 12, 40, 0.85);
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            box-sizing: border-box;
+            padding: 15px;
+            background: #08050b;
+            color: #e9ddff;
+            border: 1px solid #7c3aed;
+            border-radius: 8px;
+            font-family: "Fira Code", monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        button {
+            margin: 12px 8px 0 0;
+            padding: 10px 18px;
+            background: #24113d;
+            color: #e9ddff;
+            border: 1px solid #a855f7;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3b1b5f;
+        }
+
+        #output {
+            min-height: 60px;
+            padding: 15px;
+            background: #050505;
+            border: 1px solid #7c3aed;
+            border-radius: 8px;
+            color: #b7ffcf;
+            white-space: pre-wrap;
+        }
+
+        #listOutput {
+            padding: 20px;
+            background: #fff;
+            color: #111;
+            border-radius: 8px;
+        }
+
+        #listOutput table {
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        #listOutput td {
+            border: 1px solid #555;
+            padding: 8px;
+        }
+
+        #listOutput img {
+            max-width: 100%;
+            height: auto;
+            vertical-align: middle;
+        }
+
+        #listOutput li {
+            margin: 10px 0;
+        }
+
+        #listOutput a {
+            color: #0645ad;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>L2 — List</h1>
+
+    <div class="section">
+        <h2>◆ Luau Code</h2>
+
+        <textarea id="code">local whaleList = {
+    {
+        name = "Killer Whale",
+        image = "../OrcaWhale.jpg"
+    },
+    {
+        name = "Beluga Whale",
+        image = "../BelugaWhale.jpg"
+    },
+    {
+        name = "Humpback Whale",
+        image = "../HumpbackWhale.jpg"
+    },
+    {
+        name = "Sperm Whale",
+        image = "../SpermWhale.jpg"
+    },
+    {
+        name = "Blue Whale",
+        image = "../BlueWhale.jpg"
+    }
+}
+
+print("Whale list created!")
+
+for i, whale in ipairs(whaleList) do
+    print(i .. ". " .. whale.name)
+    displayWhale(whale.name, whale.image)
+end</textarea>
+
+        <button id="runButton">▶ Run Luau</button>
+        <button id="clearButton">Clear</button>
+        <button id="resetButton">Reset</button>
+    </div>
+
+    <div class="section">
+        <h2>◆ Output</h2>
+        <pre id="output">Ready.</pre>
+        <div id="listOutput"></div>
+    </div>
+
+    <script type="module">
+        import { runLuau } from "./LuauRuntime.js";
+
+        const code = document.getElementById("code");
+        const output = document.getElementById("output");
+        const listOutput = document.getElementById("listOutput");
+
+        const originalCode = code.value;
+
+        function displayWhale(name, imagePath) {
+            const item = document.createElement("li");
+            item.append(document.createTextNode(name + " "));
+
+            const image = document.createElement("img");
+            image.src = imagePath;
+            image.alt = name;
+            image.width = 180;
+
+            item.appendChild(image);
+            document.getElementById("whaleList").appendChild(item);
+        }
+
+        function renderWhaleList() {
+            listOutput.innerHTML = `
+                <table border="1.25">
+                    <tr>
+                        <td><img src="../myWhale.jpg" alt="Whale" width="180"></td>
+                        <td>
+                            <a href="https://uk.whales.org/whales-dolphins/species-guide/"
+                               target="_blank" rel="noopener noreferrer">
+                                Whales.org
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                <ul id="whaleList"></ul>
+            `;
+        }
+
+        document.getElementById("runButton").addEventListener("click", async () => {
+            output.textContent = "";
+            listOutput.innerHTML = "";
+            renderWhaleList();
+
+            const success = await runLuau(code.value, output, {
+                displayWhale
+            });
+
+            if (!success) {
+                listOutput.innerHTML = "";
+            }
+        });
+
+        document.getElementById("clearButton").addEventListener("click", () => {
+            output.textContent = "";
+            listOutput.innerHTML = "";
+        });
+
+        document.getElementById("resetButton").addEventListener("click", () => {
+            code.value = originalCode;
+            output.textContent = "Ready.";
+            listOutput.innerHTML = "";
+        });
+    </script>
+</body>
+</html>
