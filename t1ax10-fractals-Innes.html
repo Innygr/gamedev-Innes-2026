@@ -1,600 +1,498 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fractal Explorer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GASTER FRACTAL — ENTRY 17</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#03040b;color:#f4f6ff;font-family:system-ui,sans-serif}
-#myCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
-#myPanel{position:absolute;z-index:5;top:12px;left:12px;width:min(310px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;padding:14px;border:1px solid #ffffff26;border-radius:14px;background:#080b18ed;backdrop-filter:blur(12px)}
-h1{font-size:19px;margin:0 0 5px}
-.mySubtitle{color:#aeb8d5;font-size:12px;margin-bottom:12px}
-.myControl{margin:12px 0}
-label{display:flex;justify-content:space-between;gap:8px;margin-bottom:5px;font-size:12px;color:#dce3ff}
-select,button,input{font:inherit}
-select,button{width:100%;color:#f4f6ff;background:#171d32;border:1px solid #ffffff25;border-radius:8px;padding:8px}
-button{cursor:pointer}
-button:hover{background:#252e4d}
-button.myActive{background:#4b3da1;border-color:#a79aff}
-input[type=range]{width:100%;accent-color:#9a8aff}
-.myButtons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
-.myStatus{border-top:1px solid #ffffff20;margin-top:12px;padding-top:9px;color:#b9c4e6;font-size:11px;line-height:1.7;overflow-wrap:anywhere}
-#myHint{position:absolute;bottom:12px;left:12px;z-index:3;max-width:calc(100vw - 24px);padding:8px 11px;color:#dce3ff;background:#080b18d9;border:1px solid #ffffff1a;border-radius:8px;font-size:11px;pointer-events:none}
-#myZoomBox{position:absolute;z-index:2;width:170px;height:120px;border:1px solid #b5a8ff;background:#9580ff12;pointer-events:none;display:none}
-#myZoomHandle{position:absolute;width:17px;height:17px;right:-5px;bottom:-5px;background:#c5baff;border:2px solid white;border-radius:4px;pointer-events:auto;cursor:nwse-resize}
-#myOverlay{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none}
-#myOverlayCard{padding:14px 20px;text-align:center;border:1px solid #ffffff25;border-radius:12px;background:#080b18e8;font-size:13px}
-@media(max-width:600px){#myPanel{width:255px;padding:11px}h1{font-size:16px}}
+:root{color-scheme:dark}
+body{margin:0;background:#03040a;color:#e4eaff;font:13px Consolas,"Courier New",monospace}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+#screen{z-index:0}
+#fx{z-index:1;pointer-events:none}
+#shade{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse,transparent 25%,#03040a66 75%,#03040aee)}
+#ui{position:fixed;z-index:3;inset:0;padding:16px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none}
+.panel{background:#070914dd;border:1px solid #303650;backdrop-filter:blur(9px);box-shadow:0 6px 30px #0008;padding:12px;pointer-events:auto}
+header,.bottom{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+h1{margin:0;font-size:17px;letter-spacing:3px}
+.sub,.label{font-size:10px;letter-spacing:1px;color:#8992b7}
+.sub{margin-top:5px}
+.bottom{align-items:flex-end}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;max-width:min(900px,100%)}
+.group{display:flex;flex-direction:column;gap:5px}
+button,select{font:inherit;color:#e4eaff;background:#0b0e1b;border:1px solid #414967;border-radius:2px;padding:7px;cursor:pointer}
+button:hover,select:hover{border-color:#d1dbff}
+button.active{background:#d1dbff;color:#090b13}
+input[type=range]{width:110px;accent-color:#cbd5ff}
+.readout{text-align:right;min-width:170px}
+#mag{font-size:16px;margin-top:4px}
+#status,#soundStatus{color:#aab7f2;font-size:10px;margin-top:5px}
+#help{display:none;position:fixed;z-index:5;right:16px;top:90px;width:230px}
+#help.show{display:block}
+#help p{margin:6px 0;color:#b8c1df}
+kbd{border:1px solid #4c5578;padding:2px 5px}
+#loading{position:fixed;z-index:2;top:50%;left:50%;transform:translate(-50%,-50%);letter-spacing:3px;color:#aab7f2;pointer-events:none}
+@media(max-width:650px){
+ #ui{padding:8px}h1{font-size:13px}.sub{font-size:8px}
+ header .statusbox{display:none}.bottom{flex-direction:column;align-items:stretch}
+ .controls{max-width:100%}.readout{text-align:left}
+ input[type=range]{width:85px}#help{right:8px;top:70px}
+}
 </style>
 </head>
 <body>
-<canvas id="myCanvas"></canvas>
+<canvas id="screen"></canvas>
+<canvas id="fx"></canvas>
+<div id="shade"></div>
+<div id="loading">INITIALIZING ENTRY 17...</div>
 
-<div id="myPanel">
-<h1>Fractal Explorer</h1>
-<div class="mySubtitle">Multicore-inspired exploration · Reality not guaranteed</div>
+<audio id="pirateAudio"
+ src="https://www.myinstants.com/media/sounds/pirate-gaster_Jzylxv4.mp3"
+ loop preload="auto"></audio>
 
-<div class="myControl">
-<label for="myFractal">Fractal type</label>
-<select id="myFractal">
-<optgroup label="Escape-time fractals">
-<option value="mandelbrot">Mandelbrot Set</option>
-<option value="julia">Julia Set</option>
-<option value="burningShip">Burning Ship</option>
-<option value="tricorn">Tricorn</option>
-</optgroup>
-<optgroup label="Other fractals">
-<option value="newton">Newton Fractal — z³ − 1</option>
-<option value="sierpinski">Sierpiński's Gasket</option>
-<option value="fern">IFS — Barnsley Fern</option>
-<option value="gaster">THE GASTER FRACTAL ▓</option>
-</optgroup>
-</select>
+<div id="ui">
+<header>
+ <div class="panel">
+  <h1>GASTER FRACTAL</h1>
+  <div class="sub">ENTRY 17 // RECURSIVE OBSERVATION</div>
+ </div>
+ <div class="panel statusbox" style="text-align:right">
+  <div>◉ SIGNAL DETECTED</div>
+  <div class="sub">THE SHAPE REMAINS</div>
+  <button id="helpBtn" style="margin-top:8px">CONTROLS [?]</button>
+ </div>
+</header>
+
+<div class="bottom">
+ <div class="panel controls">
+  <div class="group">
+   <label class="label">FRACTAL</label>
+   <select id="mode">
+    <option value="gaster">GASTER FRACTAL</option>
+    <option value="mandelbrot">MANDELBROT</option>
+    <option value="julia">JULIA</option>
+    <option value="burning">BURNING SHIP</option>
+    <option value="tricorn">TRICORN</option>
+   </select>
+  </div>
+  <div class="group">
+   <label class="label">ZOOM SPEED</label>
+   <input id="speed" type="range" min="0" max="100" value="25">
+   <span id="speedText" class="label">NORMAL</span>
+  </div>
+  <div class="group">
+   <label class="label">DETAIL</label>
+   <select id="detail">
+    <option value="1">LOW / FAST</option>
+    <option value="2" selected>BALANCED</option>
+    <option value="3">HIGH</option>
+    <option value="4">ULTRA</option>
+   </select>
+  </div>
+  <div class="group">
+   <label class="label">COLOR PHASE</label>
+   <input id="colors" type="range" min="0" max="100" value="36">
+  </div>
+  <div class="group">
+   <label class="label">FACE DETAIL</label>
+   <input id="face" type="range" min="0" max="100" value="75">
+  </div>
+  <div class="group">
+   <label class="label">CAMERA</label>
+   <div style="display:flex;gap:5px;flex-wrap:wrap">
+    <button id="auto" class="active">AUTO-ZOOM ON</button>
+    <button id="reset">RESET</button>
+   </div>
+  </div>
+  <div class="group">
+   <label class="label">AUDIO</label>
+   <button id="sound">ENABLE PIRATE GASTER</button>
+   <span id="soundStatus" class="label">WAITING FOR INTERACTION</span>
+  </div>
+ </div>
+ <div class="panel readout">
+  <div class="label">MAGNIFICATION</div>
+  <div id="mag">1.00×</div>
+  <div id="status">CALCULATING...</div>
+  <div class="label" id="coords">C: -0.500, 0.000</div>
+ </div>
+</div>
 </div>
 
-<div class="myControl">
-<label for="mySpeed">Auto-zoom speed <span id="mySpeedValue">1.50×</span></label>
-<input id="mySpeed" type="range" min="1.05" max="3" step=".05" value="1.5">
+<div id="help" class="panel">
+ <strong>CONTROLS</strong>
+ <p><kbd>Z</kbd> Toggle auto-zoom</p>
+ <p><kbd>R</kbd> Reset camera</p>
+ <p><kbd>Space</kbd> Pause/resume camera</p>
+ <p><kbd>F</kbd> Fullscreen</p>
+ <p><kbd>+</kbd> Zoom in</p>
+ <p><kbd>-</kbd> Zoom out</p>
+ <p>Mouse wheel: zoom toward cursor</p>
+ <p>Click: zoom in; Shift-click: zoom out</p>
+ <p>Mouse movement: steer auto-zoom</p>
+ <button id="closeHelp">CLOSE</button>
 </div>
-<div class="myControl">
-<label for="myDetail">Detail <span id="myDetailValue">100</span></label>
-<input id="myDetail" type="range" min="30" max="300" step="10" value="100">
-</div>
-<div class="myControl">
-<label for="myColor">Color shift <span id="myColorValue">210°</span></label>
-<input id="myColor" type="range" min="0" max="360" value="210">
-</div>
-
-<div class="myButtons">
-<button id="myAutoButton" class="myActive">Auto-zoom: ON (Z)</button>
-<button id="myBoxButton">Zoom box: OFF</button>
-<button id="myReset">Reset view</button>
-<button id="myFullscreen">Fullscreen</button>
-<button id="myRecalculate">Recalculate Gaster (R)</button>
-</div>
-
-<div class="myStatus">
-<div>Zoom: <span id="myZoomReadout">1×</span></div>
-<div>Center: <span id="myCenterReadout">-0.5, 0</span></div>
-<div>Iterations: <span id="myIterationReadout">100</span></div>
-<div>Render: <span id="myRenderReadout">Starting…</span></div>
-<div>Gaster: <span id="myGasterStatus">Not selected</span></div>
-</div>
-</div>
-
-<div id="myOverlay"><div id="myOverlayCard">Rendering initial fractal…</div></div>
-<div id="myZoomBox"><div id="myZoomHandle"></div></div>
-<div id="myHint">Scroll: zoom · Click: zoom in · Shift-click: zoom out · Z: toggle auto-zoom · R: change Gaster seed</div>
 
 <script>
+(() => {
 "use strict";
 
-const myCanvas=document.getElementById("myCanvas");
-const myCtx=myCanvas.getContext("2d",{alpha:false});
-const myFractal=document.getElementById("myFractal");
-const mySpeed=document.getElementById("mySpeed");
-const myDetail=document.getElementById("myDetail");
-const myColor=document.getElementById("myColor");
-const myZoomReadout=document.getElementById("myZoomReadout");
-const myCenterReadout=document.getElementById("myCenterReadout");
-const myIterationReadout=document.getElementById("myIterationReadout");
-const myRenderReadout=document.getElementById("myRenderReadout");
-const myGasterStatus=document.getElementById("myGasterStatus");
-const myOverlay=document.getElementById("myOverlay");
-const myZoomBox=document.getElementById("myZoomBox");
+const $ = id => document.getElementById(id);
+const canvas = $("screen");
+const ctx = canvas.getContext("2d",{alpha:false});
+const fx = $("fx");
+const fctx = fx.getContext("2d");
+const audio = $("pirateAudio");
 
-let myWidth=innerWidth,myHeight=innerHeight;
-let myCenterX=-.5,myCenterY=0,myScale=3.4;
-let myPointerX=myWidth/2,myPointerY=myHeight/2;
-let myAutoZoom=true,myBoxMode=false,myGasterSeed=1984;
-let myBoxWidth=170,myBoxHeight=120,myResizing=false;
-let myRenderId=0,myLastTime=0,myLastZoom=0;
+let W=innerWidth,H=innerHeight,D=1;
+let frame=null,frameCamera=null;
+let busy=false,needsRender=false;
+let renderId=0,lastRender=0,lastFrameAt=0;
+let mode="gaster",auto=true,paused=false,soundEnabled=false;
+let speed=25,detail=2,phase=36,faceDetail=75;
+let mouseX=.5,mouseY=.5,lastTime=0;
+let camera={x:-.5,y:0,span:3.2};
+const initial={x:-.5,y:0,span:3.2};
 
-function myIterations(){
-  return Math.min(3000,Math.floor(Number(myDetail.value)+
-    Math.max(0,Math.log2(3.4/myScale))*15));
+const workerCode = `
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+
+// Signed-distance-style Gaster face mask, centered at the origin.
+// The mask is sampled throughout the orbit, so its contours become
+// part of the fractal's escape-time coloring rather than a screen overlay.
+function faceMask(x,y,detail){
+ const head=Math.sqrt(
+   Math.pow(Math.abs(x)*0.88,2)+Math.pow((y+0.035)*1.0,2)
+ );
+ const skull=Math.abs(head-0.39);
+ const forehead=Math.abs(y+0.19+0.025*Math.cos(x*13));
+ let d=Math.min(skull,forehead*0.72);
+
+ // Angular eye sockets.
+ for(const side of [-1,1]){
+   const ex=x-side*0.155, ey=y+0.065;
+   const eye=Math.abs(Math.sqrt(ex*ex*1.15+ey*ey*0.8)-0.095);
+   d=Math.min(d,eye);
+   // Cheek cracks.
+   const cx=x-side*0.24, cy=y-0.08;
+   const crack=Math.abs(cy-(0.45*cx+0.025*Math.sin(cx*24)));
+   if(Math.abs(cx)<0.07 && cy>-0.02 && cy<0.12)
+     d=Math.min(d,crack*0.45);
+ }
+ // Broken grin and teeth.
+ const grinY=0.135+0.04*Math.cos(x*8);
+ if(Math.abs(x)<0.25){
+   d=Math.min(d,Math.abs(y-grinY));
+   const tooth=Math.abs(Math.sin(x*55));
+   d=Math.min(d,Math.abs(y-(grinY+0.022))*0.7+tooth*0.008);
+ }
+ // Cracks across forehead.
+ if(y< -0.20 && y> -0.35){
+   const crack=Math.abs(x-(0.025*Math.sin(y*42)));
+   d=Math.min(d,crack*0.5);
+ }
+ // Neck and shoulders.
+ const neck=Math.min(
+   Math.abs(Math.abs(x)-0.105),
+   Math.abs(y-0.37)
+ );
+ if(y>0.30 && y<0.48 && Math.abs(x)<0.3)
+   d=Math.min(d,neck*0.7);
+ return d;
 }
 
-function myHsl(myHue,mySat,myLight){
-  const myC=(1-Math.abs(2*myLight-1))*mySat;
-  const myHP=((myHue%360)+360)%360/60;
-  const myX=myC*(1-Math.abs(myHP%2-1));
-  const myM=myLight-myC/2;
-  let myRGB;
-  if(myHP<1)myRGB=[myC,myX,0];
-  else if(myHP<2)myRGB=[myX,myC,0];
-  else if(myHP<3)myRGB=[0,myC,myX];
-  else if(myHP<4)myRGB=[0,myX,myC];
-  else if(myHP<5)myRGB=[myX,0,myC];
-  else myRGB=[myC,0,myX];
-  return myRGB.map(myV=>Math.round((myV+myM)*255));
-}
+function render(d){
+ const {id,w,h,cx,cy,span,mode,phase,detail,faceDetail}=d;
+ const image=new ImageData(w,h),out=image.data;
+ const aspect=w/h;
+ const maxIter=[55,85,125,175][detail-1];
+ const hue=phase/100*Math.PI*2;
+ const faceStrength=faceDetail/100;
+ const scale=span;
+ const faceScale=1.55;
 
-function mySegmentDistance(myX,myY,myAX,myAY,myBX,myBY){
-  const myDX=myBX-myAX,myDY=myBY-myAY;
-  const myDen=myDX*myDX+myDY*myDY;
-  const myT=myDen?Math.max(0,Math.min(1,
-    ((myX-myAX)*myDX+(myY-myAY)*myDY)/myDen)):0;
-  return Math.hypot(myX-myAX-myT*myDX,myY-myAY-myT*myDY);
-}
+ for(let py=0;py<h;py++){
+  const y=cy+((py/h)-.5)*span;
+  for(let px=0;px<w;px++){
+   const x=cx+((px/w)-.5)*span*aspect;
+   let zx=0,zy=0,ax=x,ay=y,iter=0;
+   let trap=10,faceTrap=10;
 
-/* Gaster's recognizable head, grin, skeletal hands and branching cracks. */
-function myGasterGeometry(myX,myY,myS){
-  const myDist=(myAX,myAY,myBX,myBY)=>
-    mySegmentDistance(myX,myY,myAX,myAY,myBX,myBY);
-  const myEllipse=(myCX,myCY,myRX,myRY)=>
-    (Math.hypot((myX-myCX)/myRX,(myY-myCY)/myRY)-1)*Math.min(myRX,myRY);
+   if(mode==="julia"){
+    zx=x;zy=y;
+    ax=-.745+.035*Math.cos(hue);
+    ay=.186+.025*Math.sin(hue);
+   }
+   if(mode==="burning"){ax=x-.25;ay=y+.45;}
+   if(mode==="tricorn"){ax=x;ay=y;}
+   if(mode==="gaster"){
+    // The Gaster-shaped mask defines the orbit trap in complex space.
+    // Its influence is woven into the quadratic iteration.
+    ax=x*0.91-0.025;
+    ay=y*0.91;
+   }
 
-  const myHead=myEllipse(0,-.10,.39,.57);
-  const myHeadInside=myHead<0;
-  const myEyes=
-    Math.hypot((myX+.145)/.105,(myY+.115)/.145)<1 ||
-    Math.hypot((myX-.145)/.105,(myY+.115)/.145)<1;
+   for(;iter<maxIter;iter++){
+    const ox=zx,oy=zy;
+    const r2=ox*ox+oy*oy;
 
-  const myEyeGlint=Math.min(
-    myDist(-.22,-.19,-.17,-.13),
-    myDist(.08,-.19,.13,-.13)
-  );
-
-  const myMouthTop=-.005+.045*Math.pow(myX/.29,2);
-  const myMouthBottom=.18-.035*Math.pow(myX/.29,2);
-  const myMouth=Math.abs(myX)<.295&&
-    myY>myMouthTop&&myY<myMouthBottom;
-
-  let myTeeth=1e9;
-  for(let myI=-4;myI<=4;myI++){
-    const myTX=myI*.058;
-    myTeeth=Math.min(myTeeth,
-      myDist(myTX,myMouthTop,myTX+.004,myMouthBottom));
-  }
-
-  let myHands=1e9;
-  for(const mySide of [-1,1]){
-    const myP=(myPX,myPY)=>[myPX*mySide,myPY];
-    const myLines=[
-      [[.36,.43],[.52,.31]],[[.52,.31],[.65,.25]],
-      [[.65,.25],[.75,.28]],[[.62,.25],[.62,.04]],
-      [[.67,.23],[.72,0]],[[.72,.24],[.83,.06]],
-      [[.76,.26],[.92,.15]],[[.52,.31],[.49,.20]],
-      [[.54,.29],[.58,.17]],[[.57,.28],[.65,.17]],
-      [[.58,.20],[.70,.18]],[[.54,.25],[.66,.23]]
-    ];
-    for(const myLine of myLines){
-      const myA=myP(...myLine[0]),myB=myP(...myLine[1]);
-      myHands=Math.min(myHands,myDist(myA[0],myA[1],myB[0],myB[1]));
-    }
-    for(const myKnot of [[.62,.04],[.72,0],[.83,.06],[.92,.15]]){
-      const myK=myP(...myKnot);
-      myHands=Math.min(myHands,
-        Math.abs(Math.hypot(myX-myK[0],myY-myK[1])-.024));
-    }
-  }
-
-  let myCracks=1e9;
-  for(const mySide of [-1,1]){
-    const myPaths=[
-      [[mySide*.08,-.60],[mySide*.025,-.49],[mySide*.065,-.39],
-       [mySide*.015,-.30],[mySide*.07,-.21]],
-      [[mySide*.34,-.20],[mySide*.25,-.14],[mySide*.29,-.06],
-       [mySide*.20,.015]],
-      [[mySide*.28,.16],[mySide*.21,.22],[mySide*.24,.29]]
-    ];
-    for(const myPath of myPaths){
-      for(let myI=0;myI<myPath.length-1;myI++){
-        myCracks=Math.min(myCracks,
-          myDist(...myPath[myI],...myPath[myI+1]));
-      }
-    }
-  }
-
-  const myJaw=Math.min(
-    myDist(-.30,.20,-.23,.39),
-    myDist(-.23,.39,0,.45),
-    myDist(0,.45,.23,.39),
-    myDist(.23,.39,.30,.20)
-  );
-
-  let myBranches=1e9;
-  for(let myArm=0;myArm<6;myArm++){
-    const myA=myArm*Math.PI/3+Math.PI/6;
-    let myPX=Math.cos(myA)*.40,myPY=Math.sin(myA)*.40;
-    let myAngle=myA+Math.PI,myLength=.47;
-    for(let myLevel=0;myLevel<5;myLevel++){
-      const myNX=myPX+Math.cos(myAngle)*myLength;
-      const myNY=myPY+Math.sin(myAngle)*myLength;
-      myBranches=Math.min(myBranches,myDist(myPX,myPY,myNX,myNY));
-      for(const mySA of [myAngle+2.45,myAngle-2.45]){
-        myBranches=Math.min(myBranches,myDist(
-          myNX,myNY,
-          myNX+Math.cos(mySA)*myLength*.42,
-          myNY+Math.sin(mySA)*myLength*.42
-        ));
-      }
-      myPX=myNX;myPY=myNY;
-      myAngle+=(myLevel%2===0?-.66:.66);
-      myLength*=.57;
-    }
-  }
-
-  return {
-    headInside:myHeadInside,headEdge:Math.abs(myHead),
-    eyes:myEyes,eyeGlint:myEyeGlint,mouth:myMouth,
-    teeth:myTeeth,hands:myHands,cracks:myCracks,
-    jaw:myJaw,branches:myBranches
-  };
-}
-
-function myGasterPixel(myX,myY,myIterations){
-  let myZR=0,myZI=0,myTrap=1e9,myEscaped=false,mySmooth=0;
-  const myAR=.018+((myGasterSeed&255)/255)*.025;
-  const myAI=.013,myBR=-.18,myBI=.11;
-
-  for(let myI=0;myI<myIterations;myI++){
-    const myR2=myZR*myZR+myZI*myZI;
-    const myDR=myR2+myBR,myDI=2*myZR*myZI+myBI;
-    const myDen=myDR*myDR+myDI*myDI+1e-12;
-    const myInvR=(myDR*myAR+myDI*myAI)/myDen;
-    const myInvI=(myDR*myAI-myDI*myAR)/myDen;
-    const myNR=myZR*myZR-myZI*myZI+myX+myInvR;
-    const myNI=2*myZR*myZI+myY+myInvI;
-    myZR=myNR;myZI=myNI;
-    const myMag=Math.hypot(myZR,myZI);
-    myTrap=Math.min(myTrap,
-      Math.abs(myZR*myZI+.12*Math.sin(myZR*4+myZI*3)));
-    if(myMag>24){
-      myEscaped=true;
-      mySmooth=myI+1-Math.log(Math.max(1e-9,Math.log(myMag)))/Math.log(2);
-      break;
-    }
-    if(!Number.isFinite(myMag)){myEscaped=true;mySmooth=myI;break;}
-  }
-
-  const myGlow=Math.exp(-Math.min(60,myTrap*20));
-  let myRGB;
-  if(!myEscaped){
-    const myV=Math.floor(7+myGlow*20);
-    myRGB=[myV,myV,myV+12];
-  }else{
-    const myT=mySmooth*.095+Math.atan2(myZI,myZR)*.14+myGlow*.25;
-    const myBand=(Math.sin(myT*6.283+myGasterSeed%31)+1)*.5;
-    myRGB=[
-      Math.floor(12+40*myBand+70*myGlow),
-      Math.floor(10+20*(1-myBand)+30*myGlow),
-      Math.floor(28+65*(1-myBand)+75*myGlow)
-    ];
-  }
-
-  const myG=myGasterGeometry(myX,myY,5);
-  const myHalo=Math.exp(-myG.headEdge*22);
-  myRGB=myRGB.map((myV,myI)=>Math.min(255,myV+[12,10,28][myI]*myHalo));
-
-  if(myG.branches<.006&&!myG.headInside&&myG.hands>.025)
-    myRGB=[65,48,100];
-
-  if(myG.hands<.018){
-    const myB=Math.max(0,1-myG.hands/.018);
-    myRGB=[145+100*myB,145+100*myB,160+90*myB];
-  }
-
-  if(myG.headInside){
-    const myShade=174+24*Math.sin(myX*29+myY*17+myGasterSeed%13);
-    myRGB=[myShade,myShade,myShade+4];
-    if(myG.cracks<.009)myRGB=[23,21,30];
-    if(myG.eyes)myRGB=[4,3,8];
-    if(myG.eyes&&myG.eyeGlint<.009)myRGB=[100,96,120];
-    if(myG.mouth){
-      myRGB=[4,3,7];
-      if(myG.teeth<.009)myRGB=[232,229,235];
-    }
-    if(myG.jaw<.012)myRGB=[32,29,39];
-    if(myG.headEdge<.012)myRGB=[220,218,230];
-  }
-
-  const myGlitch=Math.sin((myX*91+myY*137+myGasterSeed%97)*18);
-  if(myG.headInside&&myG.cracks<.004&&myGlitch>.96)
-    myRGB=[125,85,175];
-
-  return myRGB.map(myV=>Math.max(0,Math.min(255,Math.round(myV))));
-}
-
-function myPixel(myX,myY,myIterations){
-  const myType=myFractal.value;
-  if(myType==="gaster")return myGasterPixel(myX,myY,myIterations);
-
-  if(myType==="sierpinski"){
-    const myU=(myX+1.5)/3,myV=(myY+1.5)/3;
-    if(myU<0||myU>1||myV<0||myV>1||myU+myV>1)return [3,4,13];
-    const myA=Math.floor(myU*1048576),myB=Math.floor(myV*1048576);
-    if((myA&myB)!==0)return [3,4,13];
-    return myHsl(Number(myColor.value)+Math.log2(myScale+1)*20,.9,.48);
-  }
-
-  if(myType==="fern"){
-    let myFX=0,myFY=0;
-    for(let myI=0;myI<35;myI++){
-      const myR=Math.random();
-      let myNX,myNY;
-      if(myR<.01){myNX=0;myNY=.16*myFY;}
-      else if(myR<.86){myNX=.85*myFX+.04*myFY;myNY=-.04*myFX+.85*myFY+1.6;}
-      else if(myR<.93){myNX=.2*myFX-.26*myFY;myNY=.23*myFX+.22*myFY+1.6;}
-      else{myNX=-.15*myFX+.28*myFY;myNY=.26*myFX+.24*myFY+.44;}
-      myFX=myNX;myFY=myNY;
-    }
-    return [3,4,13];
-  }
-
-  if(myType==="newton"){
-    let myZR=myX,myZI=myY;
-    for(let myI=0;myI<myIterations;myI++){
-      const myR2=myZR*myZR,myI2=myZI*myZI;
-      const myDR=myR2-myI2,myDI=2*myZR*myZI;
-      const myDen=myDR*myDR+myDI*myDI;
-      if(myDen<1e-18)break;
-      myZR=(2*myZR+myDR/myDen)/3;
-      myZI=(2*myZI-myDI/myDen)/3;
-      if(Math.abs(myZR*myZR*myZR-3*myZR*myZI*myZI-1)<1e-7)break;
-    }
-    const myRoot=Math.atan2(myZI,myZR);
-    return myHsl(Number(myColor.value)+myRoot*57+180,.9,.5);
-  }
-
-  let myZR,myZI,myCR,myCI;
-  if(myType==="julia"){
-    myZR=myX;myZI=myY;myCR=-.745;myCI=.186;
-  }else{
-    myZR=0;myZI=0;myCR=myX;myCI=myY;
-  }
-
-  let myI=0,myMag=0;
-  while(myI<myIterations&&myMag<256){
-    if(myType==="burningShip"){myZR=Math.abs(myZR);myZI=Math.abs(myZI);}
-    const myRR=myZR*myZR,myII=myZI*myZI;
-    const myNI=(myType==="tricorn"?-2:2)*myZR*myZI+myCI;
-    myZR=myRR-myII+myCR;
-    myZI=myNI;
-    myMag=myZR*myZR+myZI*myZI;
-    myI++;
-  }
-
-  if(myI>=myIterations)return [3,4,13];
-  const myHue=(Number(myColor.value)+myI*13+
-    Math.log2(Math.max(1,myMag))*20)%360;
-  return myHsl(myHue,.88,.48);
-}
-
-function myGetWorldPoint(myX,myY){
-  const myHalfH=myScale/2,myHalfW=myHalfH*myWidth/myHeight;
-  return {
-    x:myCenterX+(myX/myWidth*2-1)*myHalfW,
-    y:myCenterY+(myY/myHeight*2-1)*myHalfH
-  };
-}
-
-function myUpdateReadouts(){
-  myZoomReadout.textContent=(3.4/myScale).toExponential(3)+"×";
-  myCenterReadout.textContent=myCenterX.toPrecision(6)+", "+myCenterY.toPrecision(6);
-  myIterationReadout.textContent=myIterations().toLocaleString();
-  myGasterStatus.textContent=myFractal.value==="gaster"
-    ?(myScale<.01?"ANOMALY DETECTED":"FIELD ACTIVE · CONVERGENCE UNKNOWN")
-    :"Not selected";
-}
-
-function myRender(){
-  const myId=++myRenderId;
-  myRenderReadout.textContent="Rendering…";
-  myOverlay.style.display="flex";
-  document.getElementById("myOverlayCard").textContent="Rendering "+myFractal.options[myFractal.selectedIndex].text+"…";
-
-  // Render at a capped resolution, then scale to the full canvas.
-  // This keeps deep-zoom exploration responsive on ordinary computers.
-  const myFactor=Math.min(1,900/myWidth,650/myHeight);
-  const myRW=Math.max(1,Math.floor(myWidth*myFactor));
-  const myRH=Math.max(1,Math.floor(myHeight*myFactor));
-  const myImage=myCtx.createImageData(myRW,myRH);
-  const myData=myImage.data;
-  const myHalfH=myScale/2,myHalfW=myHalfH*myRW/myRH;
-  const myMaxIterations=myIterations();
-  let myRow=0;
-
-  function myDrawChunk(){
-    if(myId!==myRenderId)return;
-    const myStop=Math.min(myRH,myRow+10);
-    for(;myRow<myStop;myRow++){
-      for(let myX=0;myX<myRW;myX++){
-        const myWX=myCenterX+(myX/myRW*2-1)*myHalfW;
-        const myWY=myCenterY+(myRow/myRH*2-1)*myHalfH;
-        const myRGB=myPixel(myWX,myWY,myMaxIterations);
-        const myP=(myRow*myRW+myX)*4;
-        myData[myP]=myRGB[0];
-        myData[myP+1]=myRGB[1];
-        myData[myP+2]=myRGB[2];
-        myData[myP+3]=255;
-      }
-    }
-    myCtx.putImageData(myImage,0,0);
-    myRenderReadout.textContent="Rendering "+Math.floor(myRow/myRH*100)+"%";
-    if(myRow<myRH){
-      requestAnimationFrame(myDrawChunk);
+    if(mode==="burning"){
+     zx=Math.abs(ox*ox-oy*oy)+ax;
+     zy=Math.abs(2*ox*oy)+ay;
+    }else if(mode==="tricorn"){
+     zx=ox*ox-oy*oy+ax;
+     zy=-2*ox*oy+ay;
     }else{
-      myCtx.imageSmoothingEnabled=false;
-      myCtx.drawImage(myCanvas,0,0,myRW,myRH,0,0,myWidth,myHeight);
-      myRenderReadout.textContent="Complete";
-      myOverlay.style.display="none";
-      myUpdateReadouts();
+     zx=ox*ox-oy*oy+ax;
+     zy=2*ox*oy+ay;
     }
+
+    if(mode==="gaster"){
+     // Mild smooth warping gives the face's contours a ghostly edge.
+     const warp=0.025*faceStrength/(1+r2);
+     zx+=warp*Math.sin(oy*5.1+hue);
+     zy+=warp*Math.sin(ox*5.1-hue);
+
+     const fd=faceMask(ox*faceScale,oy*faceScale,faceStrength);
+     faceTrap=Math.min(faceTrap,fd);
+
+     // Repeated orbit sampling gives related face contours at different
+     // scales instead of a single flat skull drawing.
+     const ring=Math.abs(Math.sqrt(ox*ox+oy*oy)-0.39);
+     trap=Math.min(trap,fd,ring*0.72);
+    }else{
+     trap=Math.min(trap,Math.abs(Math.sqrt(r2)-0.7));
+    }
+
+    if(zx*zx+zy*zy>256)break;
+   }
+
+   const p=(py*w+px)*4;
+   if(iter===maxIter){
+    const insideGlow=mode==="gaster"
+      ? Math.exp(-faceTrap*65)*faceStrength : 0;
+    out[p]=2+insideGlow*22;
+    out[p+1]=3+insideGlow*26;
+    out[p+2]=9+insideGlow*40;
+    out[p+3]=255;
+    continue;
+   }
+
+   const mag=Math.sqrt(zx*zx+zy*zy);
+   const smooth=iter+1-Math.log2(Math.max(1,Math.log2(Math.max(1,mag))));
+   const t=smooth/maxIter;
+   const orbitGlow=Math.exp(-trap*24);
+   const skullGlow=mode==="gaster"
+     ? Math.exp(-faceTrap*55)*faceStrength : 0;
+   const band=Math.pow(Math.max(0,Math.cos(t*42+hue)),14);
+   const v=t*16+Math.sin(t*12+hue)*1.6+orbitGlow*4+skullGlow*4;
+
+   out[p]=clamp(7+32*(.5+.5*Math.sin(v))+band*95+skullGlow*75,0,255);
+   out[p+1]=clamp(9+45*(.5+.5*Math.sin(v+2))+band*115+skullGlow*90,0,255);
+   out[p+2]=clamp(20+78*(.5+.5*Math.sin(v+4))+band*150+skullGlow*115,0,255);
+   out[p+3]=255;
   }
-  requestAnimationFrame(myDrawChunk);
+ }
+ self.postMessage({id,w,h,buffer:image.data.buffer,camera:{x:cx,y:cy,span}},
+   [image.data.buffer]);
+}
+self.onmessage=e=>{if(e.data.type==="render")render(e.data)};
+`;
+
+const worker = new Worker(URL.createObjectURL(
+ new Blob([workerCode],{type:"text/javascript"})
+));
+
+worker.onmessage=e=>{
+ const d=e.data;
+ if(d.id!==renderId)return;
+ busy=false;
+ frame=new ImageData(new Uint8ClampedArray(d.buffer),d.w,d.h);
+ frameCamera=d.camera;
+ lastRender=performance.now();
+ lastFrameAt=lastRender;
+ $("loading").style.display="none";
+ $("status").textContent="OBSERVING";
+ drawFrame();
+ if(needsRender){needsRender=false;requestRender(true);}
+};
+worker.onerror=()=>{
+ busy=false;
+ $("status").textContent="RENDER ERROR";
+};
+
+function resize(){
+ W=innerWidth;H=innerHeight;
+ D=Math.min(devicePixelRatio||1,1.5);
+ canvas.width=Math.round(W*D);canvas.height=Math.round(H*D);
+ fx.width=Math.round(W*D);fx.height=Math.round(H*D);
+ ctx.setTransform(D,0,0,D,0,0);
+ fctx.setTransform(D,0,0,D,0,0);
+ requestRender(true);
+}
+addEventListener("resize",resize);
+
+function requestRender(force=false){
+ if(!W||!H)return;
+ if(busy){if(force)needsRender=true;return;}
+ busy=true;
+ const id=++renderId;
+ const factor=[.32,.43,.55,.67][detail-1];
+ worker.postMessage({
+  type:"render",id,
+  w:Math.max(260,Math.round(W*factor)),
+  h:Math.max(180,Math.round(H*factor)),
+  cx:camera.x,cy:camera.y,span:camera.span,
+  mode,phase,detail,faceDetail
+ });
+ $("status").textContent="COMPUTING";
 }
 
-function myZoomAt(myX,myY,myFactor){
-  const myBefore=myGetWorldPoint(myX,myY);
-  myScale/=myFactor;
-  const myAfter=myGetWorldPoint(myX,myY);
-  myCenterX+=myBefore.x-myAfter.x;
-  myCenterY+=myBefore.y-myAfter.y;
-  myUpdateReadouts();
-  myRender();
+function drawFrame(){
+ ctx.setTransform(D,0,0,D,0,0);
+ ctx.fillStyle="#03040a";ctx.fillRect(0,0,W,H);
+ if(!frame||!frameCamera)return;
+
+ const ratio=frameCamera.span/camera.span;
+ const dx=(frameCamera.x-camera.x)*H/camera.span;
+ const dy=(frameCamera.y-camera.y)*H/camera.span;
+ const dw=W*ratio,dh=H*ratio;
+ const temp=document.createElement("canvas");
+ temp.width=frame.width;temp.height=frame.height;
+ temp.getContext("2d").putImageData(frame,0,0);
+ ctx.imageSmoothingEnabled=true;
+ ctx.imageSmoothingQuality="high";
+ ctx.drawImage(temp,W/2+dx-dw/2,H/2+dy-dh/2,dw,dh);
+
+ const g=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.7);
+ g.addColorStop(0,"#05071300");g.addColorStop(1,"#02030a66");
+ ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
 }
 
-function myReset(){
-  myCenterX=-.5;myCenterY=0;myScale=3.4;
-  if(myFractal.value==="newton"){myCenterX=0;myScale=4;}
-  if(myFractal.value==="fern"){myCenterX=0;myCenterY=5;myScale=10;}
-  if(myFractal.value==="gaster"){myCenterX=0;myCenterY=0;myScale=2.4;}
-  myUpdateReadouts();
-  myRender();
+function zoomAt(px,py,factor){
+ const wx=camera.x+(px/W-.5)*camera.span*(W/H);
+ const wy=camera.y+(py/H-.5)*camera.span;
+ camera.span=Math.max(1e-14,Math.min(80,camera.span*factor));
+ camera.x=wx-(px/W-.5)*camera.span*(W/H);
+ camera.y=wy-(py/H-.5)*camera.span;
+ updateHud();
+}
+function updateHud(){
+ const z=initial.span/camera.span;
+ $("mag").textContent=(z>1e6?z.toExponential(3):z.toLocaleString("en-CA",{maximumFractionDigits:2}))+"×";
+ $("coords").textContent="C: "+camera.x.toPrecision(6)+", "+camera.y.toPrecision(6);
+}
+function reset(){
+ camera={...initial};
+ updateHud();requestRender(true);
+}
+function setMode(next){
+ mode=next;
+ $("mode").value=mode;
+ syncAudio();
+ requestRender(true);
+}
+function toggleAuto(){
+ auto=!auto;
+ $("auto").textContent=auto?"AUTO-ZOOM ON":"AUTO-ZOOM OFF";
+ $("auto").classList.toggle("active",auto);
 }
 
-function mySetAutoZoom(myEnabled){
-  myAutoZoom=myEnabled;
-  const myButton=document.getElementById("myAutoButton");
-  myButton.classList.toggle("myActive",myEnabled);
-  myButton.textContent="Auto-zoom: "+(myEnabled?"ON":"OFF")+" (Z)";
+async function enableSound(){
+ soundEnabled=true;
+ audio.volume=.35;
+ try{
+  await audio.play();
+  $("sound").textContent="PIRATE GASTER: ENABLED";
+  $("soundStatus").textContent="LOOPING WHEN GASTER MODE IS ACTIVE";
+ }catch(err){
+  $("soundStatus").textContent="PLAYBACK BLOCKED — CLICK AGAIN";
+ }
+ syncAudio();
 }
-
-function myUpdateBox(){
-  myZoomBox.style.width=myBoxWidth+"px";
-  myZoomBox.style.height=myBoxHeight+"px";
-  myZoomBox.style.left=Math.max(0,Math.min(myPointerX-myBoxWidth/2,myWidth-myBoxWidth))+"px";
-  myZoomBox.style.top=Math.max(0,Math.min(myPointerY-myBoxHeight/2,myHeight-myBoxHeight))+"px";
+function syncAudio(){
+ if(!soundEnabled){
+  $("soundStatus").textContent="CLICK TO ENABLE AUDIO";
+  return;
+ }
+ if(mode==="gaster"){
+  audio.play().then(()=>{
+   $("soundStatus").textContent="PIRATE GASTER LOOPING";
+  }).catch(()=>{
+   $("soundStatus").textContent="CLICK AUDIO BUTTON TO RESUME";
+  });
+ }else{
+  audio.pause();
+  audio.currentTime=0;
+  $("soundStatus").textContent="PAUSED OUTSIDE GASTER MODE";
+ }
 }
-
-myCanvas.addEventListener("pointermove",myEvent=>{
-  myPointerX=myEvent.clientX;myPointerY=myEvent.clientY;
-  if(myBoxMode&&!myResizing)myUpdateBox();
+$("sound").addEventListener("click",enableSound);
+$("mode").addEventListener("change",e=>setMode(e.target.value));
+$("speed").addEventListener("input",e=>{
+ speed=+e.target.value;
+ $("speedText").textContent=speed<15?"SLOW":speed<45?"NORMAL":speed<75?"FAST":"INSANE";
 });
+$("detail").addEventListener("change",e=>{detail=+e.target.value;requestRender(true)});
+$("colors").addEventListener("input",e=>{phase=+e.target.value;requestRender(true)});
+$("face").addEventListener("input",e=>{faceDetail=+e.target.value;requestRender(true)});
+$("auto").addEventListener("click",toggleAuto);
+$("reset").addEventListener("click",reset);
 
-myCanvas.addEventListener("wheel",myEvent=>{
-  myEvent.preventDefault();
-  myZoomAt(myEvent.clientX,myEvent.clientY,myEvent.deltaY<0?1.22:1/1.22);
+canvas.addEventListener("pointermove",e=>{
+ mouseX=e.clientX/W;mouseY=e.clientY/H;
+});
+canvas.addEventListener("click",e=>{
+ zoomAt(e.clientX,e.clientY,e.shiftKey?1.65:.72);
+ requestRender(true);
+});
+canvas.addEventListener("wheel",e=>{
+ e.preventDefault();
+ zoomAt(e.clientX,e.clientY,e.deltaY<0?.83:1.2);
+ requestRender(true);
 },{passive:false});
 
-myCanvas.addEventListener("click",myEvent=>{
-  if(myResizing)return;
-  if(myBoxMode){
-    const myX=parseFloat(myZoomBox.style.left)+myBoxWidth/2;
-    const myY=parseFloat(myZoomBox.style.top)+myBoxHeight/2;
-    myZoomAt(myX,myY,Math.max(1.2,Math.min(myWidth/myBoxWidth,myHeight/myBoxHeight)));
-  }else{
-    myZoomAt(myEvent.clientX,myEvent.clientY,myEvent.shiftKey?1/1.7:1.7);
-  }
+function toggleHelp(){$("help").classList.toggle("show")}
+$("helpBtn").addEventListener("click",toggleHelp);
+$("closeHelp").addEventListener("click",toggleHelp);
+
+addEventListener("keydown",e=>{
+ if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;
+ const k=e.key.toLowerCase();
+ if(k==="z")toggleAuto();
+ if(k==="r")reset();
+ if(k==="f"){
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+ }
+ if(k==="?"||k==="/")toggleHelp();
+ if(e.code==="Space"){e.preventDefault();paused=!paused}
+ if(k==="+"||k==="="){zoomAt(W/2,H/2,.7);requestRender(true)}
+ if(k==="-"){zoomAt(W/2,H/2,1.4);requestRender(true)}
 });
 
-const myHandle=document.getElementById("myZoomHandle");
-myHandle.addEventListener("pointerdown",myEvent=>{
-  myEvent.preventDefault();myEvent.stopPropagation();
-  myResizing=true;
-  myHandle.setPointerCapture(myEvent.pointerId);
-  myHandle.myStartX=myEvent.clientX;
-  myHandle.myStartY=myEvent.clientY;
-  myHandle.myStartW=myBoxWidth;
-  myHandle.myStartH=myBoxHeight;
-});
-myHandle.addEventListener("pointermove",myEvent=>{
-  if(!myResizing)return;
-  myBoxWidth=Math.max(50,Math.min(myWidth,myHandle.myStartW+myEvent.clientX-myHandle.myStartX));
-  myBoxHeight=Math.max(50,Math.min(myHeight,myHandle.myStartH+myEvent.clientY-myHandle.myStartY));
-  myUpdateBox();
-});
-myHandle.addEventListener("pointerup",()=>myResizing=false);
-myHandle.addEventListener("pointercancel",()=>myResizing=false);
+function animate(now){
+ requestAnimationFrame(animate);
+ if(!lastTime)lastTime=now;
+ const dt=Math.min((now-lastTime)/1000,.05);
+ lastTime=now;
 
-document.getElementById("myAutoButton").addEventListener("click",()=>mySetAutoZoom(!myAutoZoom));
-document.getElementById("myBoxButton").addEventListener("click",()=>{
-  myBoxMode=!myBoxMode;
-  myZoomBox.style.display=myBoxMode?"block":"none";
-  document.getElementById("myBoxButton").classList.toggle("myActive",myBoxMode);
-  document.getElementById("myBoxButton").textContent="Zoom box: "+(myBoxMode?"ON":"OFF");
-  myUpdateBox();
-});
-document.getElementById("myReset").addEventListener("click",myReset);
-document.getElementById("myFullscreen").addEventListener("click",()=>{
-  if(!document.fullscreenElement)document.documentElement.requestFullscreen?.().catch(()=>{});
-  else document.exitFullscreen?.().catch(()=>{});
-});
-document.getElementById("myRecalculate").addEventListener("click",()=>{
-  myGasterSeed=(Math.random()*0xffffffff)>>>0;
-  myRender();
-});
+ if(auto&&!paused&&speed>0){
+  const rate=.025+Math.pow(speed/100,2)*.8;
+  zoomAt(mouseX*W,mouseY*H,Math.exp(-rate*dt));
+ }
+ if(frame)drawFrame();
 
-myFractal.addEventListener("change",myReset);
-myDetail.addEventListener("input",()=>{
-  document.getElementById("myDetailValue").textContent=myDetail.value;
-  myRender();
-});
-myColor.addEventListener("input",()=>{
-  document.getElementById("myColorValue").textContent=myColor.value+"°";
-  myRender();
-});
-mySpeed.addEventListener("input",()=>{
-  document.getElementById("mySpeedValue").textContent=Number(mySpeed.value).toFixed(2)+"×";
-});
-
-window.addEventListener("keydown",myEvent=>{
-  if(myEvent.ctrlKey||myEvent.altKey||myEvent.metaKey)return;
-  if(["INPUT","SELECT","TEXTAREA"].includes(document.activeElement.tagName))return;
-  if(myEvent.key.toLowerCase()==="z")mySetAutoZoom(!myAutoZoom);
-  if(myEvent.key.toLowerCase()==="r"){
-    myGasterSeed=(Math.random()*0xffffffff)>>>0;
-    if(myFractal.value==="gaster")myRender();
-  }
-  if(myEvent.key==="Escape"){
-    myBoxMode=false;
-    myZoomBox.style.display="none";
-    document.getElementById("myBoxButton").textContent="Zoom box: OFF";
-  }
-});
-
-window.addEventListener("resize",()=>{
-  myWidth=innerWidth;myHeight=innerHeight;
-  myCanvas.width=myWidth;myCanvas.height=myHeight;
-  myCanvas.style.width=myWidth+"px";myCanvas.style.height=myHeight+"px";
-  myUpdateBox();myRender();
-});
-
-function myAnimationLoop(myTime){
-  if(!myLastTime)myLastTime=myTime;
-  const myDelta=Math.min(.05,(myTime-myLastTime)/1000);
-  myLastTime=myTime;
-  if(myAutoZoom&&myTime-myLastZoom>120){
-    myLastZoom=myTime;
-    let myX=myPointerX,myY=myPointerY;
-    if(myBoxMode){
-      myX=parseFloat(myZoomBox.style.left)+myBoxWidth/2;
-      myY=parseFloat(myZoomBox.style.top)+myBoxHeight/2;
-    }
-    myZoomAt(myX,myY,Math.pow(Number(mySpeed.value),Math.max(myDelta,.016)));
-  }
-  requestAnimationFrame(myAnimationLoop);
+ // Keep rendering independent of the animation loop. Never render every
+ // camera frame; that would overwhelm the worker and cause stutter.
+ if(!busy&&now-lastRender>380)requestRender(false);
 }
 
-myCanvas.width=myWidth;myCanvas.height=myHeight;
-myUpdateReadouts();
-myReset();
-requestAnimationFrame(myAnimationLoop);
+resize();
+updateHud();
+requestAnimationFrame(animate);
+})();
 </script>
 </body>
 </html>
