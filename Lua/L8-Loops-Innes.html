@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>t1a08-Loops-Innes.html</title>
+
+<style>
+body {
+    background-color: #171324;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+a {
+    color: #a9c7ff;
+}
+
+h2 {
+    text-align: center;
+}
+
+input[type="number"] {
+    width: 100px;
+    padding: 7px;
+    margin: 5px;
+}
+
+button, input[type="button"] {
+    padding: 9px 12px;
+    margin: 5px 5px 5px 0;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    max-width: 850px;
+    min-height: 280px;
+    box-sizing: border-box;
+    background-color: #211c33;
+    color: white;
+    border: 1px solid #655782;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.output {
+    background-color: #211c33;
+    border: 1px solid #655782;
+    padding: 12px;
+    min-height: 30px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>t1a08: Loops by Innes</h2>
+
+<a href="https://www.w3schools.com/js/js_loop_for.asp">
+W3Schools JavaScript For Loop Reference
+</a>
+
+<h4>Example for input output</h4>
+
+<pre class="output">JavaScript:
+for (let myLoop = 0; myLoop &lt; myMax; myLoop++) {
+    // code or smth
+}
+
+Luau:
+for myLoop = 0, myMax - 1 do
+    -- code or smth
+end</pre>
+
+<h4>Example code</h4>
+
+<label for="myNum01">Max loops:</label>
+<input id="myNum01" type="number" value="4" min="0" max="500">
+<br>
+
+<label for="myWeird">Weird number:</label>
+<input id="myWeird" type="number" value="2">
+<br><br>
+
+<h4>Basic For Loop with Decisions</h4>
+
+<button onclick="basicLoop()">Run JavaScript Example in Luau</button>
+
+<h4>Even Number Identifier</h4>
+
+<button onclick="evenLoop()">Run Even Number Example in Luau</button>
+
+<div id="myDiv01" class="output">...</div>
+
+<hr>
+
+<h3>Luau Code Editor</h3>
+
+<p>
+Edit the Luau code and press Run Luau. The code reads the maximum loop count
+and weird number from the inputs above.
+</p>
+
+<textarea id="code">local myMax = getNumber("myNum01")
+local myWeird = getNumber("myWeird")
+
+local myTemp = ""
+
+for myLoop = 0, myMax - 1 do
+    if myLoop * myWeird > myMax then
+        myTemp = myTemp .. "cool "
+    end
+
+    myTemp = myTemp .. "Loop number: " .. tostring(myLoop) .. "\n"
+end
+
+setText("myDiv01", myTemp)
+print(myTemp)</textarea>
+
+<br>
+
+<button onclick="runCode()">Run Luau</button>
+<button onclick="clearOutput()">Clear Luau Output</button>
+<button onclick="resetCode()">Reset Code</button>
+
+<h3>Luau Output</h3>
+<pre id="output" class="output"></pre>
+
+<script type="module">
+import { runLuau, resetLuau } from "./LuauRuntime.js";
+
+const codeBox = document.getElementById("code");
+const output = document.getElementById("output");
+const originalCode = codeBox.value;
+
+function getNumber(id) {
+    const input = document.getElementById(id);
+    const value = Number(input.value);
+
+    if (input.value.trim() === "" || !Number.isFinite(value)) {
+        throw new Error("Please enter a valid number.");
+    }
+
+    if (id === "myNum01" && (!Number.isInteger(value) || value < 0 || value > 500)) {
+        throw new Error("Max loops must be a whole number from 0 to 500.");
+    }
+
+    return value;
+}
+
+function setText(id, text) {
+    document.getElementById(id).textContent = String(text);
+}
+
+const bridge = { getNumber, setText };
+
+window.runCode = async function() {
+    await runLuau(codeBox.value, output, bridge);
+};
+
+window.clearOutput = function() {
+    output.textContent = "";
+    document.getElementById("myDiv01").textContent = "...";
+};
+
+window.resetCode = async function() {
+    codeBox.value = originalCode;
+    await resetLuau(output);
+};
+
+window.basicLoop = async function() {
+    codeBox.value = `local myMax = getNumber("myNum01")
+local myWeird = getNumber("myWeird")
+local myTemp = ""
+
+for myLoop = 0, myMax - 1 do
+    if myLoop * myWeird > myMax then
+        myTemp = myTemp .. "cool "
+    end
+
+    myTemp = myTemp .. "Loop number: " .. tostring(myLoop) .. "\\n"
+end
+
+setText("myDiv01", myTemp)
+print(myTemp)`;
+
+    await window.runCode();
+};
+
+window.evenLoop = async function() {
+    codeBox.value = `local myMax = getNumber("myNum01")
+local myTemp = ""
+
+for myLoop = 0, myMax - 1 do
+    if myLoop % 2 == 0 then
+        myTemp = myTemp .. "Even Number, "
+    end
+
+    myTemp = myTemp .. "Loop number: " .. tostring(myLoop) .. "\\n"
+end
+
+setText("myDiv01", myTemp)
+print(myTemp)`;
+
+    await window.runCode();
+};
+</script>
+
+</body>
+</html>
