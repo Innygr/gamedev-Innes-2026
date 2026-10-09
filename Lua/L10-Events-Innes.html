@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>t1a10-Events-Innes.html</title>
+
+<style>
+body {
+    background-color: #171324;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+}
+
+a {
+    color: #a9c7ff;
+}
+
+button, input, select {
+    margin: 5px 0;
+    padding: 8px;
+}
+
+button {
+    cursor: pointer;
+}
+
+input, select {
+    max-width: 100%;
+}
+
+textarea {
+    width: 100%;
+    max-width: 850px;
+    min-height: 300px;
+    box-sizing: border-box;
+    background-color: #211c33;
+    color: white;
+    border: 1px solid #655782;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.output {
+    background-color: #211c33;
+    border: 1px solid #655782;
+    padding: 12px;
+    min-height: 30px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+#mouseArea {
+    width: 250px;
+    height: 65px;
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    user-select: none;
+}
+
+#myB02 {
+    font-size: 20px;
+}
+
+.eventExample {
+    margin: 16px 0;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #655782;
+    margin: 25px 0;
+}
+</style>
+</head>
+
+<body>
+
+<h2>t1a10: Events by Innes</h2>
+
+<a href="https://way2tutorial.com/html/html5_events_handler_list.php">
+Good reference to HTML Events
+</a>
+
+<p>
+Events are actions detected by HTML and the browser.
+JavaScript can respond to these events, and this page uses a bridge
+to let Luau respond to them too.
+</p>
+
+<h3>1. onClick</h3>
+
+<input type="text" id="myText01" value="3">
+<br>
+<button id="clickButton">Example onClick</button>
+
+<h3>2. onMouseOver and onMouseOut</h3>
+
+<b id="myB02">This is BOLD</b>
+
+<h3>3. onDblClick</h3>
+
+<button id="doubleClickButton">Double Click Me</button>
+
+<h3>4. onMouseDown</h3>
+
+<button id="mouseDownButton">Hold Mouse Button</button>
+
+<h3>5. onMouseUp</h3>
+
+<button id="mouseUpButton">Release Mouse Button</button>
+
+<h3>6. onMouseMove</h3>
+
+<div id="mouseArea">
+Move your mouse here
+</div>
+
+<h3>7. onFocus</h3>
+
+<input type="text" id="focusInput" placeholder="Click here to focus">
+
+<h3>8. onBlur</h3>
+
+<input type="text" id="blurInput" placeholder="Click somewhere else afterward">
+
+<h3>9. onChange</h3>
+
+<select id="colorSelect">
+    <option value="Red">Red</option>
+    <option value="Blue">Blue</option>
+    <option value="Green">Green</option>
+</select>
+
+<h3>10. onKeyDown</h3>
+
+<input type="text" id="keyDownInput" placeholder="Press a key">
+
+<h3>11. onKeyUp</h3>
+
+<input type="text" id="keyUpInput" placeholder="Release a key">
+
+<h3>12. onInput</h3>
+
+<input type="text" id="inputText" placeholder="Type something">
+
+<h3>Event Output</h3>
+
+<div id="eventOutput" class="output">
+Events will appear here!
+</div>
+
+<hr>
+
+<h3>JavaScript → Luau</h3>
+
+<p>JavaScript event example:</p>
+
+<pre class="output">document.getElementById("clickButton").addEventListener("click", function() {
+    document.getElementById("eventOutput").textContent = "You clicked!";
+});</pre>
+
+<p>Luau event-handling example:</p>
+
+<pre class="output">local eventName = getEventName()
+local eventValue = getEventValue()
+
+if eventName == "click" then
+    setEventOutput("You clicked!")
+end</pre>
+
+<p>
+The browser detects the event in JavaScript and passes its name and value
+to Luau using bridge functions.
+</p>
+
+<hr>
+
+<h3>Luau Code Editor</h3>
+
+<p>
+Interact with the examples above to trigger your Luau code.
+Edit this code to change how events are handled, then click Run Luau
+to activate your changes.
+</p>
+
+<textarea id="code">local eventName = getEventName()
+local eventValue = getEventValue()
+
+if eventName == "click" then
+    setEventOutput("You clicked! Value: " .. eventValue)
+
+elseif eventName == "mouseover" then
+    setEventOutput("This is cool")
+
+elseif eventName == "mouseout" then
+    setEventOutput("This is nice")
+
+elseif eventName == "dblclick" then
+    setEventOutput("You double-clicked!")
+
+elseif eventName == "mousedown" then
+    setEventOutput("Mouse button is down!")
+
+elseif eventName == "mouseup" then
+    setEventOutput("Mouse button released!")
+
+elseif eventName == "mousemove" then
+    setEventOutput("Mouse is moving!")
+
+elseif eventName == "focus" then
+    setEventOutput("The text box is focused!")
+
+elseif eventName == "blur" then
+    setEventOutput("You left the text box!")
+
+elseif eventName == "change" then
+    setEventOutput("You selected: " .. eventValue)
+
+elseif eventName == "keydown" then
+    setEventOutput("A key was pressed down!")
+
+elseif eventName == "keyup" then
+    setEventOutput("A key was released!")
+
+elseif eventName == "input" then
+    setEventOutput("You typed: " .. eventValue)
+
+else
+    setEventOutput("Unknown event: " .. eventName)
+end
+
+print("Handled event: " .. eventName)</textarea>
+
+<br>
+
+<button id="runButton">Run Luau</button>
+<button id="clearButton">Clear Output</button>
+<button id="resetButton">Reset Code</button>
+
+<h3>Luau Console Output</h3>
+
+<pre id="output" class="output"></pre>
+
+<script type="module">
+import { runLuau, resetLuau } from "./LuauRuntime.js";
+
+const codeBox = document.getElementById("code");
+const output = document.getElementById("output");
+const eventOutput = document.getElementById("eventOutput");
+const originalCode = codeBox.value;
+
+let currentEventName = "";
+let currentEventValue = "";
+
+function getEventName() {
+    return currentEventName;
+}
+
+function getEventValue() {
+    return currentEventValue;
+}
+
+function setEventOutput(message) {
+    eventOutput.textContent = String(message);
+}
+
+const bridge = {
+    getEventName,
+    getEventValue,
+    setEventOutput
+};
+
+async function dispatchLuauEvent(name, value = "") {
+    currentEventName = name;
+    currentEventValue = String(value);
+
+    await runLuau(codeBox.value, output, bridge);
+}
+
+function listen(id, eventType, eventName, getValue = () => "") {
+    const element = document.getElementById(id);
+
+    element.addEventListener(eventType, async function() {
+        await dispatchLuauEvent(eventName, getValue());
+    });
+}
+
+listen("clickButton", "click", "click",
+    () => document.getElementById("myText01").value);
+
+listen("myB02", "mouseover", "mouseover");
+listen("myB02", "mouseout", "mouseout");
+listen("doubleClickButton", "dblclick", "dblclick");
+listen("mouseDownButton", "mousedown", "mousedown");
+listen("mouseUpButton", "mouseup", "mouseup");
+listen("mouseArea", "mousemove", "mousemove");
+listen("focusInput", "focus", "focus");
+listen("blurInput", "blur", "blur");
+
+listen("colorSelect", "change", "change",
+    () => document.getElementById("colorSelect").value);
+
+listen("keyDownInput", "keydown", "keydown",
+    () => document.getElementById("keyDownInput").value);
+
+listen("keyUpInput", "keyup", "keyup",
+    () => document.getElementById("keyUpInput").value);
+
+listen("inputText", "input", "input",
+    () => document.getElementById("inputText").value);
+
+document.getElementById("runButton").addEventListener("click", async function() {
+    await dispatchLuauEvent("manual", "");
+});
+
+document.getElementById("clearButton").addEventListener("click", function() {
+    output.textContent = "";
+    eventOutput.textContent = "Events will appear here!";
+});
+
+document.getElementById("resetButton").addEventListener("click", async function() {
+    codeBox.value = originalCode;
+    output.textContent = "";
+    eventOutput.textContent = "Events will appear here!";
+    await resetLuau(output);
+});
+</script>
+
+</body>
+</html>
