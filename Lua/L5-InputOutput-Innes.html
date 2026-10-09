@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L5 — Input/Output — Innes</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            padding: 24px;
+            box-sizing: border-box;
+            color: #111;
+            font-family: Arial, sans-serif;
+            animation: rainbow 12s ease-in-out infinite;
+        }
+
+        @keyframes rainbow {
+            0%   { background: #ff0000; }
+            14%  { background: #ff8000; }
+            28%  { background: #ffff00; }
+            42%  { background: #00ff00; }
+            57%  { background: #00ffff; }
+            71%  { background: #0080ff; }
+            85%  { background: #8000ff; }
+            100% { background: #ff0000; }
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid #333;
+            border-radius: 10px;
+        }
+
+        #code {
+            width: 100%;
+            min-height: 260px;
+            box-sizing: border-box;
+            padding: 12px;
+            font-family: monospace;
+        }
+
+        button {
+            margin: 8px 4px 8px 0;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+
+        #output {
+            min-height: 40px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        #myDiv01 {
+            padding: 10px;
+            background: white;
+            border: 1px solid #555;
+        }
+
+        .reference-image {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 style="text-align: center;">t1a05-Input/Output by Innes</h2>
+
+    <div class="section">
+        <a href="https://www.w3schools.com/jsref/prop_html_innerhtml.asp"
+           target="_blank" rel="noopener noreferrer">
+            Reference to Input / Output
+            <img class="reference-image"
+                 src="https://pic.onlinewebfonts.com/thumbnails/icons_586406.svg"
+                 width="25" alt="Input/output icon">
+            inner
+            <img class="reference-image"
+                 src="https://smlpoints.com/wp-content/uploads/notes-html5-input-time-format-1.jpg"
+                 width="45" alt="HTML input example">
+            value by Innes
+        </a>
+    </div>
+
+    <div class="section">
+        <h3>Example code</h3>
+        <pre>local myIn01 = getNumber("myNum01")
+local myAnswer = myIn01 * myIn01
+setText("myDiv01", tostring(myIn01) .. " squared = " .. tostring(myAnswer))</pre>
+    </div>
+
+    <div class="section">
+        <h3>Luau Code</h3>
+
+        <textarea id="code">local myIn01 = getNumber("myNum01")
+local myAnswer = myIn01 * myIn01
+
+local result = tostring(myIn01) .. " squared = " .. tostring(myAnswer)
+
+setText("myDiv01", result)
+print(result)</textarea>
+
+        <br>
+        <button id="runButton">▶ Run Luau</button>
+        <button id="clearButton">Clear Output</button>
+        <button id="resetButton">Reset</button>
+    </div>
+
+    <div class="section">
+        <h3>Example working code</h3>
+
+        <label for="myNum01">Number:</label>
+        <input id="myNum01" type="number" value="4" step="any">
+
+        <button id="myEvent">Run square calculation</button>
+
+        <br><br>
+        <div id="myDiv01">...</div>
+    </div>
+
+    <div class="section">
+        <h3>Luau Output</h3>
+        <pre id="output">Ready.</pre>
+    </div>
+
+    <script type="module">
+        import { runLuau } from "./LuauRuntime.js";
+
+        const code = document.getElementById("code");
+        const output = document.getElementById("output");
+        const originalCode = code.value;
+
+        function getNumber(id) {
+            const input = document.getElementById(id);
+            const value = Number(input.value);
+
+            if (input.value.trim() === "" || !Number.isFinite(value)) {
+                throw new Error("Please enter a valid number.");
+            }
+
+            return value;
+        }
+
+        function setText(id, text) {
+            document.getElementById(id).textContent = String(text);
+        }
+
+        const bridge = { getNumber, setText };
+
+        document.getElementById("runButton").addEventListener("click", async () => {
+            output.textContent = "";
+            await runLuau(code.value, output, bridge);
+        });
+
+        document.getElementById("myEvent").addEventListener("click", async () => {
+            output.textContent = "";
+            await runLuau(code.value, output, bridge);
+        });
+
+        document.getElementById("clearButton").addEventListener("click", () => {
+            output.textContent = "";
+        });
+
+        document.getElementById("resetButton").addEventListener("click", () => {
+            code.value = originalCode;
+            output.textContent = "Ready.";
+            document.getElementById("myNum01").value = "4";
+            document.getElementById("myDiv01").textContent = "...";
+        });
+    </script>
+</body>
+</html>
