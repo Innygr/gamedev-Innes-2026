@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>t1a06-proper-and-variables-Innes.html</title>
+
+<style>
+b {
+    color: blue;
+}
+
+body {
+    background-color: #171324;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+#toggle {
+    font-size: 20px;
+    font-weight: bold;
+    background: linear-gradient(
+        90deg,
+        red,
+        orange,
+        yellow,
+        green,
+        blue,
+        indigo,
+        violet
+    );
+    background-size: 400% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbow 5s linear infinite;
+    border: 2px solid #ccc;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    max-width: 800px;
+    min-height: 220px;
+    background-color: #211c33;
+    color: white;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+button {
+    padding: 8px 14px;
+    margin: 5px 5px 5px 0;
+    cursor: pointer;
+}
+
+.output {
+    background-color: #211c33;
+    border: 1px solid #655782;
+    padding: 12px;
+    min-height: 25px;
+    white-space: pre-wrap;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+</style>
+</head>
+
+<body>
+
+<h6>Version 0.0.1</h6>
+
+<h1>t1a06: Proper and Variables; Innes</h1>
+
+<p>This is <b>Bold</b> text.</p>
+
+<h3>JavaScript and Luau Variables</h3>
+
+<p>
+Variables store information. They can hold numbers, text, decimal numbers,
+and true/false values.
+</p>
+
+<h3>Example working code</h3>
+
+<button onclick="sayHello()">Click me if you want ig</button>
+
+<div id="myDiv01" class="output">Output here or smth</div>
+
+<br>
+
+<button id="toggle" onclick="toggleBool()">
+Toggle myBool Value
+</button>
+
+<div id="toggleOutput" class="output">myBool = true</div>
+
+<hr>
+
+<h3>Luau Code</h3>
+
+<p>
+Edit the Luau code below and click Run Luau to test it.
+</p>
+
+<textarea id="code">local myNum = 3
+local myString = " Hello "
+local myFloat = 17.5
+local myBool = true
+
+local myOut = tostring(myNum)
+    .. myString
+    .. tostring(myFloat)
+    .. ", "
+    .. tostring(myBool)
+
+if myBool then
+    myOut = myOut .. ", WOW"
+end
+
+setText("myDiv01", myOut)
+print(myOut)</textarea>
+
+<br>
+
+<button onclick="runCode()">Run Luau</button>
+<button onclick="clearOutput()">Clear Output</button>
+<button onclick="resetCode()">Reset Code</button>
+
+<h3>Luau Output</h3>
+<pre id="output" class="output"></pre>
+
+<script type="module">
+import { runLuau, resetLuau } from "./LuauRuntime.js";
+
+const originalCode = document.getElementById("code").value;
+
+let myBool = true;
+
+function setText(id, text) {
+    document.getElementById(id).textContent = String(text);
+}
+
+window.sayHello = async function() {
+    await runLuau(originalCode, document.getElementById("output"), {
+        setText
+    });
+};
+
+window.toggleBool = function() {
+    myBool = !myBool;
+
+    setText("toggleOutput", "myBool = " + myBool);
+};
+
+window.runCode = async function() {
+    await runLuau(
+        document.getElementById("code").value,
+        document.getElementById("output"),
+        { setText }
+    );
+};
+
+window.clearOutput = function() {
+    document.getElementById("output").textContent = "";
+};
+
+window.resetCode = async function() {
+    document.getElementById("code").value = originalCode;
+    await resetLuau(document.getElementById("output"));
+};
+</script>
+
+</body>
+</html>
