@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>t1a07-Decisions-Innes.html</title>
+
+<style>
+body {
+    background-color: #171324;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+a {
+    color: #a9c7ff;
+}
+
+b {
+    color: blue;
+}
+
+input[type="number"] {
+    width: 100px;
+    padding: 7px;
+    margin: 5px;
+}
+
+button {
+    padding: 9px 12px;
+    margin: 5px 5px 5px 0;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    max-width: 850px;
+    min-height: 250px;
+    box-sizing: border-box;
+    background-color: #211c33;
+    color: white;
+    border: 1px solid #655782;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.output {
+    background-color: #211c33;
+    border: 1px solid #655782;
+    padding: 12px;
+    min-height: 24px;
+    white-space: pre-wrap;
+    margin: 8px 0;
+}
+
+h2 {
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+
+<p>Version 0.0.1</p>
+
+<h2>
+Term 1 Assignment 07: Decisions by
+<b style="color: blue; font-size: 36px;">Innes</b>
+</h2>
+
+<a href="https://w3schools.com/js/js_if_else.asp">
+W3Schools If Else documentation
+</a>
+
+<p>
+Good reference for if / else statements and innerHTML.
+</p>
+
+<p>
+JavaScript: ! = not, && = and, || = or
+<br>
+Luau: not = not, and = and, or = or
+</p>
+
+<h4>Example input output code</h4>
+
+<pre class="output">JavaScript:
+let myHour = 20;
+if (myHour &lt; 18) {
+    let myGreeting = "Good Day";
+}
+
+Luau:
+local myHour = 20
+if myHour &lt; 18 then
+    local myGreeting = "Good Day"
+end</pre>
+
+<h4>Example working code</h4>
+
+<p>Change the numbers to test the decisions.</p>
+
+<label for="myNum01">Number 1:</label>
+<input id="myNum01" type="number" value="4">
+
+<label for="myNum02">Number 2:</label>
+<input id="myNum02" type="number" value="6">
+
+<br>
+
+<button onclick="simpleIf()">Simple if Statement</button>
+<div id="myDiv01" class="output">...</div>
+
+<button onclick="ifElse()">If / Else Statement</button>
+<div id="myDiv02" class="output">...</div>
+
+<button onclick="complexIf()">Complex if</button>
+<div id="myDiv03" class="output">...</div>
+
+<hr>
+
+<h3>Luau Code Editor</h3>
+
+<p>
+Edit the Luau code and press Run Luau. The numbers are read from the inputs above.
+</p>
+
+<textarea id="code">local myIn01 = getNumber("myNum01")
+local myIn02 = getNumber("myNum02")
+
+-- Simple if statement
+if myIn01 >= myIn02 then
+    setText("myDiv01",
+        tostring(myIn01) .. " is greater than or equal to " .. tostring(myIn02))
+end
+
+-- If / else statement
+if myIn01 >= myIn02 then
+    setText("myDiv02",
+        tostring(myIn01) .. " is greater than or equal to " .. tostring(myIn02))
+else
+    setText("myDiv02",
+        tostring(myIn01) .. " is not greater than or equal to " .. tostring(myIn02))
+end
+
+-- Complex if statement
+if (myIn01 ~= myIn02 or myIn02 > -8) and myIn01 <= 100 then
+    setText("myDiv03",
+        tostring(myIn01) .. " or " .. tostring(myIn02) .. " is complex")
+else
+    setText("myDiv03",
+        tostring(myIn01) .. " or " .. tostring(myIn02) .. " is not complex")
+end
+
+print("Decision examples completed!")</textarea>
+
+<br>
+
+<button onclick="runCode()">Run Luau</button>
+<button onclick="clearOutput()">Clear Output</button>
+<button onclick="resetCode()">Reset Code</button>
+
+<h3>Luau Output</h3>
+<pre id="output" class="output"></pre>
+
+<script type="module">
+import { runLuau, resetLuau } from "./LuauRuntime.js";
+
+const codeBox = document.getElementById("code");
+const output = document.getElementById("output");
+const originalCode = codeBox.value;
+
+function getNumber(id) {
+    const input = document.getElementById(id);
+    const value = Number(input.value);
+
+    if (input.value.trim() === "" || !Number.isFinite(value)) {
+        throw new Error("Please enter a valid number.");
+    }
+
+    return value;
+}
+
+function setText(id, text) {
+    document.getElementById(id).textContent = String(text);
+}
+
+const bridge = { getNumber, setText };
+
+window.runCode = async function() {
+    await runLuau(codeBox.value, output, bridge);
+};
+
+window.clearOutput = function() {
+    output.textContent = "";
+};
+
+window.resetCode = async function() {
+    codeBox.value = originalCode;
+    await resetLuau(output);
+};
+
+async function runSnippet(code) {
+    codeBox.value = code;
+    await window.runCode();
+}
+
+window.simpleIf = async function() {
+    await runSnippet(`
+local myIn01 = getNumber("myNum01")
+local myIn02 = getNumber("myNum02")
+
+if myIn01 >= myIn02 then
+    setText("myDiv01",
+        tostring(myIn01) .. " is greater than or equal to " .. tostring(myIn02))
+end
+`);
+};
+
+window.ifElse = async function() {
+    await runSnippet(`
+local myIn01 = getNumber("myNum01")
+local myIn02 = getNumber("myNum02")
+
+if myIn01 >= myIn02 then
+    setText("myDiv02",
+        tostring(myIn01) .. " is greater than or equal to " .. tostring(myIn02))
+else
+    setText("myDiv02",
+        tostring(myIn01) .. " is not greater than or equal to " .. tostring(myIn02))
+end
+`);
+};
+
+window.complexIf = async function() {
+    await runSnippet(`
+local myIn01 = getNumber("myNum01")
+local myIn02 = getNumber("myNum02")
+
+if (myIn01 ~= myIn02 or myIn02 > -8) and myIn01 <= 100 then
+    setText("myDiv03",
+        tostring(myIn01) .. " or " .. tostring(myIn02) .. " is complex")
+else
+    setText("myDiv03",
+        tostring(myIn01) .. " or " .. tostring(myIn02) .. " is not complex")
+end
+`);
+};
+</script>
+
+</body>
+</html>
