@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>t1a09-Functions-by-Innes.html</title>
+
+<style>
+body {
+    background-color: #171324;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+a {
+    color: #a9c7ff;
+}
+
+h2 {
+    text-align: center;
+}
+
+input[type="number"] {
+    width: 120px;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+button {
+    padding: 9px 14px;
+    margin: 6px 5px 6px 0;
+    cursor: pointer;
+}
+
+textarea {
+    width: 100%;
+    max-width: 850px;
+    min-height: 350px;
+    box-sizing: border-box;
+    background-color: #211c33;
+    color: white;
+    border: 1px solid #655782;
+    padding: 12px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.output {
+    background-color: #211c33;
+    border: 1px solid #655782;
+    padding: 12px;
+    min-height: 30px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.example {
+    background-color: #211c33;
+    border: 1px solid #655782;
+    padding: 12px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #655782;
+    margin: 25px 0;
+}
+</style>
+</head>
+
+<body>
+
+<h2>t1a09: Functions by Innes</h2>
+
+<a href="https://www.w3schools.com/js/js_functions.asp">
+Good reference to JavaScript functions
+</a>
+
+<p>
+Functions organize code. They can be called to run code multiple times.
+Functions can also receive information through parameters and return results.
+</p>
+
+<h3>Example 1: Basic Function</h3>
+
+<p>
+This function reads the two input values, adds them, and returns a sentence.
+</p>
+
+<div class="example">JavaScript:
+
+function myExampleFunction() {
+    let myIn01 = parseInt(document.getElementById("myText01").value);
+    let myIn02 = parseInt(document.getElementById("myText02").value);
+    let mySum = myIn01 + myIn02;
+    let myReply = myIn01 + " + " + myIn02 + " = " + mySum;
+    return myReply;
+}
+
+Luau:
+
+local function myExampleFunction()
+    local myIn01 = getNumber("myText01")
+    local myIn02 = getNumber("myText02")
+    local mySum = myIn01 + myIn02
+
+    local myReply = tostring(myIn01)
+        .. " + "
+        .. tostring(myIn02)
+        .. " = "
+        .. tostring(mySum)
+
+    return myReply
+end</div>
+
+<h3>Example 2: Function with Parameters</h3>
+
+<p>
+This function receives the two numbers through its parentheses.
+It doesn't need to read the HTML inputs itself.
+</p>
+
+<div class="example">JavaScript:
+
+function addNumbers(myIn01, myIn02) {
+    let mySum = myIn01 + myIn02;
+    return mySum;
+}
+
+let answer = addNumbers(3, 6);
+
+Luau:
+
+local function addNumbers(myIn01, myIn02)
+    local mySum = myIn01 + myIn02
+    return mySum
+end
+
+local answer = addNumbers(3, 6)
+print(answer)</div>
+
+<h3>Input Numbers</h3>
+
+<label for="myText01">First number:</label><br>
+<input type="number" id="myText01" value="3"><br>
+
+<label for="myText02">Second number:</label><br>
+<input type="number" id="myText02" value="6"><br>
+
+<h3>Test the Functions</h3>
+
+<button onclick="runBasicFunction()">Basic Function</button>
+<button onclick="runParameterFunction()">Function with Parameters</button>
+
+<div id="myDiv01" class="output">Basic function result appears here.</div>
+<div id="myDiv02" class="output">Parameter function result appears here.</div>
+
+<hr>
+
+<h3>Luau Code Editor</h3>
+
+<p>
+Edit the Luau code below and click Run Luau. Both functions are included.
+</p>
+
+<textarea id="code">-- Example 1: The function reads the webpage inputs itself.
+local function myExampleFunction()
+    local myIn01 = getNumber("myText01")
+    local myIn02 = getNumber("myText02")
+    local mySum = myIn01 + myIn02
+
+    local myReply = tostring(myIn01)
+        .. " + "
+        .. tostring(myIn02)
+        .. " = "
+        .. tostring(mySum)
+
+    return myReply
+end
+
+-- Call the first function.
+local firstReply = myExampleFunction()
+setText("myDiv01", firstReply)
+print("Basic function: " .. firstReply)
+
+
+-- Example 2: The function receives parameters.
+local function addNumbers(myIn01, myIn02)
+    local mySum = myIn01 + myIn02
+    return mySum
+end
+
+-- Read the inputs outside the function.
+local number1 = getNumber("myText01")
+local number2 = getNumber("myText02")
+
+-- Pass the values into the function's parentheses.
+local answer = addNumbers(number1, number2)
+
+local secondReply = tostring(number1)
+    .. " + "
+    .. tostring(number2)
+    .. " = "
+    .. tostring(answer)
+
+setText("myDiv02", secondReply)
+print("Function with parameters: " .. secondReply)</textarea>
+
+<br>
+
+<button onclick="runCode()">Run Luau</button>
+<button onclick="clearOutput()">Clear Output</button>
+<button onclick="resetCode()">Reset Code</button>
+
+<h3>Luau Output</h3>
+<pre id="output" class="output"></pre>
+
+<script type="module">
+import { runLuau, resetLuau } from "./LuauRuntime.js";
+
+const codeBox = document.getElementById("code");
+const output = document.getElementById("output");
+const originalCode = codeBox.value;
+
+function getNumber(id) {
+    const input = document.getElementById(id);
+    const value = Number(input.value);
+
+    if (input.value.trim() === "" || !Number.isFinite(value)) {
+        throw new Error("Please enter a valid number.");
+    }
+
+    return value;
+}
+
+function setText(id, text) {
+    document.getElementById(id).textContent = String(text);
+}
+
+const bridge = { getNumber, setText };
+
+window.runCode = async function() {
+    await runLuau(codeBox.value, output, bridge);
+};
+
+window.runBasicFunction = async function() {
+    const code = `local function myExampleFunction()
+    local myIn01 = getNumber("myText01")
+    local myIn02 = getNumber("myText02")
+    local mySum = myIn01 + myIn02
+
+    local myReply = tostring(myIn01)
+        .. " + "
+        .. tostring(myIn02)
+        .. " = "
+        .. tostring(mySum)
+
+    return myReply
+end
+
+local myReply = myExampleFunction()
+setText("myDiv01", myReply)
+print(myReply)`;
+
+    await runLuau(code, output, bridge);
+};
+
+window.runParameterFunction = async function() {
+    const code = `local function addNumbers(myIn01, myIn02)
+    local mySum = myIn01 + myIn02
+    return mySum
+end
+
+local number1 = getNumber("myText01")
+local number2 = getNumber("myText02")
+
+local answer = addNumbers(number1, number2)
+
+local reply = tostring(number1)
+    .. " + "
+    .. tostring(number2)
+    .. " = "
+    .. tostring(answer)
+
+setText("myDiv02", reply)
+print(reply)`;
+
+    await runLuau(code, output, bridge);
+};
+
+window.clearOutput = function() {
+    output.textContent = "";
+    document.getElementById("myDiv01").textContent = "...";
+    document.getElementById("myDiv02").textContent = "...";
+};
+
+window.resetCode = async function() {
+    codeBox.value = originalCode;
+    document.getElementById("myDiv01").textContent = "Basic function result appears here.";
+    document.getElementById("myDiv02").textContent = "Parameter function result appears here.";
+    await resetLuau(output);
+};
+</script>
+
+</body>
+</html>
