@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L11 - Arrays | Luau</title>
+
+<style>
+body {
+    background: #101018;
+    color: #eeeeff;
+    font-family: Consolas, monospace;
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 16px;
+}
+
+h1, h2 {
+    color: #b9a0ff;
+}
+
+.panel {
+    background: #1b1b2a;
+    border: 1px solid #45455f;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+input, button {
+    font: inherit;
+    padding: 9px;
+    margin: 5px 0;
+    border-radius: 4px;
+}
+
+button {
+    background: #39305c;
+    color: white;
+    border: 1px solid #8c75d7;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #51417f;
+}
+
+#output {
+    background: #08080e;
+    border: 1px solid #38384b;
+    border-radius: 5px;
+    padding: 12px;
+    min-height: 60px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.note {
+    color: #aaaac5;
+    font-size: 13px;
+    line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+<h1>L11 — Arrays in Luau</h1>
+<p>ENTRY 11 // TABLES, INDEXING, AND LOOPS</p>
+
+<div class="panel">
+    <h2>Example: Array of Names</h2>
+
+    <label for="maxEntries">Maximum array entries (0–5):</label><br>
+    <input type="number" id="maxEntries" value="3" min="0" max="5">
+
+    <br>
+    <button id="runNames">Run Array Example</button>
+
+    <h3>Output</h3>
+    <div id="output">Press the button to run the Luau program.</div>
+</div>
+
+<div class="panel">
+    <h2>Example: Number Array</h2>
+    <p>Calculate the total and average of a list of numbers.</p>
+
+    <button id="runNumbers">Run Number Example</button>
+
+    <h3>Output</h3>
+    <div id="numberOutput">Press the button to run the number example.</div>
+</div>
+
+<div class="panel">
+    <h2>JavaScript vs. Luau</h2>
+    <p class="note">
+        JavaScript arrays commonly start at index 0.
+        Luau arrays conventionally start at index 1.
+        Luau tables can also store keys and values that are not part of a simple array.
+    </p>
+</div>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+const output = document.getElementById("output");
+const numberOutput = document.getElementById("numberOutput");
+
+document.getElementById("runNames").addEventListener("click", async () => {
+    const maxEntries = Math.max(
+        0,
+        Math.min(5, Number.parseInt(
+            document.getElementById("maxEntries").value,
+            10
+        ) || 0)
+    );
+
+    const names = ["Fred", "Mary", "Lizzy", "Bob", "Jeff"];
+
+    const safeNames = names
+        .map(name => '"' + name + '"')
+        .join(", ");
+
+    const luauCode = `
+local myArray = {${safeNames}}
+local maxEntries = ${maxEntries}
+
+for myLoop = 1, maxEntries do
+    print(
+        "Loop #: " .. myLoop ..
+        " array entry: " .. myArray[myLoop]
+    )
+end
+
+if maxEntries == 0 then
+    print("No entries selected.")
+end
+`;
+
+    output.textContent = "Running Luau...";
+
+    await runLuau(luauCode, output);
+});
+
+document.getElementById("runNumbers").addEventListener("click", async () => {
+    const luauCode = `
+local numbers = {10, 25, 7, 18, 40}
+local total = 0
+
+print("Number array:")
+
+for index, number in ipairs(numbers) do
+    print(
+        "Index: " .. index ..
+        " | Value: " .. number
+    )
+
+    total = total + number
+end
+
+local average = total / #numbers
+
+print("Total: " .. total)
+print("Count: " .. #numbers)
+print("Average: " .. average)
+`;
+
+    numberOutput.textContent = "Running Luau...";
+
+    await runLuau(luauCode, numberOutput);
+});
+</script>
+</body>
+</html>
