@@ -20,6 +20,7 @@ Note: ! = not, && = and, || = or
 
 <input type=button value="Simple if Statement for Decision Making" onclick="{
 let myIn01 = parseFloat(document.getElementById('myNum01').value)
+let myIn02 = parseFloat(document.getElementById('myNum02').value)
 if (myIn01 >= myIn02){
   document.getElementById('myDiv01').innerHTML = myNum01 + ' is greater than ' + myNum02
   }
@@ -28,10 +29,11 @@ if (myIn01 >= myIn02){
   <input type=button value="Simple if Statement for Decision Making" onclick="{
 let myIn01 = parseFloat(document.getElementById('myNum01').value)
 let myIn02 = parseFloat(document.getElementById('myNum02').value)
+
 if (myIn01 >= myIn02){
-  document.getElementById('myDiv02').innerHTML = myNum01 + ' is greater than ' +  myNum02
-  } else {
-  document.getElementById('myDiv02').innerHTML = myNum01 + ' is not greater than ' +  myNum02 }
+  document.getElementById('myDiv02').innerHTML = myIn01 + ' is greater than ' +  myIn02
+} else {
+  document.getElementById('myDiv02').innerHTML = myIn01 + ' is not greater than ' +  myIn02 }
 }">
 
 <input type=button value="Complex if" onclick="{
