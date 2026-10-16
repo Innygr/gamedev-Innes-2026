@@ -1,3 +1,62 @@
+
+<style>
+  body {
+    background-color: #eef4fa;
+    color: #222;
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+  }
+
+  h2 {
+    color: #174ea6;
+    text-align: center;
+    background-color: #d8e8ff;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  h4 {
+    color: #087f5b;
+    border-bottom: 2px solid #087f5b;
+    padding-bottom: 5px;
+  }
+
+  input, button {
+    padding: 8px;
+    margin: 5px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+  }
+
+  input[type=button], button {
+    background-color: #1769aa;
+    color: white;
+    cursor: pointer;
+  }
+
+  input[type=button]:hover, button:hover {
+    background-color: #0b4778;
+  }
+
+  #myDiv01, #myDiv02, #myDiv03, #myDiv04 {
+    background-color: white;
+    border-left: 5px solid #1769aa;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 5px;
+    min-height: 25px;
+  }
+
+  .arrayExample {
+    background-color: #ffffff;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #00000015;
+  }
+</style>
+
 <h2 align=center.t1a11-array-Innes.html</h2>
 
 <a href="">Would be a good reference to JS Arrays, if there was a link to connect to...</a>
@@ -28,3 +87,65 @@ onClick="{
   <br>
 
   You can do more arrays that do different things, hopefully some with numbers.<br>
+
+<!-- NEW STUFF STARTS HERE -->
+
+<div class="arrayExample">
+  <h4>Example 2: Number Array</h4>
+  <p>This example adds all the numbers in an array.</p>
+
+  <button onclick="{
+    let myNumbers = [10, 20, 30, 40, 50]
+    let myTotal = 0
+    let myOutput = ''
+
+    for (let i = 0; i < myNumbers.length; i++) {
+      myOutput += 'Index: ' + i + ' Number: ' + myNumbers[i] + '<br>'
+      myTotal += myNumbers[i]
+    }
+
+    myOutput += '<br>Total = ' + myTotal
+    document.getElementById('myDiv02').innerHTML = myOutput
+  }">Run Number Array</button>
+
+  <div id="myDiv02">Number results appear here...</div>
+</div>
+
+<div class="arrayExample">
+  <h4>Example 3: Find the Largest Number</h4>
+  <p>This example searches an array to find its largest number.</p>
+
+  <button onclick="{
+    let myNumbers = [12, 45, 7, 89, 23, 56]
+    let myLargest = myNumbers[0]
+    let myOutput = 'Numbers: ' + myNumbers.join(', ') + '<br>'
+
+    for (let i = 1; i < myNumbers.length; i++) {
+      if (myNumbers[i] > myLargest) {
+        myLargest = myNumbers[i]
+      }
+    }
+
+    myOutput += 'Largest number = ' + myLargest
+    document.getElementById('myDiv03').innerHTML = myOutput
+  }">Find Largest Number</button>
+
+  <div id="myDiv03">Largest number appears here...</div>
+</div>
+
+<div class="arrayExample">
+  <h4>Example 4: Add an Entry to an Array</h4>
+  <p>This example uses push() to add a new item to an array.</p>
+
+  <button onclick="{
+    let myFruits = ['Apple', 'Banana', 'Orange']
+
+    myFruits.push('Grape')
+
+    document.getElementById('myDiv04').innerHTML =
+      'Updated array: ' + myFruits.join(', ') +
+      '<br>Array length: ' + myFruits.length
+  }">Add Array Entry</button>
+
+  <div id="myDiv04">Updated array appears here...</div>
+</div>
