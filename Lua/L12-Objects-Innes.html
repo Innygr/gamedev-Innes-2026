@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L12 - Objects | Luau</title>
+
+<style>
+body {
+    background: #101018;
+    color: #eeeeff;
+    font-family: Consolas, monospace;
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 16px;
+}
+h1, h2 {
+    color: #b9a0ff;
+}
+.panel {
+    background: #1b1b2a;
+    border: 1px solid #45455f;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+}
+button {
+    background: #39305c;
+    color: white;
+    border: 1px solid #8c75d7;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font: inherit;
+}
+button:hover {
+    background: #51417f;
+}
+#output {
+    background: #08080e;
+    border: 1px solid #38384b;
+    padding: 12px;
+    min-height: 60px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.note {
+    color: #b8b8cb;
+    line-height: 1.6;
+}
+a {
+    color: #67e8f9;
+}
+</style>
+</head>
+
+<body>
+<h1>L12 — Objects in Luau</h1>
+<p>ENTRY 12 // TABLES, PROPERTIES, AND VARIABLES</p>
+
+<div class="panel">
+    <h2>Example: Create and Display an Object</h2>
+    <p>Click the button to create a person and display their properties.</p>
+
+    <button id="showPerson">Example Object Set and Show</button>
+
+    <h3>Output</h3>
+    <div id="output">...</div>
+</div>
+
+<div class="panel">
+    <h2>JavaScript Objects vs. Luau Tables</h2>
+    <p class="note">
+        JavaScript objects store values under named properties.
+        Luau tables can do the same thing using named keys.
+        In this example, firstname, lastname, age, and eyeColor are the keys.
+    </p>
+
+    <p>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects"
+           target="_blank" rel="noopener noreferrer">
+            JavaScript Objects Reference — MDN
+        </a>
+    </p>
+</div>
+
+<div class="panel">
+    <h2>Local vs. Global Variables</h2>
+    <p class="note">
+        A local variable exists within its scope. A global variable can be
+        accessed from other code that shares the same environment.
+        Using local variables is usually safer because it reduces accidental
+        name conflicts and makes code easier to maintain.
+    </p>
+    <p class="note">
+        Declaring an object outside a button's event handler can let multiple
+        handlers use the same object. However, it does not have to be global:
+        a variable declared in the surrounding script can be shared by
+        functions inside that script.
+    </p>
+</div>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+document.getElementById("showPerson").addEventListener("click", async () => {
+    const output = document.getElementById("output");
+
+    const luauCode = `
+local myPerson = {
+    firstname = "John",
+    lastname = "Doe",
+    age = 50,
+    eyeColor = "blue"
+}
+
+print("myPerson object has properties:")
+print("First Name: " .. myPerson.firstname)
+print("Last Name: " .. myPerson.lastname)
+print("Age: " .. myPerson.age)
+print("Eye Color: " .. myPerson.eyeColor)
+`;
+
+    output.textContent = "Running Luau...";
+    await runLuau(luauCode, output);
+});
+</script>
+</body>
+</html>
