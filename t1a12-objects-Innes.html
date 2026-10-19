@@ -1,0 +1,31 @@
+<h2 align=center>t1a12-objects-Innes.html</h2>
+<script>
+const myPerson = new Object();
+</script>
+
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects"> Good reference to objects in JS</a>
+
+Objects are stored named variables
+
+<h4>Example working Objects code</h4>
+
+Nothing: <input type=button value="Example Object Set and Show" onClick="{
+
+           let myPerson = {
+           'firstname' : 'John',
+           'lastname' : 'Doe',
+           'age' : 50,
+           'eyeColor' : 'blue'
+           }
+
+           document.getElementById('myDiv01').innerHTML = '<br>myPerson Object has properties: <br>'
+           document.getElementById('myDiv01').innerHTML += 'First Name': ' + myPerson.firstname + '<br>'
+           document.getElementById('myDiv01').innerHTML += 'Last Name': ' + myPerson.lastname + '<br>'
+           document.getElementById('myDiv01').innerHTML += 'Age': ' + myPerson.age + '<br>'
+           document.getElementById('myDiv01').innerHTML += 'Eye Color': ' + myPerson.eyeColor + '<br>'
+           }">
+
+           <div id="myDiv01">...</div>
+
+           <b>Lets talk local and global variables, why might it be the best to declare the object in the script tag?</b><br>
+           if it is a local variable then if we call for it, and its not there, then it will throw an error.
