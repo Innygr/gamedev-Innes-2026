@@ -1,31 +1,159 @@
-<h2 align=center>t1a12-objects-Innes.html</h2>
-<script>
-const myPerson = new Object();
-</script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t1a12 - Objects - Innes</title>
+    <style>
+      body {
+        background-color: #101820;
+        color: #e6edf3;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 25px;
+        line-height: 1.6;
+      }
 
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects"> Good reference to objects in JS</a>
+      .container {
+        max-width: 850px;
+        margin: auto;
+      }
 
-Objects are stored named variables
+      h2 {
+        text-align: center;
+        color: #00e5ff;
+        padding: 20px;
+        border: 2px solid #00e5ff;
+        border-radius: 12px;
+        background-color: #172630;
+        box-shadow: 0 0 15px #00e5ff33;
+      }
 
-<h4>Example working Objects code</h4>
+      h3,
+      h4 {
+        color: #00e5ff;
+      }
 
-Nothing: <input type=button value="Example Object Set and Show" onClick="{
+      .panel {
+        background-color: #172630;
+        border: 1px solid #344955;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+      }
 
-           let myPerson = {
-           'firstname' : 'John',
-           'lastname' : 'Doe',
-           'age' : 50,
-           'eyeColor' : 'blue'
-           }
+      a {
+        color: #7df9ff;
+      }
 
-           document.getElementById('myDiv01').innerHTML = '<br>myPerson Object has properties: <br>'
-           document.getElementById('myDiv01').innerHTML += 'First Name': ' + myPerson.firstname + '<br>'
-           document.getElementById('myDiv01').innerHTML += 'Last Name': ' + myPerson.lastname + '<br>'
-           document.getElementById('myDiv01').innerHTML += 'Age': ' + myPerson.age + '<br>'
-           document.getElementById('myDiv01').innerHTML += 'Eye Color': ' + myPerson.eyeColor + '<br>'
-           }">
+      input[type="button"] {
+        background-color: #00bcd4;
+        color: #101820;
+        border: none;
+        padding: 11px 16px;
+        margin: 5px 5px 5px 0;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+      }
 
-           <div id="myDiv01">...</div>
+      input[type="button"]:hover {
+        background-color: #7df9ff;
+        transform: translateY(-2px);
+      }
 
-           <b>Lets talk local and global variables, why might it be the best to declare the object in the script tag?</b><br>
-           if it is a local variable then if we call for it, and its not there, then it will throw an error.
+      #myDiv01,
+      #myDiv02 {
+        background-color: #0c141a;
+        border-left: 4px solid #00e5ff;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 5px;
+        min-height: 30px;
+        overflow-wrap: anywhere;
+      }
+
+      code {
+        color: #7df9ff;
+        background-color: #0c141a;
+        padding: 3px 6px;
+        border-radius: 4px;
+      }
+
+      .note {
+        color: #b8c7d1;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 35px;
+        color: #8296a5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>t1a12-objects-Innes.html</h2>
+      <div class="panel">
+        <h3>JavaScript Objects</h3>
+        <p> Objects are variables that can store multiple related pieces of information as named properties. Each property has a name and a value. </p>
+        <p>
+          <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects" target="_blank" rel="noopener noreferrer"> Good reference to objects in JavaScript </a>
+        </p>
+        <h4>Creating an empty object</h4>
+        <p> We can create an object using the <code>new Object()</code> constructor: </p>
+        <pre>
+							<code>const myPerson = new Object();</code>
+						</pre>
+      </div>
+      <div class="panel">
+        <h3>Example: Working Objects Code</h3>
+        <p> Click the button to create a person object and display its properties. </p>
+        <input type="button" value="Example Object Set and Show" onclick="showPerson()">
+        <div id="myDiv01">Your object will appear here...</div>
+      </div>
+      <div class="panel">
+        <h3>Changing Object Properties</h3>
+        <p> Object properties can be changed after the object has been created. Try changing the person's age! </p>
+        <input type="button" value="Increase Age" onclick="increaseAge()">
+        <input type="button" value="Reset Age" onclick="resetAge()">
+        <div id="myDiv02">Click a button to interact with the object.</div>
+      </div>
+      <div class="panel">
+        <h3>Local and Global Variables</h3>
+        <b> Let's talk about local and global variables. Why might it be best to declare the object in the script tag? </b>
+        <p> If an object is declared inside a function using <code>let</code> or <code>const</code>, it is normally only accessible inside that function. Trying to access it outside the function will cause a ReferenceError. </p>
+        <p> Declaring an object outside a function allows multiple functions to access it. This is useful when several buttons need to interact with the same object. </p>
+        <p class="note"> However, global variables can cause naming conflicts. Keeping variables inside functions or using a shared object in a controlled scope is often better for larger projects. </p>
+      </div>
+      <footer> JavaScript Objects | WebDev Project </footer>
+    </div>
+    <script>
+      // This object can be accessed by all the functions below.
+      const myPerson = {
+        firstname: "John",
+        lastname: "Doe",
+        age: 50,
+        eyeColor: "blue"
+      };
+      // Display all the properties of the object.
+      function showPerson() {
+        document.getElementById("myDiv01").innerHTML = " < h4 > myPerson Object Properties < /h4>" +
+        "First Name: " + myPerson.firstname + " < br > " +
+        "Last Name: " + myPerson.lastname + " < br > " +
+        "Age: " + myPerson.age + " < br > " +
+        "Eye Color: " + myPerson.eyeColor;
+      }
+      // Change the age property.
+      function increaseAge() {
+        myPerson.age++;
+        document.getElementById("myDiv02").textContent = myPerson.firstname + " is now " + myPerson.age + " years old.";
+      }
+      // Restore the original age.
+      function resetAge() {
+        myPerson.age = 50;
+        document.getElementById("myDiv02").textContent = "Age reset to " + myPerson.age + ".";
+      }
+    </script>
+  </body>
+</html>
