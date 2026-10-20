@@ -1,0 +1,85 @@
+name: Remove Markdown Code Fences
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  remove-markdown-tags:
+    runs-on: ubuntu-latest
+
+    # Prevent the workflow's own commits from causing a loop.
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Remove Markdown code fences
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import subprocess
+
+          # Find tracked files, excluding the workflow directory.
+          files = subprocess.check_output(
+              ["git", "ls-files", "-z"]
+          ).decode().split("\0")
+
+          changed = []
+
+          for filename in files:
+              if not filename:
+                  continue
+
+              path = Path(filename)
+
+              if ".github/workflows/" in filename:
+                  continue
+
+              if not path.is_file():
+                  continue
+
+              try:
+                  content = path.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+
+              # Remove lines containing only Markdown fences:
+              # ``` or ```python, ```js, etc.
+              lines = content.splitlines(keepends=True)
+              cleaned = [
+                  line for line in lines
+                  if not line.strip().startswith("```")
+              ]
+
+              updated = "".join(cleaned)
+
+              if updated != content:
+                  path.write_text(updated, encoding="utf-8")
+                  changed.append(filename)
+
+          print(f"Updated {len(changed)} files:")
+          for filename in changed:
+              print(f"  - {filename}")
+          PY
+
+      - name: Commit and push changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -u
+            git commit -m "Remove Markdown code fences"
+            git push
+          else
+            echo "No Markdown code fences to remove."
+          fi
