@@ -1,25 +1,340 @@
-<h2 align=center>t1a13-Classes-Innes.html</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes">Good reference to JS classes</a>
-Classes are both <a href="t1a12-object-Innes.html">Objects</a> that store variables (called Properties) and <a href="t1a09-functions-Innes.html">Functions</a> that work on the variables (called Methods)
+    <title>t1a13 - Classes - Innes</title>
 
-<h4>Example Working Classes code</h4>
-Nothing: <input type=text id="myText01" value="Useless at the moment"><br>
-<input type=button value="Example Class Set and Show Class Animal" onclick="{
+    <style>
+        body {
+            background-color: #101820;
+            color: #e6edf3;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 25px;
+            line-height: 1.6;
+        }
 
-  class myAnimal {
-  constructor(passName, passAge) {
-  this.myName = passName;
-  this.myAge = passAge;
-  }
-  myShow(){
-  document.getElementById('myDiv01').innerHTML = 'Hello ' + this.myName + '. You are ' + this.myAge + ' years old<br>'
-  }
-  }
+        .container {
+            max-width: 850px;
+            margin: auto;
+        }
 
-  myDog = new myAnimal('Snickers, 5')
-  myDog.myShow()
+        h2 {
+            text-align: center;
+            color: #00e5ff;
+            padding: 20px;
+            border: 2px solid #00e5ff;
+            border-radius: 12px;
+            background-color: #172630;
+            box-shadow: 0 0 15px #00e5ff33;
+        }
 
-  }">
+        h3, h4 {
+            color: #00e5ff;
+        }
 
-  <div id="myDiv01">...</div>
+        .panel {
+            background-color: #172630;
+            border: 1px solid #344955;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        a {
+            color: #7df9ff;
+        }
+
+        input[type="text"], input[type="number"] {
+            background-color: #0c141a;
+            color: #e6edf3;
+            border: 1px solid #00bcd4;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="button"] {
+            background-color: #00bcd4;
+            color: #101820;
+            border: none;
+            padding: 11px 16px;
+            margin: 6px 5px 6px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        input[type="button"]:hover {
+            background-color: #7df9ff;
+            transform: translateY(-2px);
+        }
+
+        .output {
+            background-color: #0c141a;
+            border-left: 4px solid #00e5ff;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 30px;
+            overflow-wrap: anywhere;
+        }
+
+        code {
+            color: #7df9ff;
+            background-color: #0c141a;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+
+        pre {
+            background-color: #0c141a;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        pre code {
+            padding: 0;
+        }
+
+        .note {
+            color: #b8c7d1;
+        }
+
+        footer {
+            text-align: center;
+            color: #8296a5;
+            margin-top: 35px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h2>t1a13-Classes-Innes.html</h2>
+
+    <div class="panel">
+        <h3>What Are JavaScript Classes?</h3>
+
+        <p>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"
+               target="_blank" rel="noopener noreferrer">
+                Good reference to JS classes
+            </a>
+        </p>
+
+        <p>
+            Classes are templates for creating objects. They can contain
+            variables (called <b>properties</b>) and functions that work
+            with those variables (called <b>methods</b>).
+        </p>
+
+        <p>
+            Classes connect to the topics of
+            <a href="t1a12-object-Innes.html">Objects</a>
+            and
+            <a href="t1a09-functions-Innes.html">Functions</a>.
+        </p>
+
+        <p>
+            A <code>constructor()</code> initializes each new object,
+            while <code>this</code> refers to the particular object
+            being used.
+        </p>
+    </div>
+
+    <div class="panel">
+        <h3>Example: Working Classes Code</h3>
+
+        <p>
+            Enter an animal's name and age, then create an instance
+            of the <code>myAnimal</code> class.
+        </p>
+
+        <label for="myText01">Animal Name:</label><br>
+        <input type="text" id="myText01" value="Snickers"
+               placeholder="Enter an animal name"><br>
+
+        <label for="myText02">Animal Age:</label><br>
+        <input type="number" id="myText02" value="5"
+               min="0" max="150" step="1"><br>
+
+        <input type="button"
+               value="Example Class Set and Show Class Animal"
+               onclick="createAnimal()">
+
+        <div id="myDiv01" class="output">
+            Your animal will appear here...
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Example: Class Methods</h3>
+
+        <p>
+            Methods are functions inside a class. They can use and
+            modify an object's properties.
+        </p>
+
+        <input type="button"
+               value="Show Animal Details"
+               onclick="showAnimalDetails()">
+
+        <input type="button"
+               value="Have Animal Grow Older"
+               onclick="growAnimal()">
+
+        <div id="myDiv02" class="output">
+            Create an animal above to use these methods.
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>Example: Creating Multiple Objects</h3>
+
+        <p>
+            One class can create many objects. Each object has its own
+            properties, even though they share the same class template.
+        </p>
+
+        <input type="button"
+               value="Create Two Animals"
+               onclick="createTwoAnimals()">
+
+        <div id="myDiv03" class="output">
+            Click the button to create two animals.
+        </div>
+    </div>
+
+    <div class="panel">
+        <h3>What Did We Learn?</h3>
+
+        <ul>
+            <li><b>Class:</b> A template used to create objects.</li>
+            <li><b>Constructor:</b> Sets up an object's initial properties.</li>
+            <li><b>Properties:</b> Data stored inside an object.</li>
+            <li><b>Methods:</b> Functions defined inside a class.</li>
+            <li><b>this:</b> Refers to the current object instance.</li>
+            <li><b>new:</b> Creates a new instance of a class.</li>
+        </ul>
+
+        <p class="note">
+            Remember: a class defines the structure and behaviour;
+            an instance is an individual object created from that class.
+        </p>
+    </div>
+
+    <footer>
+        JavaScript Classes | WebDev Project
+    </footer>
+
+</div>
+
+<script>
+    // Class definition: the template for creating animals.
+    class myAnimal {
+        constructor(passName, passAge) {
+            this.myName = passName;
+            this.myAge = passAge;
+        }
+
+        // Original method, improved to return the greeting.
+        myShow() {
+            return 'Hello ' + this.myName +
+                   '. You are ' + this.myAge + ' years old.';
+        }
+
+        // Additional method to show the animal's properties.
+        showDetails() {
+            return 'Animal Name: ' + this.myName +
+                   '<br>Animal Age: ' + this.myAge;
+        }
+
+        // Additional method that changes this object's age.
+        growOlder() {
+            this.myAge++;
+        }
+    }
+
+    // Keep track of the currently created animal.
+    let myDog = null;
+
+    // Create an animal using the text inputs.
+    function createAnimal() {
+        const name = document.getElementById('myText01').value.trim();
+        const ageInput = document.getElementById('myText02').value;
+        const age = Number(ageInput);
+
+        if (name === '') {
+            document.getElementById('myDiv01').textContent =
+                'Please enter an animal name.';
+            return;
+        }
+
+        if (ageInput.trim() === '' ||
+            !Number.isInteger(age) ||
+            age < 0 ||
+            age > 150) {
+            document.getElementById('myDiv01').textContent =
+                'Please enter a whole-number age between 0 and 150.';
+            return;
+        }
+
+        // Corrected version of the original myDog example.
+        myDog = new myAnimal(name, age);
+
+        document.getElementById('myDiv01').textContent =
+            myDog.myShow();
+
+        document.getElementById('myDiv02').textContent =
+            'Your animal is ready. Try the class methods!';
+    }
+
+    // Call a method to display the object's properties.
+    function showAnimalDetails() {
+        if (myDog === null) {
+            document.getElementById('myDiv02').textContent =
+                'Create an animal first!';
+            return;
+        }
+
+        document.getElementById('myDiv02').innerHTML =
+            myDog.showDetails();
+    }
+
+    // Call a method to change the current object's age.
+    function growAnimal() {
+        if (myDog === null) {
+            document.getElementById('myDiv02').textContent =
+                'Create an animal first!';
+            return;
+        }
+
+        myDog.growOlder();
+
+        document.getElementById('myDiv02').textContent =
+            myDog.myName + ' is now ' +
+            myDog.myAge + ' years old.';
+    }
+
+    // Demonstrate that one class can create multiple independent objects.
+    function createTwoAnimals() {
+        const animalOne = new myAnimal('Snickers', 5);
+        const animalTwo = new myAnimal('Buddy', 3);
+
+        document.getElementById('myDiv03').innerHTML =
+            '<b>Animal One</b><br>' +
+            animalOne.myShow() +
+            '<br><br><b>Animal Two</b><br>' +
+            animalTwo.myShow();
+    }
+</script>
+
+</body>
+</html>
