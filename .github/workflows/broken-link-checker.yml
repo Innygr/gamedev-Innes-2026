@@ -34,6 +34,7 @@ jobs:
             --root-dir "$(pwd)"
             --verbose
             --no-progress
+            --exclude "https://deltarune.fandom.com/wiki/Spamton"
             "./**/*.html"
             "./**/*.htm"
             "./**/*.md"
