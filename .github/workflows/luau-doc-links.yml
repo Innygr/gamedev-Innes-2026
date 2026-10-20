@@ -6,13 +6,11 @@ on:
       - main
     paths:
       - "Lua/**"
-      - ".github/workflows/luau-doc-links.yml"
   pull_request:
     branches:
       - main
     paths:
       - "Lua/**"
-      - ".github/workflows/luau-doc-links.yml"
   workflow_dispatch:
 
 permissions:
@@ -37,11 +35,11 @@ jobs:
           import re
 
           root = Path("Lua")
-          # Only HTML files in the Lua folder are edited. Other folders and file types are untouched.
+          # Only HTML files inside Lua/ are edited; all other folders are untouched.
           html_files = list(root.rglob("*.html")) + list(root.rglob("*.htm"))
 
-          # Use official Luau documentation as a safe fallback. Luau is not JavaScript,
-          # and some JavaScript concepts (such as JS classes) do not map one-to-one.
+          # Official Luau documentation fallback. JavaScript-only concepts do not always
+          # have a direct Luau equivalent, so do not pretend the languages are identical.
           luau_docs = "https://luau.org/"
           replacements = {
               "classes": "https://luau.org/",
@@ -58,10 +56,8 @@ jobs:
               "reference": "https://luau.org/",
           }
 
-          # Detect links to MDN's JavaScript documentation and older JavaScript docs URLs.
           js_doc_pattern = re.compile(
-              r"https?://(?:developer\.mozilla\.org/(?:en-US/)?docs/Web/JavaScript(?:/[^\s\"'<>)]*)?|"
-              r"developer\.mozilla\.org/en-US/docs/Web/JavaScript/Reference(?:/[^\s\"'<>)]*)?)",
+              r"https?://developer\.mozilla\.org/(?:en-US/)?docs/Web/JavaScript(?:/[^\s\"'<>)]*)?",
               re.IGNORECASE,
           )
 
@@ -71,7 +67,6 @@ jobs:
 
               def replace_url(match):
                   url = match.group(0)
-                  # Map familiar MDN JavaScript reference topics where practical.
                   topic_match = re.search(r"/Reference/([^/?#]+)", url, re.IGNORECASE)
                   if topic_match:
                       topic = topic_match.group(1).lower()
@@ -88,7 +83,7 @@ jobs:
               for name in changed_files:
                   print(f" - {name}")
           else:
-              print("No JavaScript documentation links found in Lua/*.html or Lua/**/*.html.")
+              print("No JavaScript documentation links found in Lua HTML files.")
 
       - name: Commit updated links
         if: github.event_name != 'pull_request'
