@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L13 - Classes | Luau</title>
+
+<style>
+body {
+    background: #101018;
+    color: #eeeeff;
+    font-family: Consolas, monospace;
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 16px;
+}
+h1, h2 {
+    color: #b9a0ff;
+}
+.panel {
+    background: #1b1b2a;
+    border: 1px solid #45455f;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+}
+input, button {
+    font: inherit;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+input {
+    width: min(100%, 300px);
+    background: #08080e;
+    color: white;
+    border: 1px solid #45455f;
+}
+button {
+    background: #39305c;
+    color: white;
+    border: 1px solid #8c75d7;
+    cursor: pointer;
+}
+button:hover {
+    background: #51417f;
+}
+#output {
+    background: #08080e;
+    border: 1px solid #38384b;
+    border-radius: 5px;
+    padding: 12px;
+    min-height: 50px;
+    white-space: pre-wrap;
+}
+.note {
+    color: #b8b8cb;
+    line-height: 1.6;
+}
+a {
+    color: #67e8f9;
+}
+</style>
+</head>
+
+<body>
+<h1>L13 — Classes in Luau</h1>
+<p>ENTRY 13 // OBJECTS, CONSTRUCTORS, AND METHODS</p>
+
+<div class="panel">
+    <h2>Example: Create an Animal</h2>
+
+    <label for="animalName">Animal name:</label><br>
+    <input id="animalName" type="text" value="Snickers"><br>
+
+    <label for="animalAge">Animal age:</label><br>
+    <input id="animalAge" type="number" value="5" min="0" max="200"><br>
+
+    <button id="createAnimal">Create and Show Animal</button>
+
+    <h3>Output</h3>
+    <div id="output">...</div>
+</div>
+
+<div class="panel">
+    <h2>How it works</h2>
+    <p class="note">
+        JavaScript has a class keyword. Luau does not have the same built-in
+        class syntax, so programmers commonly use tables and metatables to
+        implement class-like behaviour.
+    </p>
+
+    <p>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes"
+           target="_blank" rel="noopener noreferrer">
+            JavaScript Classes Reference — MDN
+        </a>
+    </p>
+</div>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+document.getElementById("createAnimal").addEventListener("click", async () => {
+    const nameInput = document.getElementById("animalName").value.trim();
+    const ageInput = document.getElementById("animalAge").value;
+
+    const animalName = nameInput || "Unknown";
+    const animalAge = Number(ageInput);
+
+    if (ageInput === "" || !Number.isFinite(animalAge) || animalAge < 0) {
+        document.getElementById("output").textContent =
+            "Please enter a valid age of 0 or more.";
+        return;
+    }
+
+    const safeName = JSON.stringify(animalName);
+
+    const luauCode = `
+local Animal = {}
+Animal.__index = Animal
+
+function Animal.new(passName, passAge)
+    local self = setmetatable({}, Animal)
+
+    self.myName = passName
+    self.myAge = passAge
+
+    return self
+end
+
+function Animal:myShow()
+    print(
+        "Hello " .. self.myName ..
+        ". You are " .. self.myAge .. " years old."
+    )
+end
+
+local myDog = Animal.new(${safeName}, ${animalAge})
+myDog:myShow()
+`;
+
+    const output = document.getElementById("output");
+    output.textContent = "Running Luau...";
+
+    await runLuau(luauCode, output);
+});
+</script>
+</body>
+</html>
