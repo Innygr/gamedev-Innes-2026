@@ -1,0 +1,25 @@
+<h2 align=center>t1a13-Classes-Innes.html</h2>
+
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes">Good reference to JS classes</a>
+Classes are both <a href="t1a12-object-Innes.html">Objects</a> that store variables (called Properties) and <a href="t1a09-functions-Innes.html">Functions</a> that work on the variables (called Methods)
+
+<h4>Example Working Classes code</h4>
+Nothing: <input type=text id="myText01" value="Useless at the moment"><br>
+<input type=button value="Example Class Set and Show Class Animal" onclick="{
+
+  class myAnimal {
+  constructor(passName, passAge) {
+  this.myName = passName;
+  this.myAge = passAge;
+  }
+  myShow(){
+  document.getElementById('myDiv01').innerHTML = 'Hello ' + this.myName + '. You are ' + this.myAge + ' years old<br>'
+  }
+  }
+
+  myDog = new myAnimal('Snickers, 5')
+  myDog.myShow()
+
+  }">
+
+  <div id="myDiv01">...</div>
