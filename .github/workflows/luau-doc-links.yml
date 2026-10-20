@@ -1,0 +1,106 @@
+name: Lua Folder Documentation Link Updater
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Lua/**"
+      - ".github/workflows/luau-doc-links.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "Lua/**"
+      - ".github/workflows/luau-doc-links.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: luau-doc-links-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-luau-doc-links:
+    name: Replace JavaScript docs links in Lua folder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Replace JavaScript documentation URLs with Luau documentation
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          root = Path("Lua")
+          # Only HTML files in the Lua folder are edited. Other folders and file types are untouched.
+          html_files = list(root.rglob("*.html")) + list(root.rglob("*.htm"))
+
+          # Use official Luau documentation as a safe fallback. Luau is not JavaScript,
+          # and some JavaScript concepts (such as JS classes) do not map one-to-one.
+          luau_docs = "https://luau.org/"
+          replacements = {
+              "classes": "https://luau.org/",
+              "functions": "https://luau.org/",
+              "arrays": "https://luau.org/library/",
+              "array": "https://luau.org/library/",
+              "objects": "https://luau.org/",
+              "object": "https://luau.org/",
+              "operators": "https://luau.org/syntax/",
+              "statements": "https://luau.org/syntax/",
+              "expressions": "https://luau.org/syntax/",
+              "global_objects": "https://luau.org/library/",
+              "global-objects": "https://luau.org/library/",
+              "reference": "https://luau.org/",
+          }
+
+          # Detect links to MDN's JavaScript documentation and older JavaScript docs URLs.
+          js_doc_pattern = re.compile(
+              r"https?://(?:developer\.mozilla\.org/(?:en-US/)?docs/Web/JavaScript(?:/[^\s\"'<>)]*)?|"
+              r"developer\.mozilla\.org/en-US/docs/Web/JavaScript/Reference(?:/[^\s\"'<>)]*)?)",
+              re.IGNORECASE,
+          )
+
+          changed_files = []
+          for path in html_files:
+              original = path.read_text(encoding="utf-8", errors="replace")
+
+              def replace_url(match):
+                  url = match.group(0)
+                  # Map familiar MDN JavaScript reference topics where practical.
+                  topic_match = re.search(r"/Reference/([^/?#]+)", url, re.IGNORECASE)
+                  if topic_match:
+                      topic = topic_match.group(1).lower()
+                      return replacements.get(topic, luau_docs)
+                  return luau_docs
+
+              updated = js_doc_pattern.sub(replace_url, original)
+              if updated != original:
+                  path.write_text(updated, encoding="utf-8")
+                  changed_files.append(str(path))
+
+          if changed_files:
+              print("Updated JavaScript documentation links in:")
+              for name in changed_files:
+                  print(f" - {name}")
+          else:
+              print("No JavaScript documentation links found in Lua/*.html or Lua/**/*.html.")
+
+      - name: Commit updated links
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          if git diff --quiet -- Lua; then
+            echo "No documentation link changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Lua
+          git commit -m "Replace JavaScript docs links with Luau documentation"
+          git push
