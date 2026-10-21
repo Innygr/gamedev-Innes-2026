@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L14 - Class Extension | Luau</title>
+
+<style>
+body {
+    background: #101018;
+    color: #eeeeff;
+    font-family: Consolas, monospace;
+    max-width: 850px;
+    margin: 30px auto;
+    padding: 16px;
+}
+h1, h2 {
+    color: #b9a0ff;
+}
+.panel {
+    background: #1b1b2a;
+    border: 1px solid #45455f;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+}
+input, button {
+    font: inherit;
+    padding: 9px;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+input {
+    max-width: 100%;
+    background: #08080e;
+    color: white;
+    border: 1px solid #45455f;
+}
+button {
+    background: #39305c;
+    color: white;
+    border: 1px solid #8c75d7;
+    cursor: pointer;
+}
+button:hover {
+    background: #51417f;
+}
+#output {
+    background: #08080e;
+    border: 1px solid #38384b;
+    border-radius: 5px;
+    padding: 12px;
+    min-height: 45px;
+    white-space: pre-wrap;
+}
+.note {
+    color: #b8b8cb;
+    line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+<h1>L14 — Class Extension in Luau</h1>
+<p>ENTRY 14 // INHERITANCE AND METHOD OVERRIDING</p>
+
+<div class="panel">
+    <h2>Example: Animal</h2>
+
+    <label for="animalName">Animal name:</label><br>
+    <input type="text" id="animalName" value="Snickers"><br>
+
+    <label for="animalAge">Animal age:</label><br>
+    <input type="number" id="animalAge" value="5" min="0"><br>
+
+    <button id="showAnimal">Create and Show Animal</button>
+</div>
+
+<div class="panel">
+    <h2>Example: Extending Animal into Cat</h2>
+
+    <label for="catName">Cat name:</label><br>
+    <input type="text" id="catName" value="Mittens"><br>
+
+    <label for="catAge">Cat age:</label><br>
+    <input type="number" id="catAge" value="3" min="0"><br>
+
+    <button id="showCat">Create and Show Cat</button>
+</div>
+
+<div class="panel">
+    <h2>Output</h2>
+    <div id="output">...</div>
+</div>
+
+<div class="panel">
+    <h2>How inheritance works</h2>
+    <p class="note">
+        Animal is the base class-like table. Cat inherits its methods through
+        a metatable, but defines its own myShow method. This overrides the
+        inherited method when you call myShow on a Cat instance.
+    </p>
+</div>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+function getAnimalInput(nameId, ageId) {
+    const name = document.getElementById(nameId).value.trim();
+    const ageText = document.getElementById(ageId).value;
+    const age = Number(ageText);
+
+    if (ageText === "" || !Number.isFinite(age) || age < 0) {
+        document.getElementById("output").textContent =
+            "Please enter a valid age of 0 or more.";
+        return null;
+    }
+
+    return {
+        name: name || "Unknown",
+        age
+    };
+}
+
+document.getElementById("showAnimal").addEventListener("click", async () => {
+    const animal = getAnimalInput("animalName", "animalAge");
+    if (!animal) return;
+
+    const luauCode = `
+local Animal = {}
+Animal.__index = Animal
+
+function Animal.new(passName, passAge)
+    local self = setmetatable({}, Animal)
+    self.myName = passName
+    self.myAge = passAge
+    return self
+end
+
+function Animal:myShow()
+    print("Hello " .. self.myName)
+end
+
+local myDog = Animal.new(
+    ${JSON.stringify(animal.name)},
+    ${animal.age}
+)
+
+myDog:myShow()
+`;
+
+    const output = document.getElementById("output");
+    output.textContent = "Running Luau...";
+    await runLuau(luauCode, output);
+});
+
+document.getElementById("showCat").addEventListener("click", async () => {
+    const cat = getAnimalInput("catName", "catAge");
+    if (!cat) return;
+
+    const luauCode = `
+local Animal = {}
+Animal.__index = Animal
+
+function Animal.new(passName, passAge)
+    local self = setmetatable({}, Animal)
+    self.myName = passName
+    self.myAge = passAge
+    return self
+end
+
+function Animal:myShow()
+    print("Hello " .. self.myName)
+end
+
+local Cat = setmetatable({}, {__index = Animal})
+Cat.__index = Cat
+
+function Cat.new(passName, passAge)
+    local self = Animal.new(passName, passAge)
+    setmetatable(self, Cat)
+    return self
+end
+
+function Cat:myShow()
+    print(self.myName .. " is a great cat")
+end
+
+local myPet = Cat.new(
+    ${JSON.stringify(cat.name)},
+    ${cat.age}
+)
+
+myPet:myShow()
+`;
+
+    const output = document.getElementById("output");
+    output.textContent = "Running Luau...";
+    await runLuau(luauCode, output);
+});
+</script>
+</body>
+</html>
