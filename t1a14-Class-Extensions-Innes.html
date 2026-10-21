@@ -1,0 +1,43 @@
+<script>
+  class myAnimal {
+    constructor(passName, passAge) {
+      this.myName = passName;
+      this.myAge = passAge;
+    }
+    myShow(){
+      document.getElementById('myDiv01').innerHTML = 'Hello ' + this.myName + '<br>'
+    }
+  }
+</script>
+<h2 align=center>t1a14-class-extend-innes.html</h2>
+Extending a pre-existing class<br>
+<input type=text id="myText01">
+<input type=number id="myIn01">
+
+<h4>Example working Class code</h4>
+
+<input type=button value="Example Class Set and Show Class Animal" onClick="{
+
+  let myNum01 = parseFloat(document.getElementById('myIn01').value)
+  let myDog = new myAnimal(myText01, myNum01)
+  myDog.myShow()
+
+  }">
+  <h4>Example extending Class code</h4>
+  Nothing: <input type=text id="myText02" value="Useless at the moment">
+<input type=number id="myIn02""><br>
+
+  <input type=button value="Example Extend Class Animal" onClick="{
+    let myNum02 = parseFloat(document.getElementById('myIn02').value)
+    class myCat extends myAnimal {
+
+    myShow(){
+      document.getElementById('myDiv01').innerHTML = this.myName + ' is a great cat<br>'
+                                                                                    }
+    }
+
+    let myPet = new myCat('myText02', myNum02)
+    myPet.myShow()
+    }">
+
+    <div id="myDiv01">...</div>
