@@ -1,0 +1,414 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L-X00 - Luau Creature Simulator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            background: #10131c;
+            color: #e9edff;
+            font-family: Arial, sans-serif;
+        }
+
+        main {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        h1 {
+            color: #a995ff;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #aab2cc;
+            margin-top: 0;
+        }
+
+        section {
+            background: #1b2030;
+            border: 1px solid #353d59;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 18px;
+        }
+
+        h2 {
+            color: #c4b7ff;
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 12px 0 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            background: #10131c;
+            color: white;
+            border: 1px solid #505b7d;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 11px 15px;
+            border: 0;
+            border-radius: 7px;
+            background: #7962dc;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #9582f3;
+        }
+
+        button.secondary {
+            background: #35415d;
+        }
+
+        button.danger {
+            background: #923e5c;
+        }
+
+        #status {
+            color: #b9c3df;
+            margin-top: 12px;
+        }
+
+        #output {
+            min-height: 180px;
+            max-height: 380px;
+            overflow: auto;
+            padding: 15px;
+            border-radius: 8px;
+            background: #090b11;
+            color: #9fffc2;
+            border: 1px solid #30374b;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font: 14px/1.7 Consolas, monospace;
+        }
+
+        .small {
+            font-size: 13px;
+            color: #aab2cc;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <h1>L-X00: Luau Creature Simulator</h1>
+    <p class="subtitle">
+        X-Assignment · Variables, tables, loops, functions, classes,
+        inheritance, decisions, and events.
+    </p>
+
+    <section>
+        <h2>1. Create your creature</h2>
+
+        <label for="creatureName">Creature name</label>
+        <input id="creatureName" type="text"
+               maxlength="40" value="Inny">
+
+        <label for="startingEnergy">Starting energy (0–100)</label>
+        <input id="startingEnergy" type="number"
+               min="0" max="100" step="1" value="60">
+
+        <div class="buttons">
+            <button id="createButton">Create Flying Creature</button>
+        </div>
+
+        <p id="status">No creature created yet.</p>
+    </section>
+
+    <section>
+        <h2>2. Creature controls</h2>
+
+        <div class="buttons">
+            <button id="infoButton">Show Information</button>
+            <button id="abilitiesButton">Show Abilities</button>
+            <button id="trainButton">Train (+10 energy)</button>
+            <button id="flyButton">Take Off (-15 energy)</button>
+            <button id="restButton" class="secondary">Rest (+20 energy)</button>
+            <button id="resetButton" class="danger">Reset</button>
+        </div>
+
+        <p class="small">
+            Energy is limited to 0–100. Flying costs 15 energy.
+            Training adds 10, and resting restores 20.
+        </p>
+    </section>
+
+    <section>
+        <h2>3. Luau output</h2>
+        <pre id="output">Loading Luau runtime...</pre>
+    </section>
+
+    <section>
+        <h2>What this assignment demonstrates</h2>
+        <ul>
+            <li>Variables and user input</li>
+            <li>Tables and the <code>ipairs()</code> loop</li>
+            <li>Functions and conditional statements</li>
+            <li>Object-style programming with metatables</li>
+            <li>Inheritance and method overriding</li>
+            <li>Persistent creature state between button presses</li>
+        </ul>
+    </section>
+</main>
+
+<script type="module">
+    import { runLuau } from "./LuauRuntime.js";
+
+    const output = document.getElementById("output");
+    const status = document.getElementById("status");
+
+    let creatureCreated = false;
+
+    // JavaScript handles webpage input.
+    // The creature's actual behaviour is implemented in Luau.
+    async function executeLuau(code) {
+        try {
+            await runLuau(code, output);
+        } catch (error) {
+            output.textContent = "Could not run Luau:\n" + error.message;
+        }
+    }
+
+    function checkCreature() {
+        if (!creatureCreated) {
+            output.textContent =
+                "Create a creature first using the button above!";
+            return false;
+        }
+
+        return true;
+    }
+
+    document.getElementById("createButton").addEventListener("click", async () => {
+        const name = document.getElementById("creatureName").value.trim();
+        const energyText = document.getElementById("startingEnergy").value;
+        const energy = Number(energyText);
+
+        if (!name) {
+            status.textContent = "Please enter a creature name.";
+            output.textContent = "Error: the creature name cannot be empty.";
+            return;
+        }
+
+        if (energyText.trim() === "" ||
+            !Number.isInteger(energy) ||
+            energy < 0 ||
+            energy > 100) {
+            status.textContent = "Starting energy must be an integer from 0 to 100.";
+            output.textContent = "Error: invalid starting energy.";
+            return;
+        }
+
+        // Pass user input safely into Luau as strings/numbers.
+        const safeName = JSON.stringify(name);
+
+        const code = `
+-- L-X00: Creature Simulator
+-- This code runs inside Luau.
+
+-- Base creature type.
+Creature = {}
+Creature.__index = Creature
+
+function Creature.new(name, energy)
+    local self = setmetatable({}, Creature)
+
+    self.name = name
+    self.energy = energy
+    self.species = "Creature"
+
+    self.abilities = {
+        "Explore",
+        "Train",
+        "Rest"
+    }
+
+    return self
+end
+
+function Creature:showInfo()
+    print("=== CREATURE INFORMATION ===")
+    print("Name: " .. self.name)
+    print("Species: " .. self.species)
+    print("Energy: " .. self.energy .. "/100")
+
+    if self.energy >= 70 then
+        print("Status: Full of energy!")
+    elseif self.energy >= 30 then
+        print("Status: Ready for an adventure.")
+    elseif self.energy > 0 then
+        print("Status: Getting tired.")
+    else
+        print("Status: Exhausted!")
+    end
+end
+
+function Creature:showAbilities()
+    print("=== ABILITIES ===")
+
+    for index, ability in ipairs(self.abilities) do
+        print(tostring(index) .. ". " .. ability)
+    end
+end
+
+function Creature:train()
+    self.energy = math.min(100, self.energy + 10)
+    print(self.name .. " trained!")
+    print("Energy: " .. self.energy .. "/100")
+end
+
+function Creature:rest()
+    self.energy = math.min(100, self.energy + 20)
+    print(self.name .. " rested.")
+    print("Energy: " .. self.energy .. "/100")
+end
+
+-- FlyingCreature inherits from Creature.
+FlyingCreature = setmetatable({}, { __index = Creature })
+FlyingCreature.__index = FlyingCreature
+
+function FlyingCreature.new(name, energy)
+    local self = Creature.new(name, energy)
+    setmetatable(self, FlyingCreature)
+
+    self.species = "Flying Creature"
+
+    table.insert(self.abilities, "Fly")
+
+    return self
+end
+
+-- Override the base creature's showInfo method.
+function FlyingCreature:showInfo()
+    Creature.showInfo(self)
+    print("Special ability: Flight")
+end
+
+-- Override the base creature's explore behaviour.
+function FlyingCreature:explore()
+    if self.energy >= 15 then
+        self.energy = self.energy - 15
+        print(self.name .. " spreads its wings and takes off!")
+        print("Energy remaining: " .. self.energy .. "/100")
+    else
+        print(self.name .. " does not have enough energy to fly!")
+        print("Rest first to recover energy.")
+    end
+end
+
+-- Create and save the creature in the shared Luau environment.
+myPet = FlyingCreature.new(${safeName}, ${energy})
+
+print("Creature created successfully!")
+print("Welcome, " .. myPet.name .. "!")
+myPet:showInfo()
+`;
+
+        await executeLuau(code);
+
+        creatureCreated = true;
+        status.textContent = "Created: " + name + " · Energy: " + energy + "/100";
+    });
+
+    document.getElementById("infoButton").addEventListener("click", async () => {
+        if (!checkCreature()) return;
+
+        await executeLuau(`
+if myPet then
+    myPet:showInfo()
+else
+    print("Create a creature first!")
+end
+`);
+    });
+
+    document.getElementById("abilitiesButton").addEventListener("click", async () => {
+        if (!checkCreature()) return;
+
+        await executeLuau(`
+if myPet then
+    myPet:showAbilities()
+else
+    print("Create a creature first!")
+end
+`);
+    });
+
+    document.getElementById("trainButton").addEventListener("click", async () => {
+        if (!checkCreature()) return;
+
+        await executeLuau(`
+if myPet then
+    myPet:train()
+end
+`);
+    });
+
+    document.getElementById("flyButton").addEventListener("click", async () => {
+        if (!checkCreature()) return;
+
+        await executeLuau(`
+if myPet then
+    myPet:explore()
+end
+`);
+    });
+
+    document.getElementById("restButton").addEventListener("click", async () => {
+        if (!checkCreature()) return;
+
+        await executeLuau(`
+if myPet then
+    myPet:rest()
+end
+`);
+    });
+
+    document.getElementById("resetButton").addEventListener("click", async () => {
+        await executeLuau(`
+myPet = nil
+print("Creature reset. Create a new creature to play again.")
+`);
+
+        creatureCreated = false;
+        status.textContent = "No creature created yet.";
+    });
+
+    // Check that the runtime can initialize and execute a basic Luau program.
+    await executeLuau(`
+print("Luau runtime ready!")
+print("Create your creature to begin L-X00.")
+`);
+</script>
+</body>
+</html>
+```
