@@ -2,38 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Innes — Mandelbrot Explorer</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Innes | Mandelbrot Explorer</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#dfffff;font:14px Consolas,monospace}
-canvas{display:block;width:100vw;height:100vh}
-#myHint,#myHud,#myReset{position:fixed;background:#06111eee;border:1px solid #20dfe8;box-shadow:0 0 15px #00eaff22}
-#myHint{top:15px;left:15px;padding:12px;cursor:pointer;color:#9fffff}
-#myHud{bottom:15px;left:15px;padding:10px;pointer-events:none}
-#myReset{top:15px;right:15px;padding:10px;color:#9fffff;cursor:pointer;font:inherit}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#cfffff;font:14px Consolas,monospace}
+canvas{display:block;width:100vw;height:100vh;cursor:crosshair}
+.panel{position:fixed;background:#06111eee;border:1px solid #22dce9;box-shadow:0 0 15px #00eaff22}
+#myHint{top:14px;left:14px;padding:12px;cursor:pointer}
+#myReset{top:14px;right:14px;padding:10px;color:#bfffff;cursor:pointer;font:inherit}
+#myHud{bottom:14px;left:14px;padding:10px;pointer-events:none}
 #myModalBackdrop{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center;padding:20px}
-#myModal{max-width:580px;padding:24px;background:#07111f;border:1px solid #20dfe8;line-height:1.7}
+#myModal{max-width:560px;padding:24px;background:#07111f;border:1px solid #22dce9;line-height:1.7}
 #myModal h2{color:#80fff4}
 #myModal code{color:#ff9cff}
-#myClose{float:right;background:transparent;border:1px solid #20dfe8;color:#9fffff;padding:6px;cursor:pointer}
+#myClose{float:right;padding:7px;background:transparent;color:#bfffff;border:1px solid #22dce9;cursor:pointer}
 </style>
 </head>
 <body>
 <canvas id="myCanvas"></canvas>
-<div id="myHint" role="button" tabindex="0">[ ? ] HOW IT WORKS</div>
-<button id="myReset">RESET VIEW</button>
-<div id="myHud">Rendering fractal…</div>
+
+<div id="myHint" class="panel" role="button" tabindex="0">[ ? ] HOW IT WORKS</div>
+<button id="myReset" class="panel">RESET VIEW</button>
+<div id="myHud" class="panel">Starting renderer…</div>
 
 <div id="myModalBackdrop" role="dialog" aria-modal="true">
-<section id="myModal">
-<button id="myClose">CLOSE ×</button>
-<h2>The Mandelbrot Set</h2>
-<p>Each pixel represents a complex number C. Starting at Z = 0, the renderer repeatedly calculates:</p>
-<p><code>Zₙ₊₁ = Zₙ² + C</code></p>
-<p>If the magnitude of Z grows beyond 2, that point escapes. How quickly it escapes determines its color. Points that remain bounded are part of the Mandelbrot set and appear black.</p>
-<p>Move your pointer to position the dashed preview. Scroll to change its size, then click to zoom into the selected region.</p>
-</section>
+  <section id="myModal">
+    <button id="myClose">CLOSE ×</button>
+    <h2>The Mandelbrot Set</h2>
+    <p>Each pixel represents a complex number C. Starting at Z = 0, the renderer repeatedly calculates:</p>
+    <p><code>Zₙ₊₁ = Zₙ² + C</code></p>
+    <p>If the magnitude of Z exceeds 2, the point escapes. Its escape speed determines its color. Points that remain bounded are shown in black.</p>
+    <p><b>Controls</b></p>
+    <p>Move the mouse to position the zoom preview. Scroll to resize it. Click to zoom into that exact point. Hold the mouse wheel button and drag to pan. Press Escape to close this window.</p>
+  </section>
 </div>
 
 <script>
@@ -42,266 +44,395 @@ canvas{display:block;width:100vw;height:100vh}
 const myCanvas=document.getElementById("myCanvas");
 const myContext=myCanvas.getContext("2d",{alpha:false});
 const myHint=document.getElementById("myHint");
-const myHud=document.getElementById("myHud");
 const myReset=document.getElementById("myReset");
-const myModalBackdrop=document.getElementById("myModalBackdrop");
+const myHud=document.getElementById("myHud");
+const myBackdrop=document.getElementById("myModalBackdrop");
 const myClose=document.getElementById("myClose");
 
 let myWidth=0,myHeight=0;
 let myCenterX=-0.5,myCenterY=0,myViewHeight=3.2;
 let myPreviewScale=0.5;
 let myPointerX=0,myPointerY=0,myPointerInside=false;
-let myColorPhase=0;
-let myRenderId=0;
-let myLastImage=null;
-let myAnimationFrame=0;
+let myColorPhase=0,myRenderId=0;
+let myRenderPending=false,myLastRenderTime=0;
+let myPan=null;
+let myWorker=null;
+let myWorkerReady=false;
+let myQuality=0;
+let myBitmap=null;
+let myLastState=null;
 
-function myResizeCanvas(){
-    const myDpr=Math.min(window.devicePixelRatio||1,1.5);
-    myWidth=Math.max(1,Math.floor(innerWidth*myDpr));
-    myHeight=Math.max(1,Math.floor(innerHeight*myDpr));
-    myCanvas.width=myWidth;
-    myCanvas.height=myHeight;
-    myCanvas.style.width=innerWidth+"px";
-    myCanvas.style.height=innerHeight+"px";
-    myRenderFractal();
+// The worker performs all expensive fractal calculations off the UI thread.
+const myWorkerCode=`
+let myCurrentId=0;
+let myTimer=null;
+
+function myColor(iter,mag,limit,phase){
+  if(iter>=limit)return [0,0,0];
+
+  const smooth=iter+1-Math.log2(
+    Math.max(1e-12,Math.log2(Math.max(1.000001,mag)))
+  );
+  const hue=((smooth*0.035+phase)%1+1)%1;
+  const sector=hue*6;
+  const index=Math.floor(sector);
+  const f=sector-index;
+  const s=0.94,p=1-s,q=1-s*f,t=1-s*(1-f);
+  const colors=[
+    [1,t,p],[q,1,p],[p,1,t],
+    [p,q,1],[t,p,1],[1,p,q]
+  ];
+  return colors[index%6].map(c=>Math.round(c*255));
 }
 
-function myScreenToComplex(myX,myY){
-    const myAspect=myWidth/myHeight;
-    return {
-        x:myCenterX+(myX/myWidth-0.5)*myViewHeight*myAspect,
-        y:myCenterY+(myY/myHeight-0.5)*myViewHeight
-    };
+function myInsideSet(cr,ci){
+  const q=(cr-0.25)*(cr-0.25)+ci*ci;
+  if(q*(q+cr-0.25)<=0.25*ci*ci)return true;
+  return (cr+1)*(cr+1)+ci*ci<=0.0625;
 }
 
-function myGetPointer(myEvent){
-    const myRect=myCanvas.getBoundingClientRect();
-    return {
-        x:(myEvent.clientX-myRect.left)*myWidth/myRect.width,
-        y:(myEvent.clientY-myRect.top)*myHeight/myRect.height
-    };
-}
+async function myRender(message){
+  const {id,width,height,cx,cy,viewHeight,phase}=message;
+  myCurrentId=id;
 
-function myColor(myIteration,myMagnitudeSquared,myLimit){
-    if(myIteration>=myLimit)return [0,0,0];
+  const zoom=3.2/viewHeight;
+  const limit=Math.min(1400,Math.floor(220+Math.log2(Math.max(1,zoom))*45));
+  const aspect=width/height;
+  const levels=[0.28,0.55,1];
 
-    const mySmooth=myIteration+1-
-        Math.log2(Math.max(1e-12,Math.log2(Math.max(1.000001,myMagnitudeSquared))));
-    const myHue=((mySmooth*0.035+myColorPhase)%1+1)%1;
-    const mySector=myHue*6;
-    const myIndex=Math.floor(mySector);
-    const myFraction=mySector-myIndex;
-    const mySaturation=0.94;
-    const myP=1-mySaturation;
-    const myQ=1-mySaturation*myFraction;
-    const myT=1-mySaturation*(1-myFraction);
+  for(let level=0;level<levels.length;level++){
+    if(id!==myCurrentId)return;
 
-    const myColors=[
-        [1,myT,myP],[myQ,1,myP],[myP,1,myT],
-        [myP,myQ,1],[myT,myP,1],[1,myP,myQ]
-    ];
-    return myColors[myIndex%6].map(myC=>Math.round(myC*255));
-}
+    const scale=levels[level];
+    const w=Math.max(1,Math.min(1100,Math.ceil(width*scale)));
+    const h=Math.max(1,Math.ceil(w/aspect));
+    const pixels=new Uint8ClampedArray(w*h*4);
+    const planeWidth=viewHeight*aspect;
+    const left=cx-planeWidth/2;
+    const top=cy-viewHeight/2;
+    const dx=planeWidth/w,dy=viewHeight/h;
 
-async function myRenderFractal(){
-    const myId=++myRenderId;
-    myHud.textContent="Rendering…";
+    for(let y=0;y<h;y++){
+      if(id!==myCurrentId)return;
 
-    // Render quickly at reduced resolution, then refine.
-    const myLevels=[4,2,1];
+      const ci=top+(y+0.5)*dy;
 
-    for(const myQuality of myLevels){
-        if(myId!==myRenderId)return;
+      for(let x=0;x<w;x++){
+        const cr=left+(x+0.5)*dx;
+        let zr=0,zi=0,zr2=0,zi2=0,iter=0;
 
-        const myW=Math.max(1,Math.ceil(Math.min(myWidth,1000)/myQuality));
-        const myH=Math.max(1,Math.ceil(myHeight/(myWidth/myW)/myQuality));
-        const myImage=myContext.createImageData(myW,myH);
-        const myPixels=myImage.data;
-        const myAspect=myWidth/myHeight;
-        const myPlaneWidth=myViewHeight*myAspect;
-        const myLeft=myCenterX-myPlaneWidth/2;
-        const myTop=myCenterY-myViewHeight/2;
-        const myStepX=myPlaneWidth/myW;
-        const myStepY=myViewHeight/myH;
-        const myZoom=3.2/myViewHeight;
-        const myLimit=Math.min(1000,Math.floor(180+Math.log2(Math.max(1,myZoom))*35));
-
-        for(let myY=0;myY<myH;myY++){
-            if(myId!==myRenderId)return;
-            const myCi=myTop+(myY+0.5)*myStepY;
-
-            for(let myX=0;myX<myW;myX++){
-                const myCr=myLeft+(myX+0.5)*myStepX;
-                let myZr=0,myZi=0,myZr2=0,myZi2=0,myIteration=0;
-
-                // Main cardioid / period-2 bulb shortcuts.
-                const myQ=(myCr-0.25)*(myCr-0.25)+myCi*myCi;
-                const myInsideCardioid=myQ*(myQ+(myCr-0.25))<=0.25*myCi*myCi;
-                const myInsideBulb=(myCr+1)*(myCr+1)+myCi*myCi<=0.0625;
-
-                if(!myInsideCardioid&&!myInsideBulb){
-                    while(myZr2+myZi2<=256&&myIteration<myLimit){
-                        myZi=2*myZr*myZi+myCi;
-                        myZr=myZr2-myZi2+myCr;
-                        myZr2=myZr*myZr;
-                        myZi2=myZi*myZi;
-                        myIteration++;
-                    }
-                }else{
-                    myIteration=myLimit;
-                }
-
-                const myColorValue=myColor(myIteration,myZr2+myZi2,myLimit);
-                const myOffset=(myY*myW+myX)*4;
-                myPixels[myOffset]=myColorValue[0];
-                myPixels[myOffset+1]=myColorValue[1];
-                myPixels[myOffset+2]=myColorValue[2];
-                myPixels[myOffset+3]=255;
-            }
-
-            // Let Edge paint and process input between batches.
-            if(myY%8===0){
-                await new Promise(myResolve=>setTimeout(myResolve,0));
-            }
+        if(!myInsideSet(cr,ci)){
+          while(zr2+zi2<=256&&iter<limit){
+            zi=2*zr*zi+ci;
+            zr=zr2-zi2+cr;
+            zr2=zr*zr;
+            zi2=zi*zi;
+            iter++;
+          }
+        }else{
+          iter=limit;
         }
 
-        if(myId!==myRenderId)return;
+        const offset=(y*w+x)*4;
+        const color=myColor(iter,zr2+zi2,limit,phase);
+        pixels[offset]=color[0];
+        pixels[offset+1]=color[1];
+        pixels[offset+2]=color[2];
+        pixels[offset+3]=255;
+      }
 
-        const myBuffer=document.createElement("canvas");
-        myBuffer.width=myW;
-        myBuffer.height=myH;
-        myBuffer.getContext("2d").putImageData(myImage,0,0);
-
-        myContext.fillStyle="#000";
-        myContext.fillRect(0,0,myWidth,myHeight);
-        myContext.imageSmoothingEnabled=true;
-        myContext.drawImage(myBuffer,0,0,myWidth,myHeight);
-
-        myLastImage=myImage;
-        myDrawPreview();
-        myHud.textContent="ZOOM "+(3.2/myViewHeight).toFixed(2)+"× | REGION "+Math.round(myPreviewScale*100)+"% | WHEEL / CLICK";
+      // Yield so new zoom requests can cancel this render.
+      if(y%8===7){
+        await new Promise(resolve=>setTimeout(resolve,0));
+        if(id!==myCurrentId)return;
+      }
     }
+
+    postMessage({
+      type:"frame",id,width:w,height:h,level,
+      buffer:pixels.buffer
+    },[pixels.buffer]);
+  }
+
+  if(id===myCurrentId)postMessage({type:"done",id});
 }
 
-function myDrawPreview(){
-    if(!myPointerInside)return;
+onmessage=function(event){
+  const message=event.data;
+  if(message.type==="render"){
+    myCurrentId=message.id;
+    myRender(message);
+  }
+};
+`;
 
-    const myBoxWidth=myWidth*myPreviewScale;
-    const myBoxHeight=myHeight*myPreviewScale;
-    const myX=Math.max(0,Math.min(myWidth-myBoxWidth,myPointerX-myBoxWidth/2));
-    const myY=Math.max(0,Math.min(myHeight-myBoxHeight,myPointerY-myBoxHeight/2));
+function myStartWorker(){
+  try{
+    const myBlob=new Blob([myWorkerCode],{type:"text/javascript"});
+    const myUrl=URL.createObjectURL(myBlob);
+    myWorker=new Worker(myUrl);
+    URL.revokeObjectURL(myUrl);
+    myWorkerReady=true;
+
+    myWorker.onmessage=function(event){
+      const myMessage=event.data;
+      if(myMessage.id!==myRenderId)return;
+
+      if(myMessage.type==="frame"){
+        const myPixels=new Uint8ClampedArray(myMessage.buffer);
+        const myImage=new ImageData(myPixels,myMessage.width,myMessage.height);
+        const myBuffer=document.createElement("canvas");
+        myBuffer.width=myMessage.width;
+        myBuffer.height=myMessage.height;
+        myBuffer.getContext("2d").putImageData(myImage,0,0);
+
+        myBitmap=myBuffer;
+        myQuality=myMessage.level;
+        myDrawScene();
+
+        myHud.textContent=
+          "ZOOM "+(3.2/myViewHeight).toFixed(2)+"×"+
+          " | DETAIL "+(myQuality===2?"MAX":myQuality===1?"MED":"PREVIEW")+
+          " | REGION "+Math.round(myPreviewScale*100)+"%";
+      }
+
+      if(myMessage.type==="done"){
+        myRenderPending=false;
+        myLastRenderTime=performance.now();
+        myHud.textContent=
+          "ZOOM "+(3.2/myViewHeight).toFixed(2)+"×"+
+          " | RENDER COMPLETE"+
+          " | REGION "+Math.round(myPreviewScale*100)+"%";
+        myDrawScene();
+      }
+    };
+
+    myWorker.onerror=function(){
+      myHud.textContent="Renderer error — refresh the page to retry.";
+    };
+  }catch(myError){
+    myWorkerReady=false;
+    myHud.textContent="Web Worker unavailable — try reloading Edge.";
+  }
+}
+
+function myResizeCanvas(){
+  const myDpr=Math.min(window.devicePixelRatio||1,1.5);
+  myWidth=Math.max(1,Math.floor(innerWidth*myDpr));
+  myHeight=Math.max(1,Math.floor(innerHeight*myDpr));
+  myCanvas.width=myWidth;
+  myCanvas.height=myHeight;
+  myCanvas.style.width=innerWidth+"px";
+  myCanvas.style.height=innerHeight+"px";
+  myQueueRender();
+}
+
+function myScreenToComplex(x,y){
+  return {
+    x:myCenterX+(x/myWidth-0.5)*myViewHeight*(myWidth/myHeight),
+    y:myCenterY+(y/myHeight-0.5)*myViewHeight
+  };
+}
+
+function myGetPointer(event){
+  const rect=myCanvas.getBoundingClientRect();
+  return {
+    x:(event.clientX-rect.left)*myWidth/rect.width,
+    y:(event.clientY-rect.top)*myHeight/rect.height
+  };
+}
+
+function myQueueRender(){
+  if(!myWorkerReady)return;
+  const myId=++myRenderId;
+  myRenderPending=true;
+  myWorker.postMessage({
+    type:"render",
+    id:myId,
+    width:myWidth,
+    height:myHeight,
+    cx:myCenterX,
+    cy:myCenterY,
+    viewHeight:myViewHeight,
+    phase:myColorPhase
+  });
+}
+
+function myDrawScene(){
+  myContext.fillStyle="#000";
+  myContext.fillRect(0,0,myWidth,myHeight);
+
+  if(myBitmap){
+    myContext.imageSmoothingEnabled=true;
+    myContext.drawImage(myBitmap,0,0,myWidth,myHeight);
+  }
+
+  if(myPointerInside&&myBackdrop.style.display!=="flex"){
+    const boxWidth=myWidth*myPreviewScale;
+    const boxHeight=myHeight*myPreviewScale;
+    const x=Math.max(0,Math.min(myWidth-boxWidth,myPointerX-boxWidth/2));
+    const y=Math.max(0,Math.min(myHeight-boxHeight,myPointerY-boxHeight/2));
 
     myContext.save();
     myContext.strokeStyle="#fff";
     myContext.lineWidth=1.5;
     myContext.setLineDash([9,6]);
     myContext.shadowColor="#00ffff";
-    myContext.shadowBlur=12;
-    myContext.strokeRect(myX,myY,myBoxWidth,myBoxHeight);
+    myContext.shadowBlur=10;
+    myContext.strokeRect(x,y,boxWidth,boxHeight);
     myContext.restore();
+  }
 }
 
-function myRefreshPreview(){
-    // Re-render the fractal only when the view changes, not on pointer movement.
-    if(myLastImage){
-        myRenderFractal();
-    }else{
-        myDrawPreview();
-    }
+function myZoomAt(myX,myY,myFactor){
+  // Find the complex coordinate under the pointer before zooming.
+  const myAnchor=myScreenToComplex(myX,myY);
+  const myNewHeight=Math.max(1e-12,Math.min(100,myViewHeight*myFactor));
+  const myAspect=myWidth/myHeight;
+
+  // Shift the center so that the same complex point stays under the cursor.
+  myCenterX=myAnchor.x-(myX/myWidth-0.5)*myNewHeight*myAspect;
+  myCenterY=myAnchor.y-(myY/myHeight-0.5)*myNewHeight;
+  myViewHeight=myNewHeight;
+
+  myQueueRender();
 }
 
-myCanvas.onmousemove=function(myEvent){
-    const myPoint=myGetPointer(myEvent);
-    myPointerX=myPoint.x;
-    myPointerY=myPoint.y;
-    myPointerInside=true;
-    myRenderFractal();
+myCanvas.onmousemove=function(event){
+  const point=myGetPointer(event);
+  myPointerX=point.x;
+  myPointerY=point.y;
+  myPointerInside=true;
+
+  if(myPan){
+    const dx=(point.x-myPan.x)/myWidth*myViewHeight*(myWidth/myHeight);
+    const dy=(point.y-myPan.y)/myHeight*myViewHeight;
+    myCenterX=myPan.cx-dx;
+    myCenterY=myPan.cy-dy;
+    myPan.x=point.x;
+    myPan.y=point.y;
+    myPan.cx=myCenterX;
+    myPan.cy=myCenterY;
+    myQueueRender();
+  }else{
+    // Pointer motion redraws only the overlay, never the fractal.
+    myDrawScene();
+  }
 };
 
-myCanvas.onmouseenter=function(myEvent){
-    const myPoint=myGetPointer(myEvent);
-    myPointerX=myPoint.x;
-    myPointerY=myPoint.y;
-    myPointerInside=true;
-    myRenderFractal();
+myCanvas.onmouseenter=function(event){
+  const point=myGetPointer(event);
+  myPointerX=point.x;
+  myPointerY=point.y;
+  myPointerInside=true;
+  myDrawScene();
 };
 
 myCanvas.onmouseleave=function(){
-    myPointerInside=false;
-    myRenderFractal();
+  myPointerInside=false;
+  myDrawScene();
 };
 
-myCanvas.onwheel=function(myEvent){
-    myEvent.preventDefault();
+myCanvas.onwheel=function(event){
+  event.preventDefault();
+
+  const point=myGetPointer(event);
+  myPointerX=point.x;
+  myPointerY=point.y;
+  myPointerInside=true;
+
+  // Wheel zooms towards the cursor; Shift+wheel adjusts the click-preview size.
+  if(event.shiftKey){
     myPreviewScale=Math.max(0.06,Math.min(0.95,
-        myPreviewScale*(myEvent.deltaY<0?0.88:1.14)));
-    myRenderFractal();
+      myPreviewScale*(event.deltaY<0?0.9:1.1)));
+    myDrawScene();
+    myHud.textContent="REGION "+Math.round(myPreviewScale*100)+"% | CLICK TO ZOOM";
+  }else{
+    myZoomAt(point.x,point.y,event.deltaY<0?0.8:1.25);
+  }
 };
 
-myCanvas.onclick=function(myEvent){
-    const myPoint=myGetPointer(myEvent);
-    const myTarget=myScreenToComplex(myPoint.x,myPoint.y);
-    myCenterX=myTarget.x;
-    myCenterY=myTarget.y;
-    myViewHeight=Math.max(1e-12,myViewHeight*myPreviewScale);
-    myRenderFractal();
+myCanvas.onclick=function(event){
+  if(myPan)return;
+  const point=myGetPointer(event);
+  myPointerX=point.x;
+  myPointerY=point.y;
+  myZoomAt(point.x,point.y,myPreviewScale);
 };
 
-myHint.onclick=function(){
-    myModalBackdrop.style.display="flex";
+myCanvas.onmousedown=function(event){
+  if(event.button===1){
+    event.preventDefault();
+    const point=myGetPointer(event);
+    myPan={
+      x:point.x,y:point.y,
+      cx:myCenterX,cy:myCenterY
+    };
+  }
 };
 
-myHint.onkeydown=function(myEvent){
-    if(myEvent.key==="Enter"||myEvent.key===" "){
-        myEvent.preventDefault();
-        myModalBackdrop.style.display="flex";
-    }
+window.onmouseup=function(){
+  myPan=null;
 };
 
-myClose.onclick=function(){
-    myModalBackdrop.style.display="none";
-    myRenderFractal();
+myCanvas.onauxclick=function(event){
+  if(event.button===1)event.preventDefault();
 };
 
-myModalBackdrop.onclick=function(myEvent){
-    if(myEvent.target===myModalBackdrop){
-        myModalBackdrop.style.display="none";
-        myRenderFractal();
-    }
+myCanvas.oncontextmenu=function(event){
+  event.preventDefault();
 };
 
 myReset.onclick=function(){
-    myCenterX=-0.5;
-    myCenterY=0;
-    myViewHeight=3.2;
-    myPreviewScale=0.5;
-    myRenderFractal();
+  myCenterX=-0.5;
+  myCenterY=0;
+  myViewHeight=3.2;
+  myPreviewScale=0.5;
+  myQueueRender();
 };
 
-window.onkeydown=function(myEvent){
-    if(myEvent.key==="Escape"){
-        myModalBackdrop.style.display="none";
-        myRenderFractal();
-    }
+myHint.onclick=function(){
+  myBackdrop.style.display="flex";
+};
+
+myHint.onkeydown=function(event){
+  if(event.key==="Enter"||event.key===" "){
+    event.preventDefault();
+    myBackdrop.style.display="flex";
+  }
+};
+
+myClose.onclick=function(){
+  myBackdrop.style.display="none";
+  myDrawScene();
+};
+
+myBackdrop.onclick=function(event){
+  if(event.target===myBackdrop){
+    myBackdrop.style.display="none";
+    myDrawScene();
+  }
+};
+
+window.onkeydown=function(event){
+  if(event.key==="Escape"){
+    myBackdrop.style.display="none";
+    myDrawScene();
+  }
 };
 
 window.onresize=myResizeCanvas;
 
 async function myAnimateColors(){
-    while(true){
-        await new Promise(myResolve=>setTimeout(myResolve,120));
-        myColorPhase=(myColorPhase+0.012)%1;
-        // Refresh on a slower cadence to keep CPU usage manageable.
-        if(!myAnimationFrame){
-            myAnimationFrame=requestAnimationFrame(()=>{
-                myAnimationFrame=0;
-                myRenderFractal();
-            });
-        }
-    }
+  while(true){
+    await new Promise(resolve=>setTimeout(resolve,500));
+    myColorPhase=(myColorPhase+0.035)%1;
+    // Cycle colors slowly, without creating a render backlog.
+    if(!myRenderPending)myQueueRender();
+  }
 }
 
+myStartWorker();
 myResizeCanvas();
 myAnimateColors();
 </script>
