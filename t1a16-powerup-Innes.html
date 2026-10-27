@@ -1,59 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<script> 
-<!-- All functions go here -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-// STEP 1: Define a global object named `myHero`
-// Properties needed: name (string), power (number, starting at 100), comment (string)
-let myHero = {
-   name: 'Captain Code',
-   power: 100,
-   comment: 'Ready for training!'
-};
+<title>Stateful Hero Energy Tracker - Innes</title>
 
-// STEP 2: Write a function named `trainHero()` that reduces power and checks comments
-function trainHero(Usage){
-  let myHero.power = myHero.power - Usage
-   if (myHero.power < 70){
-      console.log('High Power')
-      let myHero.comment = 'High Power!'
-   }else if(myHero.power < 45 && myHero.power > 70){
-      console.log('Medium Power')
-      let myHero.comment = 'Medium Power'
-   }else if(myHero.power < 0 && myHero.power > 45){
-      console.log('Low power')
-      let myHero.comment = 'Low power'
-   }else if(myHero.power >= 0 || myHero.power < 100)
-      console.warn('Either over 100 power or less than 0 power')
-      alert('Either over 100 power or less than 0 power')
-      let myHero.power = 100
-      let myHero.comment = 'no cheating bruv'
-   
-}
+<style>
+    body {
+        margin: 0;
+        padding: 25px;
+        background: #101820;
+        color: #e6edf3;
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+    }
 
-</script>
+    .container {
+        max-width: 850px;
+        margin: auto;
+    }
+
+    h2 {
+        text-align: center;
+        color: #00e5ff;
+        background: #172630;
+        border: 2px solid #00e5ff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 0 15px #00e5ff22;
+    }
+
+    h3, h4 {
+        color: #00e5ff;
+    }
+
+    .panel {
+        background: #172630;
+        border: 1px solid #344955;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    fieldset {
+        background: #172630;
+        border: 1px solid #00bcd4;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 20px 0;
+    }
+
+    legend {
+        color: #00e5ff;
+        font-weight: bold;
+        padding: 0 8px;
+    }
+
+    code {
+        color: #7df9ff;
+        background: #0c141a;
+        padding: 2px 5px;
+        border-radius: 4px;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        max-width: 220px;
+        padding: 12px;
+        background: #0c141a;
+        color: white;
+        border: 1px solid #00bcd4;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+
+    input[type="button"], button {
+        padding: 12px 18px;
+        margin: 5px 5px 5px 0;
+        border: none;
+        border-radius: 6px;
+        background: #00bcd4;
+        color: #101820;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    input[type="button"]:hover, button:hover {
+        background: #7df9ff;
+        transform: translateY(-1px);
+    }
+
+    .secondary {
+        background: #344955;
+        color: white;
+    }
+
+    .secondary:hover {
+        background: #526875;
+    }
+
+    .power-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #00e5ff;
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .power-track {
+        height: 20px;
+        background: #0c141a;
+        border: 1px solid #344955;
+        border-radius: 20px;
+        overflow: hidden;
+        margin: 15px 0;
+    }
+
+    #myPowerBar {
+        width: 100%;
+        height: 100%;
+        background: #38e89b;
+        transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+    }
+
+    .stat {
+        background: #0c141a;
+        border: 1px solid #344955;
+        border-radius: 8px;
+        padding: 15px;
+        overflow-wrap: anywhere;
+    }
+
+    .stat-label {
+        color: #a4b6c3;
+        font-size: 0.85rem;
+    }
+
+    .stat-value {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    #myDiv01 {
+        padding: 15px;
+        background: #0c141a;
+        border-left: 4px solid #00e5ff;
+        border-radius: 5px;
+        margin-top: 15px;
+        overflow-wrap: anywhere;
+    }
+
+    #myHistory {
+        background: #0c141a;
+        color: #b8f7e2;
+        border: 1px solid #344955;
+        border-radius: 6px;
+        padding: 12px;
+        max-height: 180px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-family: monospace;
+    }
+
+    .note {
+        color: #a4b6c3;
+    }
+
+    footer {
+        text-align: center;
+        color: #8296a5;
+        margin-top: 30px;
+    }
+
+    @media (max-width: 500px) {
+        body {
+            padding: 12px;
+        }
+
+        .panel {
+            padding: 15px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            transition: none !important;
+        }
+    }
+</style>
 </head>
 
-<h2 align=center>Stateful Hero Energy Tracker</h2>, Date___________________, Assignment Title: Stateful Object Assignment <br><br> 
+<body>
+<div class="container">
 
-<!-- Problem Statement / Prompt for Students -->
-<fieldset style="background-color: #f0f4f8; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
-<legend><strong>Assignment Prompt:</strong></legend>
-1. Define a global object called <code>myHero</code> with properties: <code>name</code> ("Captain Code"), <code>power</code> (100), and <code>comment</code> ("Ready for training!").<br>
-2. Complete the <code>trainHero()</code> function above to subtract 10 from <code>myHero.power</code> every time the button is clicked.<br>
-3. Add <code>if / else if / else</code> conditions in <code>trainHero()</code> to update <code>myHero.comment</code> based on remaining power levels (e.g., High, Medium, Low power comments).<br>
-4. When <code>myHero.power</code> reaches 0 or below, trigger a browser <code>alert()</code>, update the comment, and reset power back to 100.<br>
-5. Complete the <code>onclick</code> code below to invoke <code>trainHero()</code> and display the updated object data inside <code>myDiv01</code>.
+<h2>Stateful Hero Energy Tracker</h2>
+
+<p>
+    <strong>Date:</strong> ___________________
+    &nbsp; | &nbsp;
+    <strong>Assignment:</strong> Stateful Object Assignment
+</p>
+
+<fieldset>
+    <legend>Assignment Prompt</legend>
+
+    1. Define a global object called <code>myHero</code> with properties:
+    <code>name</code> ("Captain Code"), <code>power</code> (100), and
+    <code>comment</code> ("Ready for training!").<br>
+
+    2. Complete <code>trainHero()</code> to subtract power every time
+    the training button is clicked.<br>
+
+    3. Use <code>if / else if / else</code> conditions to update
+    <code>myHero.comment</code> according to the remaining power.<br>
+
+    4. When power reaches 0 or below, trigger an <code>alert()</code>,
+    update the comment, and reset power to 100.<br>
+
+    5. Use the button's <code>onclick</code> handler to call
+    <code>trainHero()</code> and display the updated object inside
+    <code>myDiv01</code>.
 </fieldset>
-<input type=number value=10 id="myNumber01">
-<br><br>
-<input type=button value="Train Hero (-10 Power)" onclick="{
-   trainHero(parseInt(document.getElementById('myNumber01').value))
-   
-   
-   document.getElementById('myDiv01').innerHTML = 'Hero: ' + myHero.name + '<br>'
-   document.getElementById('myDiv01').innerHTML = 'Remaining Power is: ' + myHero.power + '<br>'
-   document.getElementById('myDiv01').innerHTML = 'Coach Comment: ' + myHero.comment + '<br>'
-   console.log('Hero: ' + myHero.name + '\n' + 'Remaining Power is: ' + myHero.power + '\n' + 'Coach Comment: ' + myHero.comment);
-}"><br><br>
 
-<div id="myDiv01">Click the button above to begin training! Initial Power: 100</div>
+<div class="panel">
+    <h3>Hero Status</h3>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-label">Hero Name</div>
+            <div class="stat-value" id="myHeroName">Captain Code</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Power Level</div>
+            <div class="stat-value" id="myPowerLabel">100 / 100</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Power Classification</div>
+            <div class="stat-value" id="myPowerLevel">High Power</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Training Sessions</div>
+            <div class="stat-value" id="myTrainingCount">0</div>
+        </div>
+    </div>
+
+    <div class="power-number" id="myPowerNumber">100%</div>
+
+    <div class="power-track">
+        <div id="myPowerBar"></div>
+    </div>
+
+    <p class="note">Power remaining</p>
+</div>
+
+<div class="panel">
+    <h3>Training Controls</h3>
+
+    <label for="myNumber01">
+        Power used per training session:
+    </label>
+    <br><br>
+
+    <input type="number"
+           value="10"
+           min="1"
+           max="100"
+           step="1"
+           id="myNumber01">
+
+    <br><br>
+
+    <input type="button"
+           value="Train Hero"
+           onclick="trainHeroFromButton()">
+
+    <button class="secondary" onclick="resetHero()">
+        Reset Hero
+    </button>
+
+    <div id="myDiv01" aria-live="polite">
+        Click the training button to begin!
+        Initial Power: 100
+    </div>
+</div>
+
+<div class="panel">
+    <h3>Training History</h3>
+
+    <p class="note">
+        Each training session is recorded below.
+    </p>
+
+    <pre id="myHistory">Training history:
+Captain Code is ready for training!</pre>
+
+    <button class="secondary" onclick="clearHistory()">
+        Clear History
+    </button>
+</div>
+
+<div class="panel">
+    <h3>Power Level Guide</h3>
+
+    <ul>
+        <li><strong>High Power:</strong> 70–100 power.</li>
+        <li><strong>Medium Power:</strong> 45–69 power.</li>
+        <li><strong>Low Power:</strong> 1–44 power.</li>
+        <li><strong>Exhausted:</strong> 0 or less; power resets to 100.</li>
+    </ul>
+
+    <p class="note">
+        These classifications are based on the hero's current power
+        after training.
+    </p>
+</div>
+
+<footer>
+    Stateful Hero Energy Tracker | WebDev Project
+</footer>
+
+</div>
+
+<script>
+// STEP 1: Define the global hero object.
+
+let myHero = {
+    name: 'Captain Code',
+    power: 100,
+    comment: 'Ready for training!'
+};
+
+// Additional state for the interface.
+let myTrainingSessions = 0;
+let myHistoryEntries = 0;
+
+// STEP 2: Train the hero and update the object's state.
+
+function trainHero(Usage) {
+
+    if (!Number.isFinite(Usage) || Usage <= 0) {
+        myHero.comment = 'Please enter a valid power usage amount.';
+        myUpdateDisplay();
+
+        return;
+    }
+
+    myTrainingSessions++;
+
+    myHero.power -= Usage;
+
+    // STEP 3: Classify the hero's remaining power.
+
+    if (myHero.power <= 0) {
+
+        myHero.comment = 'Exhausted! Power restored to 100.';
+
+        myWriteHistory(
+            'Power depleted! Hero has been restored to full power.'
+        );
+
+        alert(
+            myHero.name +
+            ' has run out of power! Power is resetting to 100.'
+        );
+
+        myHero.power = 100;
+
+    } else if (myHero.power >= 70) {
+
+        myHero.comment = 'High Power! Keep going!';
+
+    } else if (myHero.power >= 45) {
+
+        myHero.comment = 'Medium Power. Stay focused!';
+
+    } else {
+
+        myHero.comment = 'Low Power! Be careful!';
+
+    }
+
+    myWriteHistory(
+        'Training #' + myTrainingSessions +
+        ' | Used: ' + Usage +
+        ' | Remaining: ' + myHero.power +
+        ' | ' + myHero.comment
+    );
+
+    myUpdateDisplay();
+}
+
+// STEP 4: Read the input and call trainHero().
+
+function trainHeroFromButton() {
+
+    const myInput = document.getElementById('myNumber01');
+    const myUsage = Number(myInput.value);
+
+    if (myInput.value.trim() === '' ||
+        !Number.isInteger(myUsage) ||
+        myUsage < 1 ||
+        myUsage > 100) {
+
+        myHero.comment =
+            'Enter a whole number between 1 and 100.';
+
+        myUpdateDisplay();
+
+        return;
+    }
+
+    trainHero(myUsage);
+}
+
+// STEP 5: Update all displayed hero information.
+
+function myUpdateDisplay() {
+
+    document.getElementById('myHeroName').textContent =
+        myHero.name;
+
+    document.getElementById('myPowerLabel').textContent =
+        myHero.power + ' / 100';
+
+    document.getElementById('myPowerNumber').textContent =
+        myHero.power + '%';
+
+    document.getElementById('myTrainingCount').textContent =
+        myTrainingSessions;
+
+    let myClassification;
+
+    if (myHero.power >= 70) {
+        myClassification = 'High Power';
+    } else if (myHero.power >= 45) {
+        myClassification = 'Medium Power';
+    } else {
+        myClassification = 'Low Power';
+    }
+
+    document.getElementById('myPowerLevel').textContent =
+        myClassification;
+
+    const myPowerBar = document.getElementById('myPowerBar');
+
+    myPowerBar.style.width = myHero.power + '%';
+
+    if (myHero.power >= 70) {
+        myPowerBar.style.background = '#38e89b';
+    } else if (myHero.power >= 45) {
+        myPowerBar.style.background = '#ffcf5c';
+    } else {
+        myPowerBar.style.background = '#ff4658';
+    }
+
+    document.getElementById('myDiv01').innerHTML =
+        '<strong>Hero:</strong> ' + myHero.name + '<br>' +
+        '<strong>Remaining Power:</strong> ' + myHero.power + '<br>' +
+        '<strong>Coach Comment:</strong> ' + myHero.comment;
+
+    console.log(
+        'Hero: ' + myHero.name + '\n' +
+        'Remaining Power: ' + myHero.power + '\n' +
+        'Coach Comment: ' + myHero.comment
+    );
+}
+
+// Reset the hero to its initial state.
+
+function resetHero() {
+
+    myHero.power = 100;
+    myHero.comment = 'Ready for training!';
+
+    myTrainingSessions = 0;
+
+    myUpdateDisplay();
+
+    myWriteHistory('Hero reset to initial state.');
+}
+
+// Record training events.
+
+function myWriteHistory(myText) {
+
+    const myHistory = document.getElementById('myHistory');
+
+    myHistory.textContent += '\n' + myText;
+
+    myHistoryEntries++;
+
+    // Prevent the history from growing indefinitely.
+    if (myHistory.textContent.length > 12000) {
+        myHistory.textContent =
+            myHistory.textContent.slice(-9000);
+    }
+
+    myHistory.scrollTop = myHistory.scrollHeight;
+}
+
+// Clear the visible history.
+
+function clearHistory() {
+
+    document.getElementById('myHistory').textContent =
+        'Training history cleared.';
+}
+
+// Initialize the interface.
+
+myUpdateDisplay();
+</script>
+
+</body>
+</html>
