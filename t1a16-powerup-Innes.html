@@ -11,22 +11,29 @@ let myHero = {
 };
 
 // STEP 2: Write a function named `trainHero()` that reduces power and checks comments
-function trainHero(){
-   // Write your code here:
-   // - Subtract 10 from myHero.power
-   // - Use if / else if / else statements to change myHero.comment based on myHero.power
-   // - If myHero.power <= 0:
-   //     1. Show an alert() warning the user
-   //     2. Set myHero.comment to a faint/reset message
-   //     3. Reset myHero.power back to 100
+function trainHero(Usage){
+  let myHero.power = myHero.power - Usage
+   if (myHero.power < 70){
+      console.log('High Power')
+      let myHero.comment = 'High Power!'
+   }else if(myHero.power < 45 && myHero.power > 70){
+      console.log('Medium Power')
+      let myHero.comment = 'Medium Power'
+   }else if(myHero.power < 0 && myHero.power > 45){
+      console.log('Low power')
+      let myHero.comment = 'Low power'
+   }else if(myHero.power >= 0 || myHero.power < 100)
+      console.warn('Either over 100 power or less than 0 power')
+      alert('Either over 100 power or less than 0 power')
+      let myHero.power = 100
+      let myHero.comment = 'no cheating bruv'
    
 }
 
 </script>
 </head>
 
-<h2 align=center>Stateful Hero Energy Tracker</h2>
-Student Name___________________, Date___________________, Assignment Title: Stateful Object Assignment <br><br> 
+<h2 align=center>Stateful Hero Energy Tracker</h2>, Date___________________, Assignment Title: Stateful Object Assignment <br><br> 
 
 <!-- Problem Statement / Prompt for Students -->
 <fieldset style="background-color: #f0f4f8; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
@@ -37,16 +44,16 @@ Student Name___________________, Date___________________, Assignment Title: Stat
 4. When <code>myHero.power</code> reaches 0 or below, trigger a browser <code>alert()</code>, update the comment, and reset power back to 100.<br>
 5. Complete the <code>onclick</code> code below to invoke <code>trainHero()</code> and display the updated object data inside <code>myDiv01</code>.
 </fieldset>
-
+<input type=number value=10 id="myNumber01">
+<br><br>
 <input type=button value="Train Hero (-10 Power)" onclick="{
-   // STEP 3: Call your trainHero() function here
+   trainHero(parseInt(document.getElementById('myNumber01').value))
    
    
-
-
-   // STEP 4: Output the updated hero object details into myDiv01
-   // (Display Hero Name, Remaining Power, and Coach's Comment)
-   document.getElementById('myDiv01').innerHTML = 'The Input was ' + myHero.power
+   document.getElementById('myDiv01').innerHTML = 'Hero: ' + myHero.name + '<br>'
+   document.getElementById('myDiv01').innerHTML = 'Remaining Power is: ' + myHero.power + '<br>'
+   document.getElementById('myDiv01').innerHTML = 'Coach Comment: ' + myHero.comment + '<br>'
+   console.log('Hero: ' + myHero.name + '\n' + 'Remaining Power is: ' + myHero.power + '\n' + 'Coach Comment: ' + myHero.comment);
 }"><br><br>
 
 <div id="myDiv01">Click the button above to begin training! Initial Power: 100</div>
