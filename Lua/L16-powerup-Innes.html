@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>L-16 - Stateful Hero Energy Tracker</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #11131c;
+            color: #edf0ff;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            color: #a995ff;
+        }
+
+        h3 {
+            color: #c4b7ff;
+        }
+
+        fieldset,
+        .panel {
+            background: #1c2130;
+            border: 1px solid #424b69;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 18px;
+        }
+
+        legend {
+            color: #c4b7ff;
+            padding: 0 8px;
+        }
+
+        input,
+        button {
+            padding: 11px;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        input[type="number"] {
+            width: 140px;
+            background: #10131c;
+            border: 1px solid #505b7d;
+            color: white;
+        }
+
+        button {
+            border: none;
+            background: #7962dc;
+            color: white;
+            cursor: pointer;
+            margin: 6px 4px 6px 0;
+        }
+
+        button:hover {
+            background: #9582f3;
+        }
+
+        button.secondary {
+            background: #35415d;
+        }
+
+        button.danger {
+            background: #923e5c;
+        }
+
+        #myDiv01 {
+            line-height: 1.9;
+            background: #090b11;
+            border-radius: 8px;
+            padding: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        #output {
+            min-height: 140px;
+            max-height: 350px;
+            overflow: auto;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            background: #090b11;
+            color: #9fffc2;
+            border: 1px solid #30374b;
+            padding: 14px;
+            border-radius: 8px;
+            font: 14px/1.7 monospace;
+        }
+
+        #powerTrack {
+            width: 100%;
+            height: 18px;
+            background: #090b11;
+            border: 1px solid #505b7d;
+            border-radius: 9px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        #powerBar {
+            height: 100%;
+            width: 100%;
+            background: #69e59a;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+
+        .small {
+            color: #aab2cc;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Stateful Hero Energy Tracker</h2>
+
+    <p>
+        Date: ____________________
+        <br>
+        Assignment Title: Stateful Object Assignment
+    </p>
+
+    <fieldset>
+        <legend><strong>Assignment Prompt</strong></legend>
+
+        1. Define a global object named <code>myHero</code> with
+        <code>name</code>, <code>power</code>, and <code>comment</code>.<br>
+
+        2. Subtract the selected amount of power whenever the hero trains.<br>
+
+        3. Use conditional statements to update the coach's comment.<br>
+
+        4. When power reaches zero or below, display an alert and reset
+        power to 100.<br>
+
+        5. Display the updated hero information after every action.
+    </fieldset>
+
+    <div class="panel">
+        <h3>Hero Status</h3>
+
+        <div id="myDiv01">
+            Initializing Captain Code...
+        </div>
+
+        <div id="powerTrack">
+            <div id="powerBar"></div>
+        </div>
+
+        <p id="powerLabel">Power: 100 / 100</p>
+    </div>
+
+    <div class="panel">
+        <h3>Training Controls</h3>
+
+        <label for="myNumber01">
+            Power used per training session:
+        </label>
+
+        <br><br>
+
+        <input
+            type="number"
+            id="myNumber01"
+            value="10"
+            min="1"
+            max="100"
+            step="1"
+        >
+
+        <br><br>
+
+        <button id="trainButton">
+            Train Hero
+        </button>
+
+        <button id="statusButton" class="secondary">
+            Show Hero Status
+        </button>
+
+        <button id="resetButton" class="danger">
+            Reset Hero
+        </button>
+
+        <p class="small">
+            High Power: 70–100<br>
+            Medium Power: 40–69<br>
+            Low Power: 1–39<br>
+            Exhausted: 0 or below
+        </p>
+    </div>
+
+    <div class="panel">
+        <h3>Luau Console</h3>
+        <pre id="output">Loading Luau runtime...</pre>
+    </div>
+
+    <script type="module">
+        import { runLuau } from "./LuauRuntime.js";
+
+        const output = document.getElementById("output");
+        const heroDisplay = document.getElementById("myDiv01");
+        const powerBar = document.getElementById("powerBar");
+        const powerLabel = document.getElementById("powerLabel");
+
+        // JavaScript bridge:
+        // Luau calls this function to update the HTML interface.
+        function updateHeroDisplay(name, power, comment) {
+            const safeName = document.createElement("span");
+            safeName.textContent = name;
+
+            const safeComment = document.createElement("span");
+            safeComment.textContent = comment;
+
+            heroDisplay.replaceChildren();
+
+            function addLine(label, value) {
+                const line = document.createElement("div");
+                const strong = document.createElement("strong");
+
+                strong.textContent = label + ": ";
+                line.append(strong, value);
+                heroDisplay.appendChild(line);
+            }
+
+            addLine("Hero", safeName);
+            addLine("Remaining Power", document.createTextNode(power));
+            addLine("Coach Comment", safeComment);
+
+            const displayedPower = Math.max(0, Math.min(100, power));
+
+            powerBar.style.width = displayedPower + "%";
+
+            if (displayedPower >= 70) {
+                powerBar.style.background = "#69e59a";
+            } else if (displayedPower >= 40) {
+                powerBar.style.background = "#e5cf69";
+            } else {
+                powerBar.style.background = "#ed6a79";
+            }
+
+            powerLabel.textContent = "Power: " + power + " / 100";
+        }
+
+        // Register the browser bridges before running the Luau code.
+        const bridge = {
+            updateHeroDisplay,
+
+            showPowerAlert(message) {
+                window.alert(message);
+            }
+        };
+
+        // All hero state and training logic live in Luau.
+        const initializationCode = `
+-- L-16: Stateful Hero Energy Tracker
+
+myHero = {
+    name = "Captain Code",
+    power = 100,
+    comment = "Ready for training!"
+}
+
+function displayHero()
+    print("Hero: " .. myHero.name)
+    print("Remaining Power: " .. myHero.power)
+    print("Coach Comment: " .. myHero.comment)
+
+    updateHeroDisplay(
+        myHero.name,
+        myHero.power,
+        myHero.comment
+    )
+end
+
+function trainHero(usage)
+    if type(usage) ~= "number"
+        or usage ~= usage
+        or usage < 1
+        or usage > 100
+        or usage % 1 ~= 0 then
+
+        print("Invalid training amount!")
+        return
+    end
+
+    myHero.power = myHero.power - usage
+
+    if myHero.power <= 0 then
+        myHero.comment = "Exhausted! Power restored to 100."
+
+        print("WARNING: " .. myHero.name .. " ran out of power!")
+
+        -- Notify the browser through a registered bridge.
+        showPowerAlert(
+            myHero.name ..
+            " ran out of power! Power has been restored to 100."
+        )
+
+        myHero.power = 100
+
+    elseif myHero.power >= 70 then
+        myHero.comment = "High Power! Keep going!"
+
+    elseif myHero.power >= 40 then
+        myHero.comment = "Medium Power. You're doing well."
+
+    else
+        myHero.comment = "Low Power! Consider resting."
+    end
+
+    print("Training complete!")
+    displayHero()
+end
+
+function resetHero()
+    myHero.name = "Captain Code"
+    myHero.power = 100
+    myHero.comment = "Ready for training!"
+
+    print("Hero reset!")
+    displayHero()
+end
+
+print("Hero initialized!")
+displayHero()
+`;
+
+        // Keep the bridge available for every Luau execution.
+        async function executeLuau(code) {
+            return await runLuau(code, output, bridge);
+        }
+
+        // Initialize the hero.
+        await executeLuau(initializationCode);
+
+        // Train button.
+        document.getElementById("trainButton").addEventListener(
+            "click",
+            async () => {
+                const input = document.getElementById("myNumber01");
+                const rawValue = input.value;
+                const amount = Number(rawValue);
+
+                if (
+                    rawValue.trim() === "" ||
+                    !Number.isInteger(amount) ||
+                    amount < 1 ||
+                    amount > 100
+                ) {
+                    output.textContent =
+                        "Invalid amount! Enter a whole number from 1 to 100.";
+                    return;
+                }
+
+                await executeLuau(`
+trainHero(${amount})
+`);
+            }
+        );
+
+        // Display the current state.
+        document.getElementById("statusButton").addEventListener(
+            "click",
+            async () => {
+                await executeLuau(`
+displayHero()
+`);
+            }
+        );
+
+        // Reset the existing hero without losing the shared Luau state.
+        document.getElementById("resetButton").addEventListener(
+            "click",
+            async () => {
+                await executeLuau(`
+resetHero()
+`);
+            }
+        );
+    </script>
+
+</body>
+</html>
