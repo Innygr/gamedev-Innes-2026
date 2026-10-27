@@ -1,0 +1,52 @@
+<head>
+<script> 
+<!-- All functions go here -->
+
+// STEP 1: Define a global object named `myHero`
+// Properties needed: name (string), power (number, starting at 100), comment (string)
+let myHero = {
+   name: 'Captain Code',
+   power: 100,
+   comment: 'Ready for training!'
+};
+
+// STEP 2: Write a function named `trainHero()` that reduces power and checks comments
+function trainHero(){
+   // Write your code here:
+   // - Subtract 10 from myHero.power
+   // - Use if / else if / else statements to change myHero.comment based on myHero.power
+   // - If myHero.power <= 0:
+   //     1. Show an alert() warning the user
+   //     2. Set myHero.comment to a faint/reset message
+   //     3. Reset myHero.power back to 100
+   
+}
+
+</script>
+</head>
+
+<h2 align=center>Stateful Hero Energy Tracker</h2>
+Student Name___________________, Date___________________, Assignment Title: Stateful Object Assignment <br><br> 
+
+<!-- Problem Statement / Prompt for Students -->
+<fieldset style="background-color: #f0f4f8; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+<legend><strong>Assignment Prompt:</strong></legend>
+1. Define a global object called <code>myHero</code> with properties: <code>name</code> ("Captain Code"), <code>power</code> (100), and <code>comment</code> ("Ready for training!").<br>
+2. Complete the <code>trainHero()</code> function above to subtract 10 from <code>myHero.power</code> every time the button is clicked.<br>
+3. Add <code>if / else if / else</code> conditions in <code>trainHero()</code> to update <code>myHero.comment</code> based on remaining power levels (e.g., High, Medium, Low power comments).<br>
+4. When <code>myHero.power</code> reaches 0 or below, trigger a browser <code>alert()</code>, update the comment, and reset power back to 100.<br>
+5. Complete the <code>onclick</code> code below to invoke <code>trainHero()</code> and display the updated object data inside <code>myDiv01</code>.
+</fieldset>
+
+<input type=button value="Train Hero (-10 Power)" onclick="{
+   // STEP 3: Call your trainHero() function here
+   
+   
+
+
+   // STEP 4: Output the updated hero object details into myDiv01
+   // (Display Hero Name, Remaining Power, and Coach's Comment)
+   document.getElementById('myDiv01').innerHTML = 'The Input was ' + myHero.power
+}"><br><br>
+
+<div id="myDiv01">Click the button above to begin training! Initial Power: 100</div>
