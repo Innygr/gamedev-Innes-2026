@@ -1,123 +1,138 @@
-<h2 align=center>t1a10 events by Innes.html</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t1a10 - Events | Innes</title>
+  <style>
+    :root { color-scheme:dark; --panel:#111c2e; --cyan:#53f4ff; --purple:#a78bfa; --text:#e8f4ff; --muted:#a7bad0; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:32px 18px; font:16px/1.6 system-ui,sans-serif; color:var(--text); background:radial-gradient(ellipse at top,#172b49 0,#080d18 65%); }
+    main { max-width:950px; margin:auto; }
+    header,.card { border:1px solid #29415d; border-radius:18px; background:rgba(17,28,46,.94); padding:24px; margin-bottom:20px; box-shadow:0 12px 36px #0005; }
+    h1 { color:var(--cyan); margin-top:0; } h2 { color:var(--purple); margin-top:0; }
+    a { color:var(--cyan); } .muted { color:var(--muted); }
+    label { display:block; margin:12px 0 6px; font-weight:650; }
+    input,select,button { font:inherit; padding:10px 12px; border-radius:9px; }
+    input,select { width:100%; max-width:350px; color:var(--text); background:#091321; border:1px solid #45617d; }
+    button { cursor:pointer; border:1px solid var(--cyan); background:var(--cyan); color:#06111c; font-weight:750; margin:5px 8px 5px 0; }
+    button.secondary { background:transparent; color:var(--cyan); }
+    button:hover { filter:brightness(1.12); }
+    .event-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; }
+    .event-demo { padding:16px; border:1px solid #29415d; border-radius:12px; background:#091321; }
+    .event-demo h3 { margin-top:0; color:var(--cyan); font-size:1rem; }
+    .output { min-height:65px; padding:16px; border:1px solid #45617d; border-radius:10px; background:#07111e; overflow-wrap:anywhere; }
+    #hoverText { display:inline-block; padding:8px; border-radius:6px; background:#172b49; }
+    #moveArea { height:80px; display:flex; align-items:center; justify-content:center; border:1px dashed var(--cyan); border-radius:8px; touch-action:pan-y; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="muted">GAME DEV 2026 · JAVASCRIPT FUNDAMENTALS</p>
+    <h1>t1a10 — Events by Innes</h1>
+    <p>HTML events are signals that happen when a visitor interacts with a page. JavaScript can respond to clicks, mouse movement, focus, keyboard input, and changes to form controls.</p>
+    <p><a href="https://way2tutorial.com/html/html5_events_handler_list.php" target="_blank" rel="noopener noreferrer">Reference: HTML event handlers</a></p>
+  </header>
 
-<a href="https://way2tutorial.com/html/html5_events_handler_list.php">
-Good reference to HTML Events</a><br>
+  <section class="card">
+    <h2>Example: click to display input</h2>
+    <label for="myText01">Text to display</label>
+    <input type="text" id="myText01" value="3">
+    <button type="button" id="showText">Example onClick</button>
+    <div id="myDiv01" class="output" role="status" aria-live="polite">...</div>
+    <p id="hoverText">Hover over this bold text to change it.</p>
+    <p class="muted">Mouse over and mouse out events change the text above.</p>
+  </section>
 
-Events are HTML code that activates JS code<br><br>
+  <section class="card">
+    <h2>Try ten event examples</h2>
+    <p class="muted">Each interaction writes its result to the shared event output below.</p>
+    <div class="event-grid">
+      <div class="event-demo">
+        <h3>1. Double click</h3>
+        <button type="button" id="doubleClick">Double-click me</button>
+      </div>
+      <div class="event-demo">
+        <h3>2. Mouse down</h3>
+        <button type="button" id="mouseDown">Hold mouse button</button>
+      </div>
+      <div class="event-demo">
+        <h3>3. Mouse up</h3>
+        <button type="button" id="mouseUp">Release mouse button</button>
+      </div>
+      <div class="event-demo">
+        <h3>4. Mouse move</h3>
+        <div id="moveArea" tabindex="0">Move your mouse here</div>
+      </div>
+      <div class="event-demo">
+        <h3>5. Focus</h3>
+        <label for="focusInput">Click or tab into this field</label>
+        <input id="focusInput" type="text" placeholder="Focus here">
+      </div>
+      <div class="event-demo">
+        <h3>6. Blur</h3>
+        <label for="blurInput">Click here, then leave</label>
+        <input id="blurInput" type="text" placeholder="Blur when you leave">
+      </div>
+      <div class="event-demo">
+        <h3>7. Change</h3>
+        <label for="colourSelect">Choose a colour</label>
+        <select id="colourSelect">
+          <option value="Red">Red</option>
+          <option value="Blue">Blue</option>
+          <option value="Green">Green</option>
+        </select>
+      </div>
+      <div class="event-demo">
+        <h3>8. Key down</h3>
+        <label for="keyDownInput">Press a key</label>
+        <input id="keyDownInput" type="text" placeholder="Press a key">
+      </div>
+      <div class="event-demo">
+        <h3>9. Key up</h3>
+        <label for="keyUpInput">Release a key</label>
+        <input id="keyUpInput" type="text" placeholder="Release a key">
+      </div>
+      <div class="event-demo">
+        <h3>10. Input</h3>
+        <label for="liveInput">Type something</label>
+        <input id="liveInput" type="text" placeholder="Live input example">
+      </div>
+    </div>
+  </section>
 
-<input type=text id="myText01" value="3"><br>
+  <section class="card">
+    <h2>Event output</h2>
+    <div id="eventOutput" class="output" role="status" aria-live="polite">Events will appear here!</div>
+    <button type="button" class="secondary" id="clearOutput">Clear output</button>
+  </section>
+</main>
+<script>
+  const eventOutput = document.getElementById('eventOutput');
+  function showEvent(message) {
+    eventOutput.textContent = message;
+  }
 
-<input type=button value="Example onClick" onClick="{
-  document.getElementById('myDiv01').innerHTML =
-  document.getElementById('myText01').value
-}">
-<div id="myDiv01">...</div>
+  document.getElementById('showText').addEventListener('click', () => {
+    document.getElementById('myDiv01').textContent = document.getElementById('myText01').value;
+  });
 
-<b id="myB02"
-onMouseOut="{
-  document.getElementById('myB02').innerHTML = 'This is nice'
-}"
-onMouseOver="{
-  document.getElementById('myB02').innerHTML = 'This is cool'
-}">
-This is BOLD
-</b>
-<br><br>
+  const hoverText = document.getElementById('hoverText');
+  hoverText.addEventListener('mouseover', () => { hoverText.textContent = 'This is cool'; });
+  hoverText.addEventListener('mouseout', () => { hoverText.textContent = 'This is nice'; });
 
-<!-- 1. onDblClick -->
-<button ondblclick="{
-  document.getElementById('eventOutput').innerHTML = 'You double-clicked!'
-}">
-Double Click Me
-</button>
-
-<br><br>
-
-<!-- 2. onMouseDown -->
-<button onmousedown="{
-  document.getElementById('eventOutput').innerHTML = 'Mouse button is down!'
-}">
-Hold Mouse Button
-</button>
-
-<br><br>
-
-<!-- 3. onMouseUp -->
-<button onmouseup="{
-  document.getElementById('eventOutput').innerHTML = 'Mouse button released!'
-}">
-Release Mouse Button
-</button>
-
-<br><br>
-
-<!-- 4. onMouseMove -->
-<div
-style="width:200px;height:50px;border:1px solid black;"
-onmousemove="{
-  document.getElementById('eventOutput').innerHTML = 'Mouse is moving!'
-}">
-Move your mouse here
-</div>
-
-<br>
-
-<!-- 5. onFocus -->
-<input type="text"
-onfocus="{
-  document.getElementById('eventOutput').innerHTML = 'The text box is focused!'
-}"
-placeholder="Click here">
-
-<br><br>
-
-<!-- 6. onBlur -->
-<input type="text"
-onblur="{
-  document.getElementById('eventOutput').innerHTML = 'You left the text box!'
-}"
-placeholder="Click somewhere else">
-
-<br><br>
-
-<!-- 7. onChange -->
-<select onchange="{
-  document.getElementById('eventOutput').innerHTML =
-  'You selected: ' + this.value
-}">
-  <option value="Red">Red</option>
-  <option value="Blue">Blue</option>
-  <option value="Green">Green</option>
-</select>
-
-<br><br>
-
-<!-- 8. onKeyDown -->
-<input type="text"
-onkeydown="{
-  document.getElementById('eventOutput').innerHTML = 'A key was pressed down!'
-}"
-placeholder="Press a key">
-
-<br><br>
-
-<!-- 9. onKeyUp -->
-<input type="text"
-onkeyup="{
-  document.getElementById('eventOutput').innerHTML = 'A key was released!'
-}"
-placeholder="Release a key">
-
-<br><br>
-
-<!-- 10. onInput -->
-<input type="text"
-oninput="{
-  document.getElementById('eventOutput').innerHTML =
-  'You typed: ' + this.value
-}"
-placeholder="Type something">
-
-<br><br>
-
-<div id="eventOutput">Events will appear here!</div>
+  document.getElementById('doubleClick').addEventListener('dblclick', () => showEvent('You double-clicked!'));
+  document.getElementById('mouseDown').addEventListener('mousedown', () => showEvent('Mouse button is down!'));
+  document.getElementById('mouseUp').addEventListener('mouseup', () => showEvent('Mouse button released!'));
+  document.getElementById('moveArea').addEventListener('mousemove', () => showEvent('Mouse is moving!'));
+  document.getElementById('focusInput').addEventListener('focus', () => showEvent('The text box is focused!'));
+  document.getElementById('blurInput').addEventListener('blur', () => showEvent('You left the text box!'));
+  document.getElementById('colourSelect').addEventListener('change', event => showEvent('You selected: ' + event.target.value));
+  document.getElementById('keyDownInput').addEventListener('keydown', () => showEvent('A key was pressed down!'));
+  document.getElementById('keyUpInput').addEventListener('keyup', () => showEvent('A key was released!'));
+  document.getElementById('liveInput').addEventListener('input', event => showEvent('You typed: ' + event.target.value));
+  document.getElementById('clearOutput').addEventListener('click', () => showEvent('Events will appear here!'));
+</script>
+</body>
+</html>
