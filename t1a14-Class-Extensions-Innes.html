@@ -1,43 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t1a14 - Class Extensions | Innes</title>
+  <style>
+    :root { color-scheme:dark; --bg:#080d18; --panel:#111c2e; --cyan:#53f4ff; --purple:#a78bfa; --text:#e8f4ff; --muted:#a7bad0; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:32px 18px; font:16px/1.6 system-ui,sans-serif; color:var(--text); background:radial-gradient(ellipse at top,#172b49 0,#080d18 65%); }
+    main { max-width:900px; margin:auto; }
+    header,.card { border:1px solid #29415d; border-radius:18px; background:rgba(17,28,46,.94); padding:24px; margin-bottom:20px; box-shadow:0 12px 36px #0005; }
+    h1 { color:var(--cyan); margin-top:0; } h2 { color:var(--purple); margin-top:0; }
+    .muted { color:var(--muted); }
+    label { display:block; margin:12px 0 6px; font-weight:650; }
+    input { width:100%; max-width:360px; padding:10px 12px; border-radius:10px; border:1px solid #45617d; background:#091321; color:var(--text); font:inherit; }
+    button { font:inherit; font-weight:750; padding:11px 15px; border-radius:10px; border:1px solid var(--cyan); background:var(--cyan); color:#06111c; cursor:pointer; margin:12px 8px 0 0; }
+    button.secondary { background:transparent; color:var(--cyan); }
+    button:hover { filter:brightness(1.12); }
+    pre,#myDiv01 { white-space:pre-wrap; overflow-wrap:anywhere; background:#07111e; border:1px solid #29415d; border-radius:10px; padding:16px; }
+    code { color:#b8faff; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="muted">GAME DEV 2026 · OBJECT-ORIENTED JAVASCRIPT</p>
+    <h1>t1a14 — Class Extensions by Innes</h1>
+    <p>Inheritance lets a new class reuse properties and methods from an existing class. Here, <code>myCat</code> extends <code>myAnimal</code>.</p>
+  </header>
+  <section class="card">
+    <h2>Example class code</h2>
+    <pre>class myAnimal {
+  constructor(passName, passAge) {
+    this.myName = passName;
+    this.myAge = passAge;
+  }
+
+  myShow() {
+    // Display this animal's name and age
+  }
+}</pre>
+    <label for="myText01">Animal name</label>
+    <input type="text" id="myText01" value="Rex" maxlength="40">
+    <label for="myIn01">Animal age</label>
+    <input type="number" id="myIn01" value="4" min="0" max="200" step="1">
+    <br>
+    <button type="button" onclick="showAnimal()">Create and show animal</button>
+  </section>
+  <section class="card">
+    <h2>Example extending class code</h2>
+    <p class="muted">The cat inherits the name and age properties, then overrides <code>myShow()</code> with cat-specific output.</p>
+    <label for="myText02">Cat name</label>
+    <input type="text" id="myText02" value="Pixel" maxlength="40">
+    <label for="myIn02">Cat age</label>
+    <input type="number" id="myIn02" value="2" min="0" max="200" step="1">
+    <br>
+    <button type="button" onclick="showCat()">Create and show extended cat class</button>
+  </section>
+  <section class="card">
+    <h2>Output</h2>
+    <div id="myDiv01" role="status" aria-live="polite">Choose a class example above to see the result.</div>
+  </section>
+</main>
 <script>
   class myAnimal {
     constructor(passName, passAge) {
       this.myName = passName;
       this.myAge = passAge;
     }
-    myShow(){
-      document.getElementById('myDiv01').innerHTML = 'Hello ' + this.myName + '<br>'
+
+    myShow() {
+      document.getElementById('myDiv01').textContent =
+        'Animal: ' + this.myName + '\\nAge: ' + this.myAge;
     }
   }
-</script>
-<h2 align=center>t1a14-class-extend-innes.html</h2>
-Extending a pre-existing class<br>
-<input type=text id="myText01">
-<input type=number id="myIn01">
 
-<h4>Example working Class code</h4>
-
-<input type=button value="Example Class Set and Show Class Animal" onClick="{
-
-  let myNum01 = parseFloat(document.getElementById('myIn01').value)
-  let myDog = new myAnimal(myText01, myNum01)
-  myDog.myShow()
-
-  }">
-  <h4>Example extending Class code</h4>
-  Nothing: <input type=text id="myText02" value="Useless at the moment">
-<input type=number id="myIn02""><br>
-
-  <input type=button value="Example Extend Class Animal" onClick="{
-    let myNum02 = parseFloat(document.getElementById('myIn02').value)
-    class myCat extends myAnimal {
-
-    myShow(){
-      document.getElementById('myDiv01').innerHTML = this.myName + ' is a great cat<br>'
-                                                                                    }
+  class myCat extends myAnimal {
+    myShow() {
+      document.getElementById('myDiv01').textContent =
+        this.myName + ' is a great cat!\\nAge: ' + this.myAge +
+        '\\nThis object uses myCat, which extends myAnimal.';
     }
+  }
 
-    let myPet = new myCat('myText02', myNum02)
-    myPet.myShow()
-    }">
+  function readPet(nameId, ageId) {
+    const name = document.getElementById(nameId).value.trim();
+    const ageText = document.getElementById(ageId).value;
+    const age = Number(ageText);
+    if (!name) {
+      document.getElementById('myDiv01').textContent = 'Please enter a name first.';
+      return null;
+    }
+    if (ageText === '' || !Number.isInteger(age) || age < 0 || age > 200) {
+      document.getElementById('myDiv01').textContent = 'Please enter a whole-number age from 0 to 200.';
+      return null;
+    }
+    return { name, age };
+  }
 
-    <div id="myDiv01">...</div>
+  function showAnimal() {
+    const pet = readPet('myText01', 'myIn01');
+    if (!pet) return;
+    const myDog = new myAnimal(pet.name, pet.age);
+    myDog.myShow();
+  }
+
+  function showCat() {
+    const pet = readPet('myText02', 'myIn02');
+    if (!pet) return;
+    const myPet = new myCat(pet.name, pet.age);
+    myPet.myShow();
+  }
+</script>
+</body>
+</html>
