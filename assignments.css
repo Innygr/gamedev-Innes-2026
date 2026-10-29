@@ -1,0 +1,139 @@
+/* Shared visual system for all non-Lua GameDev assignments.
+   Assignment-specific CSS remains in each page for its unique demos. */
+:root {
+  color-scheme: dark;
+  --assignment-bg: #080d18;
+  --assignment-panel: #111c2e;
+  --assignment-panel-raised: #172b49;
+  --assignment-cyan: #53f4ff;
+  --assignment-purple: #a78bfa;
+  --assignment-text: #e8f4ff;
+  --assignment-muted: #a7bad0;
+  --assignment-border: #29415d;
+  --assignment-input: #091321;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--assignment-bg); }
+body.assignment-page {
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(18px, 4vw, 36px);
+  color: var(--assignment-text);
+  background: radial-gradient(ellipse at top, var(--assignment-panel-raised) 0, var(--assignment-bg) 68%);
+  font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+body.assignment-page:not(.assignment-immersive) > main,
+body.assignment-page:not(.assignment-immersive) > .container,
+body.assignment-page:not(.assignment-immersive) > #grad1 {
+  width: min(100%, 1000px);
+  margin-left: auto;
+  margin-right: auto;
+}
+body.assignment-page h1,
+body.assignment-page h2,
+body.assignment-page h3,
+body.assignment-page h4 {
+  line-height: 1.25;
+  color: var(--assignment-cyan);
+}
+body.assignment-page h2,
+body.assignment-page h4 { color: var(--assignment-purple); }
+body.assignment-page a { color: var(--assignment-cyan); text-underline-offset: 3px; }
+body.assignment-page a:hover { color: #fff; }
+body.assignment-page p { max-width: 90ch; }
+body.assignment-page img { max-width: 100%; height: auto; }
+body.assignment-page table {
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  color: var(--assignment-text);
+  background: rgba(9, 19, 33, .82);
+}
+body.assignment-page th,
+body.assignment-page td {
+  padding: .55rem .75rem;
+  border: 1px solid var(--assignment-border);
+  text-align: left;
+}
+body.assignment-page th { color: var(--assignment-cyan); background: var(--assignment-panel); }
+body.assignment-page button,
+body.assignment-page input[type="button"],
+body.assignment-page input[type="submit"],
+body.assignment-page input[type="reset"] {
+  max-width: 100%;
+  padding: .65rem 1rem;
+  margin: .3rem .35rem .3rem 0;
+  border: 1px solid var(--assignment-cyan);
+  border-radius: 9px;
+  color: #06111c;
+  background: var(--assignment-cyan);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease;
+}
+body.assignment-page button:hover,
+body.assignment-page input[type="button"]:hover,
+body.assignment-page input[type="submit"]:hover,
+body.assignment-page input[type="reset"]:hover {
+  background: #b8fbff;
+  border-color: #b8fbff;
+  transform: translateY(-1px);
+}
+body.assignment-page button.secondary,
+body.assignment-page .secondary {
+  color: var(--assignment-cyan);
+  background: transparent;
+}
+body.assignment-page input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]),
+body.assignment-page select,
+body.assignment-page textarea {
+  max-width: 100%;
+  padding: .65rem .75rem;
+  border: 1px solid #45617d;
+  border-radius: 8px;
+  color: var(--assignment-text);
+  background: var(--assignment-input);
+  font: inherit;
+}
+body.assignment-page label { color: var(--assignment-text); }
+body.assignment-page pre,
+body.assignment-page code {
+  overflow-wrap: anywhere;
+  color: #b8faff;
+}
+body.assignment-page pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+  border: 1px solid var(--assignment-border);
+  border-radius: 10px;
+  background: #07111e;
+}
+body.assignment-page fieldset,
+body.assignment-page .card,
+body.assignment-page .panel,
+body.assignment-page header {
+  border-color: var(--assignment-border);
+}
+body.assignment-page hr { border: 0; border-top: 1px solid var(--assignment-border); }
+body.assignment-page.assignment-immersive {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #03040a;
+  font-family: Consolas, "Courier New", monospace;
+}
+body.assignment-page.assignment-immersive > canvas {
+  max-width: none;
+}
+@media (max-width: 640px) {
+  body.assignment-page:not(.assignment-immersive) { padding: 16px 12px; }
+  body.assignment-page table { display: block; overflow-x: auto; }
+  body.assignment-page th,
+  body.assignment-page td { padding: .4rem .55rem; }
+  body.assignment-page:not(.assignment-immersive) > main,
+  body.assignment-page:not(.assignment-immersive) > .container { width: 100%; }
+}
