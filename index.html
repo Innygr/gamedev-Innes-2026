@@ -1922,7 +1922,7 @@
                 });
 
                 const text = document.createElement("span");
-                const match = item.text.match(/\\b(t1a(?:\\d{2}|x\\d+))\\b/i);
+                const match = item.text.match(/\b(t1a(?:\d{2}|x\d+))\b/i);
                 const assignmentKey = match ? match[1].toLowerCase() : null;
                 const assignmentHref = assignmentKey
                     ? checklistAssignmentLinks[assignmentKey]
