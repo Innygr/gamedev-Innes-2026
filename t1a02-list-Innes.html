@@ -1,15 +1,60 @@
-<head><link rel="stylesheet" href="whale.css"></head>
-<h1>t1a02-list-Innes</h1>
-
-<table border=1.25>
-
-<tr>
-<td><img src="myWhale.jpg"></td>
-<td><a href="https://uk.whales.org/whales-dolphins/species-guide/">Whales.org</td><br>
-</tr>
-<ul>
-<li>Killer Whale<img src="OrcaWhale.jpg"></li>
-<li>Beluga Whale<img src="BelugaWhale.jpg"></li>
-<li>Humpback Whale<img src="HumpbackWhale.jpg"></li>
-<li>Sperm Whale<img src="SpermWhale.jpg"></li>
-<li>Blue Whale<img src="BlueWhale.jpg"></li>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t1a02 - Lists | Innes</title>
+  <style>
+    :root { color-scheme: dark; --bg:#080d18; --panel:#111c2e; --cyan:#53f4ff; --purple:#a78bfa; --text:#e8f4ff; --muted:#a7bad0; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:32px 18px; font:16px/1.6 system-ui,sans-serif; color:var(--text); background:radial-gradient(ellipse at top,#172b49 0,#080d18 65%); }
+    main { max-width:1000px; margin:auto; }
+    header, section { border:1px solid #29415d; border-radius:18px; background:rgba(17,28,46,.92); padding:24px; margin-bottom:20px; box-shadow:0 12px 36px #0005; }
+    h1,h2 { margin-top:0; } h1 { color:var(--cyan); letter-spacing:.04em; } h2 { color:var(--purple); }
+    a { color:var(--cyan); } a:hover { color:white; }
+    .layout { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; align-items:start; }
+    .hero-image { display:block; width:100%; max-height:300px; object-fit:cover; border-radius:12px; border:1px solid #35516d; }
+    ul { padding-left:24px; } li { margin:9px 0; }
+    .nested { border-left:2px solid #53f4ff55; margin-top:8px; }
+    .species { display:flex; align-items:center; gap:12px; }
+    .species img { width:94px; height:66px; object-fit:cover; border-radius:8px; border:1px solid #35516d; }
+    .tag { color:var(--muted); font-size:.9rem; }
+    footer { text-align:center; color:var(--muted); padding:10px; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="tag">GAME DEV 2026 · HTML FUNDAMENTALS</p>
+    <h1>t1a02 — Lists by Innes</h1>
+    <p>This page demonstrates unordered lists and <strong>nested lists</strong> by organizing whale species into two groups.</p>
+  </header>
+  <div class="layout">
+    <section>
+      <h2>Whales</h2>
+      <img class="hero-image" src="myWhale.jpg" alt="Whale image">
+      <p>Learn more from <a href="https://uk.whales.org/whales-dolphins/species-guide/" target="_blank" rel="noopener noreferrer">Whales.org's species guide</a>.</p>
+    </section>
+    <section>
+      <h2>Whale species list</h2>
+      <ul>
+        <li>Toothed whales
+          <ul class="nested">
+            <li><div class="species"><img src="OrcaWhale.jpg" alt="Killer whale"><span><strong>Killer whale</strong><br><span class="tag">A highly social toothed whale</span></span></div></li>
+            <li><div class="species"><img src="BelugaWhale.jpg" alt="Beluga whale"><span><strong>Beluga whale</strong><br><span class="tag">Known for its pale colour</span></span></div></li>
+            <li><div class="species"><img src="SpermWhale.jpg" alt="Sperm whale"><span><strong>Sperm whale</strong><br><span class="tag">A deep-diving toothed whale</span></span></div></li>
+          </ul>
+        </li>
+        <li>Baleen whales
+          <ul class="nested">
+            <li><div class="species"><img src="HumpbackWhale.jpg" alt="Humpback whale"><span><strong>Humpback whale</strong><br><span class="tag">Famous for its songs</span></span></div></li>
+            <li><div class="species"><img src="BlueWhale.jpg" alt="Blue whale"><span><strong>Blue whale</strong><br><span class="tag">The largest animal known to have lived</span></span></div></li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+  </div>
+  <footer>t1a02 · Unordered lists + nested lists</footer>
+</main>
+</body>
+</html>
