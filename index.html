@@ -213,6 +213,16 @@
             cursor: pointer;
         }
 
+        .checklistAssignmentLink {
+            color: #00ffff;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .checklistAssignmentLink:hover {
+            color: #ffffff;
+        }
+
         .checkItem input:checked + span {
             text-decoration: line-through;
             opacity: 0.55;
@@ -1880,6 +1890,19 @@
             );
         }
 
+        // Only map checklist labels to assignment files that are part of this course.
+        const checklistAssignmentLinks = {
+            "t1a01": "t1a01-table-Innes.html",
+            "t1a02": "t1a02-list-Innes.html",
+            "t1a03": "t1a03-forms-Innes.html",
+            "t1a04": "t1a04-CSS-Innes.html",
+            "t1a05": "t1a05-inputoutput-Innes.html",
+            "t1a06": "t1a06-proper-and-variables-Innes.html",
+            "t1a07": "t1a07-decision-Innes.html",
+            "t1a08": "t1a08-loops-Innes.html",
+            "t1ax4": "t1ax4-crystal-Innes.html"
+        };
+
         function renderChecklist() {
             const container = document.getElementById("checklistItems");
             container.innerHTML = "";
@@ -1899,7 +1922,21 @@
                 });
 
                 const text = document.createElement("span");
-                text.textContent = item.text;
+                const match = item.text.match(/\\b(t1a(?:\\d{2}|x\\d+))\\b/i);
+                const assignmentKey = match ? match[1].toLowerCase() : null;
+                const assignmentHref = assignmentKey
+                    ? checklistAssignmentLinks[assignmentKey]
+                    : null;
+
+                if (assignmentHref) {
+                    const assignmentLink = document.createElement("a");
+                    assignmentLink.href = assignmentHref;
+                    assignmentLink.textContent = item.text;
+                    assignmentLink.className = "checklistAssignmentLink";
+                    text.appendChild(assignmentLink);
+                } else {
+                    text.textContent = item.text;
+                }
 
                 const remove = document.createElement("button");
                 remove.type = "button";
@@ -2882,7 +2919,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (lastFocusedElement) lastFocusedElement.focus();
     }
 
-    document.querySelectorAll('a.needs-upgrade').forEach(function (link) {
+    document.querySelectorAll('a.needs-upgrade:not([href="t1a07-decision-Innes.html"])').forEach(function (link) {
         link.addEventListener('click', function (event) {
             event.preventDefault();
             openUpgradeNotice();
