@@ -1,37 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t1a04 - CSS | Innes</title>
+  <style>
+    :root { color-scheme:dark; --panel:#111c2e; --cyan:#53f4ff; --purple:#a78bfa; --text:#e8f4ff; --muted:#a7bad0; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:32px 18px; font:16px/1.6 system-ui,sans-serif; color:var(--text); background:radial-gradient(ellipse at top,#172b49 0,#080d18 65%); }
+    main { max-width:950px; margin:auto; }
+    header,.card { border:1px solid #29415d; border-radius:18px; background:rgba(17,28,46,.94); padding:24px; margin-bottom:20px; box-shadow:0 12px 36px #0005; }
+    h1 { color:var(--cyan); margin-top:0; } h2 { color:var(--purple); margin-top:0; }
+    a { color:var(--cyan); } .muted { color:var(--muted); }
+    button { font:inherit; font-weight:700; padding:10px 14px; border-radius:9px; border:1px solid var(--cyan); background:var(--cyan); color:#06111c; cursor:pointer; margin:10px 8px 0 0; }
+    button.secondary { background:transparent; color:var(--cyan); }
+    pre,code { color:#b8faff; } pre { white-space:pre-wrap; overflow-wrap:anywhere; background:#07111e; border:1px solid #29415d; border-radius:10px; padding:15px; }
+    #myB1 { display:inline-block; padding:8px 10px; border-radius:6px; color:#00ff00; background:blue; }
+    #demoTextarea { display:block; width:min(100%,380px); min-height:110px; margin-top:12px; padding:12px; color:white; background:#0b1322 url('https://tse4.mm.bing.net/th/id/OIP.5xuk2jI0nHEd16hAPaRl4QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3') center/cover; border:1px solid #45617d; border-radius:10px; }
+    .images { display:flex; flex-wrap:wrap; align-items:center; gap:18px; }
+    .images img { max-width:100%; object-fit:cover; border:1px solid #45617d; border-radius:12px; }
+    .image-fallback { color:var(--muted); font-size:.9rem; }
+  </style>
+</head>
 <body>
-  Version 0.0.1<br>
-  <h1 style="color: blue; text-align: center;">t1a04: CSS; Innes</h1> <br><br>
+<main>
+  <header>
+    <p class="muted">GAME DEV 2026 · HTML & CSS FUNDAMENTALS</p>
+    <h1>t1a04 — CSS by Innes</h1>
+    <p>Cascading Style Sheets (CSS) control how HTML elements look. CSS is usually written in a stylesheet, but you can also add styles inside a page or directly on an HTML element.</p>
+    <p><a href="https://www.w3schools.com/cssref/index.php" target="_blank" rel="noopener noreferrer">Reference: W3Schools CSS reference</a></p>
+  </header>
 
-  Reference Link:
-  <a href="https://w3schools.com/cssref/default.asp">W3Schools</a>
-  
-  Cascading Style Sheets (CSS) is supposed to be done using a .css file containing all the commands for your website; but for minor things you can do it in your HTML document<br>
+  <section class="card">
+    <h2>1. CSS rule syntax</h2>
+    <p>A CSS rule selects an element and sets one or more properties. Each declaration uses a property, a colon, a value, and a semicolon.</p>
+    <pre>b {
+  color: #00ff00;
+}</pre>
+    <p class="muted">This rule makes text inside <code>&lt;b&gt;</code> elements green. The semicolon belongs after the value.</p>
+  </section>
 
-  Here is the typical way of doing it in document style
-  <pre>
-    b {
-      color: #00ff00:
-      }
-  </pre><br>
+  <section class="card">
+    <h2>2. Inline styles and JavaScript</h2>
+    <p>The first italic line uses the page's default styling. The second has an inline style that sets its text and background colours.</p>
+    <p><i>This is italic text.</i></p>
+    <p><i id="myB1">This is italic text with a different colour and background colour.</i></p>
+    <button type="button" id="changeStyle">Change colours</button>
+    <button type="button" class="secondary" id="resetStyle">Reset colours</button>
+    <pre>document.getElementById('myB1').style.color = 'red';
+document.getElementById('myB1').style.backgroundColor = 'yellow';</pre>
+    <p class="muted">JavaScript can change an element's inline style while the page is running. Inline styles usually override competing declarations from a stylesheet.</p>
+  </section>
 
-  Doing CSS inside the tag overpowers all the other methods<br><br>
-  <i>This is Italized</i><br>
+  <section class="card">
+    <h2>3. Styling a textarea</h2>
+    <p>This textarea has a background image and custom dimensions. Try typing in it or resizing it from its lower corner.</p>
+    <label for="demoTextarea">Example textarea</label>
+    <textarea id="demoTextarea">Advanced: try moving or resizing this textarea.</textarea>
+    <pre>textarea {
+  background-image: url('image.jpg');
+  width: 300px;
+  min-height: 100px;
+}</pre>
+  </section>
 
-  <i id="myB1" style="color:#00ff00; background-color:blue;"> This is Italized text with a different color and a background color (wow so cool)</i>
-
-  <input type=button value=Change onclick="{
-    document.getElementById('myB1').style.color = 'red'
-    document.getElementById('myB1').style.backgroundColor = 'yellow'
-  }"><br><br>
-
-  <textarea style="background-image: url('https://tse4.mm.bing.net/th/id/OIP.5xuk2jI0nHEd16hAPaRl4QHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3'); position:relative; left:0; top:0; width:200; height:50;">
-    Advanced see if you move this textarea
-  </textarea><br>
-
-  <br><br><br><br><br><br><br><br><br><br><br><br>
-
-  <img src="myImage01.jpg" width=200 style"border-radius:200px"><br>
-  fih<br>
-  <img src="myFih.jpg" width=100>
-  
-</body> 
+  <section class="card">
+    <h2>4. Images from the original assignment</h2>
+    <p class="muted">These keep the original image examples. If an image file is not in the project folder, the browser will show its alternative text.</p>
+    <div class="images">
+      <img src="myImage01.jpg" width="200" alt="myImage01.jpg example" onerror="this.hidden=true; this.nextElementSibling.hidden=false;">
+      <span class="image-fallback" hidden>myImage01.jpg was not found in this folder.</span>
+      <img src="myFih.jpg" width="120" alt="myFih.jpg example" onerror="this.hidden=true; this.nextElementSibling.hidden=false;">
+      <span class="image-fallback" hidden>myFih.jpg was not found in this folder.</span>
+    </div>
+  </section>
+</main>
+<script>
+  const styledText = document.getElementById('myB1');
+  document.getElementById('changeStyle').addEventListener('click', () => {
+    styledText.style.color = 'red';
+    styledText.style.backgroundColor = 'yellow';
+  });
+  document.getElementById('resetStyle').addEventListener('click', () => {
+    styledText.style.color = '#00ff00';
+    styledText.style.backgroundColor = 'blue';
+  });
+</script>
+</body>
+</html>
