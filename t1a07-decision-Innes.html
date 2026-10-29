@@ -1,59 +1,128 @@
-<p>Version 0.0.1<br>
-  the site was broken as i missed 2 <pre>< < </pre>tags
-<h2 align=center>Term 1 Assignment 07: Decisions by <b style="color: blue; font-size: 52px">Innes</b></h2>
-<a href="https://w3schools.com/js/js_if_else.asp">W3Schools If Else documentation</a> Good Reference to have for if / else statements in <img src="https://pic.onlinewebfonts.com/thumbnails/icons_586406.svg" width=75> innerHTML value
-Note: ! = not, && = and, || = or
-  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t1a07 - Decisions | Innes</title>
+  <style>
+    :root { color-scheme:dark; --panel:#111c2e; --cyan:#53f4ff; --purple:#a78bfa; --text:#e8f4ff; --muted:#a7bad0; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:32px 18px; font:16px/1.6 system-ui,sans-serif; color:var(--text); background:radial-gradient(ellipse at top,#172b49 0,#080d18 65%); }
+    main { max-width:950px; margin:auto; }
+    header,.card { border:1px solid #29415d; border-radius:18px; background:rgba(17,28,46,.94); padding:24px; margin-bottom:20px; box-shadow:0 12px 36px #0005; }
+    h1 { color:var(--cyan); margin-top:0; } h2 { color:var(--purple); margin-top:0; }
+    a { color:var(--cyan); } .muted { color:var(--muted); }
+    label { display:block; margin:12px 0 6px; font-weight:650; }
+    input { width:100%; max-width:280px; padding:10px 12px; border-radius:9px; border:1px solid #45617d; background:#091321; color:var(--text); font:inherit; }
+    button { font:inherit; font-weight:750; padding:10px 14px; border-radius:9px; border:1px solid var(--cyan); background:var(--cyan); color:#06111c; cursor:pointer; margin:10px 8px 0 0; }
+    button.secondary { background:transparent; color:var(--cyan); }
+    pre,.output { white-space:pre-wrap; overflow-wrap:anywhere; background:#07111e; border:1px solid #29415d; border-radius:10px; padding:15px; }
+    .output { min-height:55px; } code { color:#b8faff; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="muted">GAME DEV 2026 · JAVASCRIPT FUNDAMENTALS</p>
+    <h1>Term 1 Assignment 07 — Decisions by Innes</h1>
+    <p>Decision statements let a program choose what to do based on a condition. An <code>if</code> statement runs one branch when a condition is true; <code>else</code> handles the other case.</p>
+    <p><a href="https://www.w3schools.com/js/js_if_else.asp" target="_blank" rel="noopener noreferrer">Reference: W3Schools If / Else</a></p>
+    <p><strong>Operators:</strong> <code>!</code> means NOT, <code>&amp;&amp;</code> means AND, and <code>||</code> means OR.</p>
+  </header>
 
- <h4>Example input output code</h4>
- <pre>
-   let myHour = 20
-   if (myHour < 18) {
-     let myGreeting = 'Good Day';
-     }
- </pre>
+  <section class="card">
+    <h2>Example input/output code</h2>
+    <pre>let myHour = 20;
+if (myHour < 18) {
+  let myGreeting = 'Good Day';
+}</pre>
+    <p class="muted">The condition <code>myHour &lt; 18</code> is false when <code>myHour</code> is 20, so the code inside the braces does not run.</p>
+  </section>
 
-<h4>Example working code</h4>
-
-<input id="myNum01" type=number value="4">
-<input id="myNum02" type=number value="6">
-
-<input type=button value="Simple if Statement for Decision Making" onclick="{
-let myIn01 = parseFloat(document.getElementById('myNum01').value)
-let myIn02 = parseFloat(document.getElementById('myNum02').value)
-if (myIn01 >= myIn02){
-  document.getElementById('myDiv01').innerHTML = myIn01 + ' is greater than ' + myIn02
-  console.log(myIn01 + ' is greater than ' + myIn02)
-}else{
-  document.getElementById('myDiv01').innerHTML = myIn01 + ' is not greater than ' + myIn02
-  console.log(myIn01 + ' is greater than ' + myIn02)
-  }
-}">
-
-  <input type=button value="Simple if Statement for Decision Making" onclick="{
-let myIn01 = parseFloat(document.getElementById('myNum01').value)
-let myIn02 = parseFloat(document.getElementById('myNum02').value)
-
-if (myIn01 >= myIn02){
-  document.getElementById('myDiv02').innerHTML = myIn01 + ' is greater than ' +  myIn02
-  console.log(myIn01 + ' is greater than ' + myIn02)
+  <section class="card">
+    <h2>1. Simple if / else decision</h2>
+    <p>Enter two numbers. The program checks whether the first number is greater than or equal to the second.</p>
+    <label for="myNum01">First number</label>
+    <input id="myNum01" type="number" value="4" step="any">
+    <label for="myNum02">Second number</label>
+    <input id="myNum02" type="number" value="6" step="any">
+    <br><button type="button" id="simpleDecision">Run simple decision</button>
+    <div id="myDiv01" class="output" role="status" aria-live="polite">Choose the button to run the comparison.</div>
+    <pre>if (myIn01 >= myIn02) {
+  // first number is greater than or equal to second
 } else {
-  document.getElementById('myDiv02').innerHTML = myIn01 + ' is not greater than ' +  myIn02 
-  console.log(myIn01 + ' is not greater than ' + myIn02)}
-}">
+  // first number is less than second
+}</pre>
+  </section>
 
-<input type=button value="Complex if" onclick="{
-  let myIn01 = parseFloat(document.getElementById('myNum01').value)
-  let myIn02 = parseFloat(document.getElementById('myNum02').value)
-  if ((myIn01 != myIn02 || myIn02 > -8) && myIn01 <=100 ){
-  document.getElementById('myDiv03').innerHTML = myIn01 + ' or ' + myIn02 + ' is complex'
-  console.log(myIn01 + ' or ' + myIn02 + ' is complex');
-  } else {
-  document.getElementById('myDiv03').innerHTML = myIn01 + ' or ' + myIn02 + ' is not complex' 
-  console.log(myIn01 + ' or ' + myIn02 + ' is not complex');
+  <section class="card">
+    <h2>2. Repeat the decision</h2>
+    <p>This second example uses the same inputs and decision, like the original assignment, and writes to a separate output area.</p>
+    <button type="button" class="secondary" id="repeatDecision">Run second decision</button>
+    <div id="myDiv02" class="output" role="status" aria-live="polite">Second decision output appears here.</div>
+  </section>
+
+  <section class="card">
+    <h2>3. Complex if condition</h2>
+    <p>This keeps the original complex condition: the first number must be different from the second OR the second must be greater than -8, AND the first must be at most 100.</p>
+    <pre>if ((myIn01 != myIn02 || myIn02 > -8) && myIn01 <= 100) {
+  // condition is true
+} else {
+  // condition is false
+}</pre>
+    <button type="button" class="secondary" id="complexDecision">Run complex if</button>
+    <div id="myDiv03" class="output" role="status" aria-live="polite">Complex decision output appears here.</div>
+  </section>
+</main>
+<script>
+  function readNumbers() {
+    const first = document.getElementById('myNum01').value;
+    const second = document.getElementById('myNum02').value;
+    if (first.trim() === '' || second.trim() === '') {
+      return null;
     }
-  }">
+    const myIn01 = Number(first);
+    const myIn02 = Number(second);
+    if (!Number.isFinite(myIn01) || !Number.isFinite(myIn02)) {
+      return null;
+    }
+    return { myIn01, myIn02 };
+  }
 
-  <div id="myDiv01">...</div>
-  <div id="myDiv02">...</div>
-  <div id="myDiv03">...</div>
+  function showInputError(outputIds) {
+    outputIds.forEach(id => {
+      document.getElementById(id).textContent = 'Please enter valid numbers in both fields.';
+    });
+  }
+
+  function runSimple(outputId) {
+    const values = readNumbers();
+    if (!values) {
+      showInputError([outputId]);
+      return;
+    }
+    const { myIn01, myIn02 } = values;
+    const message = myIn01 >= myIn02
+      ? myIn01 + ' is greater than or equal to ' + myIn02
+      : myIn01 + ' is not greater than or equal to ' + myIn02;
+    document.getElementById(outputId).textContent = message;
+    console.log(message);
+  }
+
+  document.getElementById('simpleDecision').addEventListener('click', () => runSimple('myDiv01'));
+  document.getElementById('repeatDecision').addEventListener('click', () => runSimple('myDiv02'));
+  document.getElementById('complexDecision').addEventListener('click', () => {
+    const values = readNumbers();
+    if (!values) {
+      showInputError(['myDiv03']);
+      return;
+    }
+    const { myIn01, myIn02 } = values;
+    const isComplex = (myIn01 != myIn02 || myIn02 > -8) && myIn01 <= 100;
+    const message = myIn01 + ' or ' + myIn02 + (isComplex ? ' meets the complex condition.' : ' does not meet the complex condition.');
+    document.getElementById('myDiv03').textContent = message;
+    console.log(message);
+  });
+</script>
+</body>
+</html>
