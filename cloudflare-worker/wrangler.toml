@@ -1,0 +1,8 @@
+name = "gamedev-class-checklist"
+main = "src/index.js"
+compatibility_date = "2026-10-30"
+
+[vars]
+GH_OWNER = "Innygr"
+GH_REPO = "gamedev-Innes-2026"
+GH_BRANCH = "main"
