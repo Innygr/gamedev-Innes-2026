@@ -75,6 +75,27 @@ document.getElementById('myB1').style.backgroundColor = 'yellow';</pre>
       <span class="image-fallback" hidden>myFih.jpg was not found in this folder.</span>
     </div>
   </section>
+  <section class="card">
+    <h2>5. CSS selectors</h2>
+    <p>A selector chooses which HTML elements a rule affects.</p>
+    <pre>p { color: white; }          /* element selector */
+.card { padding: 20px; }    /* class selector */
+#myB1 { background: blue; } /* ID selector */</pre>
+    <p>Element selectors affect every matching element, class selectors can be reused, and an ID should identify one unique element on a page.</p>
+  </section>
+  <section class="card">
+    <h2>6. Box model</h2>
+    <p>Every element can be thought of as a box containing content, padding, border, and margin.</p>
+    <div style="margin:18px;padding:18px;border:4px dashed #53f4ff;background:#172b49;border-radius:10px;text-align:center">Margin outside → <div style="padding:18px;border:3px solid #a78bfa;background:#091321">Border · Padding · Content</div></div>
+    <pre>/* Makes width calculations easier */
+* { box-sizing: border-box; }</pre>
+  </section>
+  <section class="card">
+    <h2>7. Try a CSS selector</h2>
+    <p id="selectorDemo">This paragraph is changed by selecting its ID.</p>
+    <button type="button" id="selectorChange">Change this paragraph</button>
+    <button type="button" class="secondary" id="selectorReset">Reset</button>
+  </section>
 </main>
 <script>
   const styledText = document.getElementById('myB1');
@@ -86,6 +107,6 @@ document.getElementById('myB1').style.backgroundColor = 'yellow';</pre>
     styledText.style.color = '#00ff00';
     styledText.style.backgroundColor = 'blue';
   });
-</script>
+  document.getElementById('selectorChange').addEventListener('click',()=>{const p=document.getElementById('selectorDemo');p.style.color='#53f4ff';p.style.fontWeight='bold';p.style.padding='12px';p.style.background='#172b49';});\n  document.getElementById('selectorReset').addEventListener('click',()=>{const p=document.getElementById('selectorDemo');p.removeAttribute('style');});\n</script>
 </body>
 </html>
