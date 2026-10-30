@@ -1,21 +1,25 @@
 {
-  "version": 1,
-  "updatedAt": "2026-10-30T16:36:37.074Z",
   "items": [
     {
       "id": "seed-t1a06",
       "text": "t1a06",
-      "checked": false
+      "completed": false
     },
     {
       "id": "seed-t1a07",
       "text": "t1a07 (fixed links)",
-      "checked": false
+      "completed": false
     },
     {
       "id": "seed-t1a08",
       "text": "t1a08 (added to the list)",
-      "checked": false
+      "completed": false
+    },
+    {
+      "id": "4cd2e9d8-726b-48ca-960f-e3642210d1f4",
+      "text": "ahoy there",
+      "completed": false
     }
-  ]
+  ],
+  "updatedAt": "2026-10-30T17:33:22.624Z"
 }
