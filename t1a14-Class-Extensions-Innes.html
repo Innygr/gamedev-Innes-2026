@@ -119,7 +119,13 @@
     myDog.myShow();
   }
 
-  class myDog extends myAnimal {\n    constructor(passName,passAge,passBreed){super(passName,passAge);this.myBreed=passBreed;}\n    myShow(){document.getElementById('myDiv01').textContent=this.myName+' is a '+this.myBreed+'.\\nAge: '+this.myAge+'\\nThis dog inherits from myAnimal.';}\n  }\n  function showDog(){const pet=readPet('myText01','myIn01');if(!pet)return;const dog=new myDog(pet.name,pet.age,document.getElementById('dogBreed').value.trim()||'unknown breed');dog.myShow();}\n\n  function showCat() {
+  class myDog extends myAnimal {
+   constructor(passName,passAge,passBreed){super(passName,passAge);this.myBreed=passBreed;}
+   myShow(){document.getElementById('myDiv01').textContent=this.myName+' is a '+this.myBreed+'.\\nAge: '+this.myAge+'\\nThis dog inherits from myAnimal.';}
+ }
+ function showDog(){const pet=readPet('myText01','myIn01');if(!pet)return;const dog=new myDog(pet.name,pet.age,document.getElementById('dogBreed').value.trim()||'unknown breed');dog.myShow();}
+
+ function showCat() {
     const pet = readPet('myText02', 'myIn02');
     if (!pet) return;
     const myPet = new myCat(pet.name, pet.age);
