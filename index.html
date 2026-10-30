@@ -2079,8 +2079,8 @@
                 lastSyncedChecklist = cloneChecklist(data.items);
                 // Keep browser-only items during the first migration, without duplicating
                 // tasks that are already present in the shared class list.
-                const sharedByText = new Map(combined.map(item => [item.text.trim().toLowerCase(), item]));
                 const combined = cloneChecklist(data.items);
+                const sharedByText = new Map(combined.map(item => [item.text.trim().toLowerCase(), item]));
                 for (const localItem of checklistItems) {
                     const key = localItem.text.trim().toLowerCase();
                     const existing = sharedByText.get(key);
@@ -2203,64 +2203,6 @@
                 }
             }, 15000);
         }
-                });
-
-                const text = document.createElement("span");
-                const match = item.text.match(/\b(t1a(?:\d{2}|x\d+))\b/i);
-                const assignmentKey = match ? match[1].toLowerCase() : null;
-                const assignmentHref = assignmentKey
-                    ? checklistAssignmentLinks[assignmentKey]
-                    : null;
-
-                if (assignmentHref) {
-                    const assignmentLink = document.createElement("a");
-                    assignmentLink.href = assignmentHref;
-                    assignmentLink.textContent = item.text;
-                    assignmentLink.className = "checklistAssignmentLink";
-                    text.appendChild(assignmentLink);
-                } else {
-                    text.textContent = item.text;
-                }
-
-                const remove = document.createElement("button");
-                remove.type = "button";
-                remove.className = "removeCheck";
-                remove.textContent = "×";
-                remove.title = "Remove this item";
-
-                remove.addEventListener("click", (event) => {
-                    event.preventDefault();
-                    checklistItems.splice(index, 1);
-                    saveChecklist();
-                    renderChecklist();
-                });
-
-                wrapper.appendChild(checkbox);
-                wrapper.appendChild(text);
-                wrapper.appendChild(remove);
-                container.appendChild(wrapper);
-            });
-        }
-
-        function addChecklistItem() {
-            const input = document.getElementById("newChecklistItem");
-            const text = input.value.trim();
-
-            if (!text) return;
-
-            checklistItems.push({
-                text: text,
-                checked: false
-            });
-
-            input.value = "";
-            saveChecklist();
-            renderChecklist();
-            input.focus();
-        }
-
-        renderChecklist();
-
     </script>
 
 
