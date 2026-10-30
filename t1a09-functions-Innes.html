@@ -122,6 +122,7 @@ function resetInputs() {
 function showPower(){const a=readNumber('myText01'),b=readNumber('myText02');if(a===null||b===null)return;document.getElementById('myDiv01').textContent=a+' to the power of '+b+' = '+myPower(a,b);}
 function myPower(myBase,myExponent){return myBase**myExponent;}
 function showEven(){const a=readNumber('myText01');if(a===null)return;document.getElementById('myDiv01').textContent=a+' is '+(myIsEven(a)?'even':'odd')+'.';}
-function myIsEven(myNumber){return Number.isInteger(myNumber)&&myNumber%2===0;}\n</script>
+function myIsEven(myNumber){return Number.isInteger(myNumber)&&myNumber%2===0;}
+</script>
 </body>
 </html>
