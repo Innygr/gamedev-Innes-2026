@@ -1,38 +1,55 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="assignments.css"></head><body class="assignment-page">
-<h6> Version 0.0.1</h6>
-
-<h1 align-center>t1a03-Innes.html</h1> <br>
-<h3><font-color=green>Proving that you can use</font><font-color=red> forms </font</h3><br>
-The following are all form <font-color=green>elements</font-color>:<br>
-<form>
-
-  First Name:<input type=text id="myText01" value="Innes"><br>
-  Checkbox: <br>
-  <font-color=red>Beef: <input type=checkbox><br></font-color>
-  <font-color=green>Veggy: <input type=checkbox><br> </font-color>
-  Radio Buttons: <img src="Radio.png" width="50"><br>
-  95.4 <input type=radio name="Virgin Radio" value=""><br>
-  101 <input type=radio name="Rock 101" value=""><br>
-
-  hidden:<input type=hidden> <br>
-  File: <input type=file><br>
-  reset:<input type=reset><br>
-  Submit (advanced):<input type=submit><br>
-
-  Button: <input type=button value="click" onclick="{
-    document.getElementById('myArea01').value = 'Cool'
-  }"><br>
-  Textarea:<br>
-  <textarea id="myArea01" cols=60 rows=3.14159> Cool this works </textarea><br>
-
-  Select Box:<br>
-  <select id="mySelect01" size=2 onChange="{
-    document.getElementById('myArea01').value = document.getElementById('mySelect01').value}">
-    <option value='myDog'><img src="myDog.jpg" width="25">Dog
-    <option value='myCat'><img src="myCat.jpg" width="25">Cat
-    <option value='myMouse'><img src="myMouse.jpg" width="25">Mouse (computer)
-    </option>
-  </select>
-</form>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>t1a03 — Forms by Innes</title><link rel="stylesheet" href="assignments.css">
+</head>
+<body class="assignment-page">
+<main>
+<header><p class="muted">GAME DEV 2026 · HTML FUNDAMENTALS</p><h1>t1a03 — Forms by Innes</h1>
+<p>HTML forms collect information from a visitor. This page demonstrates text fields, checkboxes, radio buttons, hidden values, file selection, buttons, textareas and select menus.</p>
+<p><a href="https://www.w3schools.com/html/html_forms.asp" target="_blank" rel="noopener noreferrer">Reference: HTML Forms</a></p></header>
+<section class="card"><h2>1. Text input and labels</h2>
+<form id="demoForm">
+<label for="myText01">First name:</label><input type="text" id="myText01" name="firstName" value="Innes" maxlength="40">
+<label for="emailInput">Email example:</label><input type="email" id="emailInput" name="email" placeholder="name@example.com">
+<label for="ageInput">Age (number):</label><input type="number" id="ageInput" name="age" min="0" max="120" value="16">
+<p class="muted">A label's <code>for</code> value should match the input's <code>id</code>. This makes forms easier to use.</p>
+</section>
+<section class="card"><h2>2. Checkboxes</h2><p>Checkboxes allow more than one selection.</p>
+<label><input type="checkbox" id="beef" name="food" value="Beef"> Beef</label>
+<label><input type="checkbox" id="veggy" name="food" value="Vegetarian"> Vegetarian</label>
+<label><input type="checkbox" id="fish" name="food" value="Fish"> Fish</label>
+</section>
+<section class="card"><h2>3. Radio buttons</h2><p>Radio buttons with the same <code>name</code> make a single-choice group.</p>
+<label><input type="radio" name="station" value="95.4" checked> 95.4 FM</label>
+<label><input type="radio" name="station" value="101"> 101 FM</label>
+<label><input type="radio" name="station" value="Other"> Other</label>
+</section>
+<section class="card"><h2>4. Textarea and select menu</h2>
+<label for="myArea01">Comments:</label><textarea id="myArea01" name="comments" rows="4" maxlength="300">Cool, this works!</textarea>
+<label for="mySelect01">Choose an animal:</label><select id="mySelect01" name="animal"><option value="Dog">Dog</option><option value="Cat">Cat</option><option value="Mouse">Mouse (computer)</option><option value="Whale">Whale</option></select>
+<p class="muted">A textarea is for longer text. A select element provides a drop-down list.</p></section>
+<section class="card"><h2>5. Other form controls</h2>
+<label for="fileInput">Choose a file:</label><input id="fileInput" type="file">
+<input type="hidden" id="hiddenExample" value="hidden form value">
+<p class="muted">The hidden input is not displayed like a normal field. It can store a value in a form, but it is not a secure place for secrets.</p>
+<button type="button" id="showButton">Button: show form data</button>
+<button type="reset" class="secondary">Reset form</button>
+<button type="submit" class="secondary">Submit (demo only)</button>
+</form></section>
+<section class="card"><h2>Output</h2><div id="myDiv01" role="status" aria-live="polite">Fill in the form and press the button.</div></section>
+<section class="card"><h2>Challenge</h2><p>Add a password field, a date field, and another checkbox. Make the output display each new value. Which controls allow multiple selections?</p></section>
+</main>
+<script>
+document.getElementById('showButton').addEventListener('click', () => {
+ const form=document.getElementById('demoForm');
+ const foods=[...form.querySelectorAll('input[name="food"]:checked')].map(x=>x.value);
+ const station=form.querySelector('input[name="station"]:checked')?.value || 'None';
+ const file=document.getElementById('fileInput').files[0]?.name || 'No file selected';
+ const summary=['Name: '+document.getElementById('myText01').value,'Email: '+document.getElementById('emailInput').value,'Age: '+document.getElementById('ageInput').value,'Food: '+(foods.join(', ')||'None selected'),'Radio station: '+station,'Comments: '+document.getElementById('myArea01').value,'Animal: '+document.getElementById('mySelect01').value,'File: '+file];
+ document.getElementById('myDiv01').textContent=summary.join('\n');
+});
+document.getElementById('demoForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('myDiv01').textContent='Demo form submitted locally. No data was sent to a server.';});
+</script>
 </body></html>
