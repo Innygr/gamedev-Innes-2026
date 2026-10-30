@@ -1270,7 +1270,7 @@
                 </button>
             </div>
 
-            <div id="githubStatus">
+            <div id="checklistSyncStatus" role="status" aria-live="polite" data-state="pending">Cloud checklist sync is being configured…</div>\n\n            <div id="githubStatus">
                 Checking GitHub...
             </div>
 
@@ -1965,11 +1965,18 @@
            ========================= */
 
         const checklistStorageKey = "gamedevInnesChecklist";
+        // Set this to the deployed Cloudflare Worker endpoint, ending in /checklist.
+        // Keep secrets out of this file: the GitHub token belongs only in Worker secrets.
+        const CHECKLIST_API_URL = "";
 
-        let checklistItems = JSON.parse(
-            localStorage.getItem(checklistStorageKey) || "null"
-        );
-
+        const cloneChecklist = items => JSON.parse(JSON.stringify(items || []));
+        const makeChecklistId = () => (crypto.randomUUID ? crypto.randomUUID() : "item-" + Date.now() + "-" + Math.random().toString(16).slice(2));
+        let checklistItems = [];
+        try {
+            checklistItems = JSON.parse(localStorage.getItem(checklistStorageKey) || "null");
+        } catch (error) {
+            checklistItems = null;
+        }
         if (!Array.isArray(checklistItems)) {
             checklistItems = [
                 { text: "t1a06", checked: false },
@@ -1977,12 +1984,120 @@
                 { text: "t1a08 (added to the list)", checked: false }
             ];
         }
+        checklistItems = checklistItems.map(item => ({
+            id: item.id || makeChecklistId(),
+            text: String(item.text || "").trim(),
+            checked: Boolean(item.checked)
+        })).filter(item => item.text);
+        let lastSyncedChecklist = [];
+        let checklistSaveTimer = null;
+        let checklistSyncBusy = false;
+        let checklistSyncQueued = false;
+
+        function setChecklistSyncStatus(message, state) {
+            const status = document.getElementById("checklistSyncStatus");
+            if (!status) return;
+            status.textContent = message;
+            status.dataset.state = state || "info";
+        }
 
         function saveChecklist() {
-            localStorage.setItem(
-                checklistStorageKey,
-                JSON.stringify(checklistItems)
-            );
+            checklistItems = checklistItems.map(item => ({
+                id: item.id || makeChecklistId(),
+                text: String(item.text || "").trim(),
+                checked: Boolean(item.checked)
+            })).filter(item => item.text);
+            try {
+                localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
+            } catch (error) {
+                console.warn("Could not save the local checklist cache.", error);
+            }
+            if (!CHECKLIST_API_URL) {
+                setChecklistSyncStatus("Cloud sync not configured — saved only in this browser.", "offline");
+                return;
+            }
+            setChecklistSyncStatus("Changes waiting to sync…", "pending");
+            clearTimeout(checklistSaveTimer);
+            checklistSaveTimer = setTimeout(syncChecklist, 500);
+        }
+
+        async function syncChecklist() {
+            if (!CHECKLIST_API_URL) return;
+            if (checklistSyncBusy) {
+                checklistSyncQueued = true;
+                return;
+            }
+            checklistSyncBusy = true;
+            const submittedItems = cloneChecklist(checklistItems);
+            const baseItems = cloneChecklist(lastSyncedChecklist);
+            try {
+                const response = await fetch(CHECKLIST_API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ baseItems, items: submittedItems })
+                });
+                if (!response.ok) throw new Error("Sync server returned " + response.status);
+                const data = await response.json();
+                if (!Array.isArray(data.items)) throw new Error("Invalid checklist response");
+                lastSyncedChecklist = cloneChecklist(data.items);
+                // Do not replace newer edits made while this request was in flight.
+                if (JSON.stringify(checklistItems) === JSON.stringify(submittedItems)) {
+                    checklistItems = cloneChecklist(data.items);
+                    localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
+                    renderChecklist();
+                } else {
+                    checklistSyncQueued = true;
+                }
+                setChecklistSyncStatus("Synced with the shared class checklist.", "online");
+            } catch (error) {
+                console.error("Checklist sync failed:", error);
+                setChecklistSyncStatus("Cloud sync unavailable — your changes are saved locally and will retry.", "offline");
+            } finally {
+                checklistSyncBusy = false;
+                if (checklistSyncQueued) {
+                    checklistSyncQueued = false;
+                    setTimeout(syncChecklist, 150);
+                }
+            }
+        }
+
+        async function loadSharedChecklist() {
+            if (!CHECKLIST_API_URL) {
+                setChecklistSyncStatus("Cloud sync not configured — saved only in this browser.", "offline");
+                return;
+            }
+            setChecklistSyncStatus("Connecting to the shared checklist…", "pending");
+            try {
+                const response = await fetch(CHECKLIST_API_URL, { cache: "no-store" });
+                if (!response.ok) throw new Error("Sync server returned " + response.status);
+                const data = await response.json();
+                if (!Array.isArray(data.items)) throw new Error("Invalid checklist response");
+                lastSyncedChecklist = cloneChecklist(data.items);
+                // Keep browser-only items during the first migration, without duplicating
+                // tasks that are already present in the shared class list.
+                const sharedByText = new Map(data.items.map(item => [item.text.trim().toLowerCase(), item]));
+                const combined = cloneChecklist(data.items);
+                for (const localItem of checklistItems) {
+                    const key = localItem.text.trim().toLowerCase();
+                    const existing = sharedByText.get(key);
+                    if (!existing) {
+                        combined.push(localItem);
+                    } else if (localItem.checked && !existing.checked) {
+                        existing.checked = true;
+                    }
+                }
+                checklistItems = combined;
+                localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
+                renderChecklist();
+                if (JSON.stringify(combined) !== JSON.stringify(data.items)) {
+                    saveChecklist();
+                } else {
+                    setChecklistSyncStatus("Synced with the shared class checklist.", "online");
+                }
+            } catch (error) {
+                console.error("Could not load shared checklist:", error);
+                setChecklistSyncStatus("Cloud sync unavailable — showing this browser's saved copy.", "offline");
+            }
         }
 
         // Only map checklist labels to assignment files that are part of this course.
@@ -2009,19 +2124,81 @@
         function renderChecklist() {
             const container = document.getElementById("checklistItems");
             container.innerHTML = "";
-
             checklistItems.forEach((item, index) => {
                 const wrapper = document.createElement("label");
                 wrapper.className = "checkItem";
-
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.checked = item.checked;
-
                 checkbox.addEventListener("change", () => {
                     checklistItems[index].checked = checkbox.checked;
                     saveChecklist();
                     renderChecklist();
+                });
+                const text = document.createElement("span");
+                const match = item.text.match(/\\b(t1a(?:\\d{2}|x\\d+))\\b/i);
+                const assignmentKey = match ? match[1].toLowerCase() : null;
+                const assignmentHref = assignmentKey ? checklistAssignmentLinks[assignmentKey] : null;
+                if (assignmentHref) {
+                    const assignmentLink = document.createElement("a");
+                    assignmentLink.href = assignmentHref;
+                    assignmentLink.textContent = item.text;
+                    assignmentLink.className = "checklistAssignmentLink";
+                    text.appendChild(assignmentLink);
+                } else {
+                    text.textContent = item.text;
+                }
+                const remove = document.createElement("button");
+                remove.type = "button";
+                remove.className = "removeCheck";
+                remove.textContent = "×";
+                remove.title = "Remove this item";
+                remove.addEventListener("click", event => {
+                    event.preventDefault();
+                    checklistItems.splice(index, 1);
+                    saveChecklist();
+                    renderChecklist();
+                });
+                wrapper.appendChild(checkbox);
+                wrapper.appendChild(text);
+                wrapper.appendChild(remove);
+                container.appendChild(wrapper);
+            });
+        }
+
+        function addChecklistItem() {
+            const input = document.getElementById("newChecklistItem");
+            const text = input.value.trim();
+            if (!text) return;
+            checklistItems.push({ id: makeChecklistId(), text, checked: false });
+            input.value = "";
+            saveChecklist();
+            renderChecklist();
+            input.focus();
+        }
+
+        renderChecklist();
+        loadSharedChecklist();
+        if (CHECKLIST_API_URL) {
+            setInterval(async () => {
+                if (checklistSyncBusy || checklistSaveTimer) return;
+                try {
+                    const response = await fetch(CHECKLIST_API_URL, { cache: "no-store" });
+                    if (!response.ok) return;
+                    const data = await response.json();
+                    if (Array.isArray(data.items) &&
+                        JSON.stringify(data.items) !== JSON.stringify(lastSyncedChecklist)) {
+                        checklistItems = cloneChecklist(data.items);
+                        lastSyncedChecklist = cloneChecklist(data.items);
+                        localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
+                        renderChecklist();
+                        setChecklistSyncStatus("Updated from the shared class checklist.", "online");
+                    }
+                } catch (error) {
+                    setChecklistSyncStatus("Cloud sync temporarily unavailable.", "offline");
+                }
+            }, 15000);
+        }
                 });
 
                 const text = document.createElement("span");
