@@ -1,81 +1,35 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="assignments.css"></head><body class="assignment-page">
-<p>
-  <h2 align="center">t1a08: Loops by Innes.html</h2>
-
-  <a href="">
-    Would be a good reference to loops in JS, if there was a link
-  </a>
-  <br>
-
-  <h4>Example for input output</h4>
-
-  <pre>
-for (let myLoop = 0; myLoop &lt; myMax; myLoop++) {
-  // code or smth
-}
-  </pre>
-
-  <br>
-
-  <h4>Example code</h4>
-  <br>
-
-  Max loops:
-  <input id="myNum01" type="number" value="4">
-  <br>
-
-  weird number:
-  <input id="myWeird" type="number" value="2">
-  <br>
-  <br>
-
-  <input
-    type="button"
-    value="Basic For loop with Desicions"
-    onclick="{
-      document.getElementById('myDiv01').innerHTML = '';
-
-      let myTemp = '';
-      let myMax = parseInt(document.getElementById('myNum01').value);
-
-      for (let myLoop = 0; myLoop < myMax; myLoop++) {
-        if (myLoop * 2 > myMax) {
-          myTemp += 'cool ';
-        }
-
-        myTemp += 'Loop number: ' + myLoop + '<br>';
-      }
-
-      document.getElementById('myDiv01').innerHTML = myTemp;
-    }"
-  >
-
-  <br>
-
-  <input
-    type="button"
-    value="Even number identifier"
-    onclick="{
-      document.getElementById('myDiv01').innerHTML = '';
-
-      let myTemp = '';
-      let myMax = parseInt(document.getElementById('myNum01').value);
-
-      for (let myLoop = 0; myLoop < myMax; myLoop++) {
-        if (myLoop % 2 == 0) {
-          myTemp += 'Even Number, ';
-        }
-
-        myTemp += 'Loop number: ' + myLoop + '<br>';
-      }
-
-      document.getElementById('myDiv01').innerHTML = myTemp;
-    }"
-  >
-
-  <div id="myDiv01">
-    <font color="red">...</font>
-  </div>
-</p>
-
-</body></html>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>t1a08 — Loops by Innes</title><link rel="stylesheet" href="assignments.css"></head>
+<body class="assignment-page"><main>
+<header><p class="muted">GAME DEV 2026 · JAVASCRIPT FUNDAMENTALS</p><h1>t1a08 — Loops by Innes</h1>
+<p>A loop repeats code. Loops are useful when you need to do something many times without writing the same instructions repeatedly.</p>
+<p><a href="https://www.w3schools.com/js/js_loop_for.asp" target="_blank" rel="noopener noreferrer">Reference: JavaScript For Loops</a></p></header>
+<section class="card"><h2>1. Basic for loop</h2><pre>for (let myLoop = 0; myLoop &lt; myMax; myLoop++) {
+  // code runs once for each loop
+}</pre><p>A <code>for</code> loop has a starting value, a condition, and an update. This example starts at zero and stops before <code>myMax</code>.</p></section>
+<section class="card"><h2>2. Try the original loop examples</h2>
+<label for="myNum01">Maximum loops (0–100):</label><input id="myNum01" type="number" min="0" max="100" value="4">
+<label for="myWeird">Weird number / multiplier:</label><input id="myWeird" type="number" min="1" max="100" value="2">
+<div><button id="basicLoop">Basic for loop with decisions</button><button class="secondary" id="evenLoop">Even number identifier</button><button class="secondary" id="multiplesLoop">Show multiples</button><button class="secondary" id="countdownLoop">Countdown</button><button class="secondary" id="clearLoop">Clear</button></div>
+<h3>Loop output</h3><pre id="myDiv01" role="status" aria-live="polite">Choose an example to run the loop.</pre></section>
+<section class="card"><h2>3. More loop examples</h2><h3>While loop</h3><pre>let myCount = 0;
+while (myCount &lt; 3) {
+  console.log(myCount);
+  myCount++;
+}</pre><p>A <code>while</code> loop repeats as long as its condition remains true. Make sure something changes the condition, or the loop may never stop.</p>
+<h3>Array loop</h3><pre>const myGames = ['Minecraft', 'Roblox', 'Celeste'];
+for (const myGame of myGames) {
+  console.log(myGame);
+}</pre><p>A <code>for...of</code> loop visits each item in an iterable, such as an array.</p></section>
+<section class="card"><h2>Challenge</h2><p>Make a loop that prints the numbers from 1 to 20, but writes “Fizz” for multiples of 3 and “Buzz” for multiples of 5. What should it print for 15?</p></section>
+</main>
+<script>
+"use strict";
+function getLoopValues(){const raw=document.getElementById('myNum01').value;const max=Number(raw);const mult=Number(document.getElementById('myWeird').value);if(raw===''||!Number.isInteger(max)||max<0||max>100||!Number.isFinite(mult)||mult<1||mult>100){document.getElementById('myDiv01').textContent='Enter a whole number of loops from 0 to 100 and a multiplier from 1 to 100.';return null;}return {max,mult};}
+function outputLines(lines){document.getElementById('myDiv01').textContent=lines.join('\n')||'(No loop iterations)';}
+document.getElementById('basicLoop').addEventListener('click',()=>{const v=getLoopValues();if(!v)return;const a=[];for(let myLoop=0;myLoop<v.max;myLoop++){if(myLoop*2>v.max)a.push('cool');a.push('Loop number: '+myLoop);}outputLines(a);});
+document.getElementById('evenLoop').addEventListener('click',()=>{const v=getLoopValues();if(!v)return;const a=[];for(let i=0;i<v.max;i++)a.push(i%2===0?'Even number: '+i:'Odd number: '+i);outputLines(a);});
+document.getElementById('multiplesLoop').addEventListener('click',()=>{const v=getLoopValues();if(!v)return;outputLines(Array.from({length:v.max},(_,i)=>(i+1)+' × '+v.mult+' = '+((i+1)*v.mult)));});
+document.getElementById('countdownLoop').addEventListener('click',()=>{const v=getLoopValues();if(!v)return;const a=[];for(let i=v.max;i>=0;i--)a.push(i);a.push('Launch!');outputLines(a);});
+document.getElementById('clearLoop').addEventListener('click',()=>document.getElementById('myDiv01').textContent='Choose an example to run the loop.');
+</script></body></html>
