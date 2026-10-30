@@ -1969,7 +1969,7 @@
         const checklistStorageKey = "gamedevInnesChecklist";
         // Set this to the deployed Cloudflare Worker endpoint, ending in /checklist.
         // Keep secrets out of this file: the GitHub token belongs only in Worker secrets.
-        const CHECKLIST_API_URL = "";
+        const CHECKLIST_API_URL = "https://gamedev-class-checklist.innygrant.workers.dev/checklist";
 
         const cloneChecklist = items => JSON.parse(JSON.stringify(items || []));
         const makeChecklistId = () => (crypto.randomUUID ? crypto.randomUUID() : "item-" + Date.now() + "-" + Math.random().toString(16).slice(2));
