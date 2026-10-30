@@ -1,18 +1,74 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>t1a01 tables</title><link rel="stylesheet" href="assignments.css"></head><body class="assignment-page">
-<table border=1>
-<tr><td>A</td><td>1</td><tr><br>
-<table border=1>
-<tr><td>1</td><td>A</td></tr>
-<tr><td>2</td><td>B</td></tr><br>
-<table border=1>
-<tr><td>1</td><td>A</td><td>yes</td></tr>
-<tr><td>2</td><td>B</td><td>hi</td></tr><br>
-<table border=0.25>
-<tr><td>1</td><td>A</td><td>Celestans</td></tr>
-<tr><td>2</td><td>B</td><td><img src="Brightstar.png" width="25"></td></tr>
-<tr><td>3</td><td>C</td><td><img src="NegInny.png" width="25"></td></tr>
-<tr><td>4</td><td>D</td><td><img src="Boltlight.png" width="25"></td></tr>
-<table border=2.5 border-color=#224E7F>
-<tr><td>my very cool alternate thing:</td><td><a href="https://innygr.github.io/Card-Stuff-Yes/">Cool thing here!</a></td></tr>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T1A01 — HTML Tables — Innes</title>
+  <link rel="stylesheet" href="assignments.css">
+</head>
+<body class="assignment-page">
+  <main>
+    <h1>T1A01 — HTML Tables</h1>
+    <p>HTML tables organize information into rows and columns. These examples build from a basic two-cell row to tables containing more information, images, and links.</p>
 
-</body></html>
+    <h2>Example 1: A basic table</h2>
+    <table>
+      <caption>Two pieces of information</caption>
+      <tbody>
+        <tr><td>A</td><td>1</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Example 2: Multiple rows</h2>
+    <table>
+      <caption>Letters and numbers</caption>
+      <thead><tr><th scope="col">Number</th><th scope="col">Letter</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>A</td></tr>
+        <tr><td>2</td><td>B</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Example 3: Adding another column</h2>
+    <table>
+      <caption>Three-column table</caption>
+      <thead><tr><th scope="col">Number</th><th scope="col">Letter</th><th scope="col">Word</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>A</td><td>yes</td></tr>
+        <tr><td>2</td><td>B</td><td>hello</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Example 4: Tables with images</h2>
+    <table>
+      <caption>Project artwork</caption>
+      <thead><tr><th scope="col">Number</th><th scope="col">Letter</th><th scope="col">Name / image</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>A</td><td>Celestans</td></tr>
+        <tr><td>2</td><td>B</td><td><img src="Brightstar.png" width="50" alt="Brightstar artwork"></td></tr>
+        <tr><td>3</td><td>C</td><td><img src="NegInny.png" width="50" alt="NegInny artwork"></td></tr>
+        <tr><td>4</td><td>D</td><td><img src="Boltlight.png" width="50" alt="Boltlight artwork"></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Example 5: A table containing a link</h2>
+    <table>
+      <tbody>
+        <tr><th scope="row">My alternate project</th><td><a href="https://innygr.github.io/Card-Stuff-Yes/" target="_blank" rel="noopener noreferrer">Open the project</a></td></tr>
+      </tbody>
+    </table>
+
+    <h2>What to notice</h2>
+    <ul>
+      <li><code>&lt;table&gt;</code> creates a table.</li>
+      <li><code>&lt;tr&gt;</code> creates a row.</li>
+      <li><code>&lt;th&gt;</code> creates a heading cell.</li>
+      <li><code>&lt;td&gt;</code> creates a regular data cell.</li>
+      <li><code>&lt;caption&gt;</code> gives the table a description.</li>
+    </ul>
+
+    <h2>Challenge</h2>
+    <p>Add a new row to the project artwork table with a number, letter, and a short description. Then add a fourth column that describes the item type.</p>
+  </main>
+</body>
+</html>
