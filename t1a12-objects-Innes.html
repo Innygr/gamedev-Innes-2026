@@ -94,7 +94,7 @@
 </head>
   <body class="assignment-page">
     <div class="container">
-      <h2>t1a12-objects-Innes.html</h2>
+      <h1>t1a12 — JavaScript Objects by Innes</h1>
       <div class="panel">
         <h3>JavaScript Objects</h3>
         <p> Objects are variables that can store multiple related pieces of information as named properties. Each property has a name and a value. </p>
@@ -127,7 +127,7 @@
         <p> Declaring an object outside a function allows multiple functions to access it. This is useful when several buttons need to interact with the same object. </p>
         <p class="note"> However, global variables can cause naming conflicts. Keeping variables inside functions or using a shared object in a controlled scope is often better for larger projects. </p>
       </div>
-      <footer> JavaScript Objects | WebDev Project </footer>
+      <div class="panel"><h3>Challenge</h3><p>Add a new property called <code>favouriteGame</code> to the object. Display it in <code>showPerson()</code>, then create a button that changes it.</p></div>\n      <footer> JavaScript Objects | WebDev Project </footer>
     </div>
     <script>
       // This object can be accessed by all the functions below.
@@ -137,12 +137,12 @@
         age: 50,
         eyeColor: "blue"
       };
-      // Display all the properties of the object.
+      // Display all the properties of the object.\n      // innerHTML is used here because the output includes heading and line-break markup.
       function showPerson() {
-        document.getElementById("myDiv01").innerHTML = " < h4 > myPerson Object Properties < /h4>" +
-        "First Name: " + myPerson.firstname + " < br > " +
-        "Last Name: " + myPerson.lastname + " < br > " +
-        "Age: " + myPerson.age + " < br > " +
+        document.getElementById("myDiv01").innerHTML = "<h4>myPerson Object Properties</h4>" +
+        "First Name: " + myPerson.firstname + "<br>" +
+        "Last Name: " + myPerson.lastname + "<br>" +
+        "Age: " + myPerson.age + "<br>" +
         "Eye Color: " + myPerson.eyeColor;
       }
       // Change the age property.
