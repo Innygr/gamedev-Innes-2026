@@ -3015,7 +3015,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="grade-stat">Points needed for all 8s<strong id="gradeNeeded">—</strong></div>
   </div>
   <p id="gradeMessage" role="status" style="margin-top:14px">Loading grade summary…</p>
-  <div class="grade-actions"><button type="button" id="resetGrades">Reset to supplied grades</button><button type="button" id="setEight">Set all to 8/9 (preview)</button></div>
+  <div class="grade-actions"><button type="button" id="resetGrades">Reset to supplied grades</button><button type="button" id="setEight">What-if: preview all at 8/9</button></div>
   <p class="muted" style="font-size:.9rem">Starting scores are the grades supplied for T1A01–T1A16. Changes are saved in this browser only. This is a planning calculator, not an official gradebook.</p>
 </section>
 
@@ -3051,7 +3051,7 @@ document.addEventListener('DOMContentLoaded', function () {
    [...rows.querySelectorAll('tr')].forEach((tr,i)=>{const cell=tr.children[2];cell.textContent=scores[i]>=8?'✓ Target reached':(8-scores[i]).toFixed(2)+' points to go';});
  }
  document.getElementById('resetGrades').addEventListener('click',()=>{scores=initial.slice();save();render();});
- document.getElementById('setEight').addEventListener('click',()=>{scores=scores.map(()=>8);save();render();});
+ document.getElementById('setEight').addEventListener('click',()=>{scores=scores.map(()=>8);render();document.getElementById('gradeMessage').textContent='What-if preview: every core assignment is set to 8/9. Your saved scores were not changed; press Reset to supplied grades to return to the starting values.';});
  render();
 })();
 </script>
