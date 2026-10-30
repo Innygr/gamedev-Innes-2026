@@ -1,30 +1,112 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><link rel="stylesheet" href="assignments.css"></head><body class="assignment-page">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t1a09 - Functions | Innes</title>
+  <link rel="stylesheet" href="assignments.css">
+</head>
+<body class="assignment-page">
+<main>
+  <header>
+    <p class="muted">GAME DEV 2026 · JAVASCRIPT FUNDAMENTALS</p>
+    <h1>t1a09 — Functions by Innes</h1>
+    <p>Functions organize code into reusable blocks. A function can receive information through parameters, perform an action, and return a result.</p>
+    <p><a href="https://www.w3schools.com/js/js_functions.asp" target="_blank" rel="noopener noreferrer">Reference: JavaScript Functions</a></p>
+  </header>
+  <section class="card">
+    <h2>Example function</h2>
+    <pre>function myAddNumbers(myIn01, myIn02) {
+  const mySum = myIn01 + myIn02;
+  return mySum;
+}
+
+const myAnswer = myAddNumbers(3, 6);</pre>
+    <p><code>myAddNumbers</code> is the function name. <code>myIn01</code> and <code>myIn02</code> are parameters. The values <code>3</code> and <code>6</code> are arguments passed into the function. <code>return</code> sends the answer back to the code that called it.</p>
+  </section>
+  <section class="card">
+    <h2>Try the function</h2>
+    <label for="myText01">First number</label>
+    <input type="number" id="myText01" value="3" step="any">
+    <label for="myText02">Second number</label>
+    <input type="number" id="myText02" value="6" step="any">
+    <div>
+      <button type="button" onclick="showSum()">Function Example — Add</button>
+      <button type="button" class="secondary" onclick="showProduct()">Multiply</button>
+      <button type="button" class="secondary" onclick="showDifference()">Subtract</button>
+      <button type="button" class="secondary" onclick="resetInputs()">Reset</button>
+    </div>
+    <h2>Output</h2>
+    <div id="myDiv01" role="status" aria-live="polite">Enter two numbers and call a function.</div>
+  </section>
+  <section class="card">
+    <h2>More function examples</h2>
+    <p>Functions can also return text, not just numbers. Click the button to call a function that builds a greeting.</p>
+    <button type="button" class="secondary" onclick="showGreeting()">Call greeting function</button>
+  </section>
+  <section class="card">
+    <h2>Challenge</h2>
+    <p>Create a function that divides the first number by the second. Return a useful message instead of dividing by zero. Then try writing a function that accepts one parameter.</p>
+  </section>
+</main>
 <script>
+"use strict";
 
-  function myExampleFunction(){
-    let myIn01 = parseInt(document.getElementById('myText01').value)
-    let myIn02 = parseInt(document.getElementById('myText02').value)
-    let mySum = myIn01 + myIn02
-    let myReply = myIn01 + ' + ' + myIn02 + ' = ' + mySum
-    return myReply
+// This function keeps the original assignment's two-input addition example.
+function myExampleFunction() {
+  const myIn01 = readNumber('myText01');
+  const myIn02 = readNumber('myText02');
+  if (myIn01 === null || myIn02 === null) return null;
+  const mySum = myIn01 + myIn02;
+  return myIn01 + ' + ' + myIn02 + ' = ' + mySum;
+}
+
+function readNumber(myId) {
+  const myInput = document.getElementById(myId);
+  const myValue = myInput.value.trim();
+  if (myValue === '' || !Number.isFinite(Number(myValue))) {
+    document.getElementById('myDiv01').textContent = 'Please enter a valid number in both fields.';
+    myInput.focus();
+    return null;
   }
+  return Number(myValue);
+}
 
+function showSum() {
+  const myReply = myExampleFunction();
+  if (myReply !== null) document.getElementById('myDiv01').textContent = myReply;
+}
+
+function showProduct() {
+  const myIn01 = readNumber('myText01');
+  const myIn02 = readNumber('myText02');
+  if (myIn01 === null || myIn02 === null) return;
+  const myProduct = myIn01 * myIn02;
+  document.getElementById('myDiv01').textContent = myIn01 + ' × ' + myIn02 + ' = ' + myProduct;
+}
+
+function showDifference() {
+  const myIn01 = readNumber('myText01');
+  const myIn02 = readNumber('myText02');
+  if (myIn01 === null || myIn02 === null) return;
+  const myDifference = myIn01 - myIn02;
+  document.getElementById('myDiv01').textContent = myIn01 + ' − ' + myIn02 + ' = ' + myDifference;
+}
+
+function showGreeting() {
+  const myGreeting = makeGreeting('Innes');
+  document.getElementById('myDiv01').textContent = myGreeting;
+}
+
+function makeGreeting(myName) {
+  return 'Hello, ' + myName + '! This text was returned by a function.';
+}
+
+function resetInputs() {
+  document.getElementById('myText01').value = '3';
+  document.getElementById('myText02').value = '6';
+  document.getElementById('myDiv01').textContent = 'Enter two numbers and call a function.';
+}
 </script>
-
-<h2 align=center>t1a09-functions-by-Fred</h2>
-
-<a href="https://www.w3schools.com/js/js_functions.asp"> Good reference to JS functions</a><br>
-
-Functions are used to organize code. They can also be "called" to use them, they can be used multiple times. You can also give them information in the <pre>function myShow()</pre><--- 
-<h4>Example working code</h4>
-
-<input type=number id="myText01" value=3><br>
-<input type=number id="myText02" value=6><br>
-
-<input type=button value="Function Example" onclick="{
-  document.getElementById('myDiv01').innerHTML = myExampleFunction()
-  }">
-
-  <div id="myDiv01">...</div>
-
-</body></html>
+</body>
+</html>
