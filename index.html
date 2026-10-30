@@ -2051,7 +2051,8 @@
                 setChecklistSyncStatus("Synced with the shared class checklist.", "online");
             } catch (error) {
                 console.error("Checklist sync failed:", error);
-                setChecklistSyncStatus("Cloud sync unavailable — your changes are saved locally and will retry.", "offline");
+                setChecklistSyncStatus("Cloud sync unavailable — your changes are saved locally; retrying shortly.", "offline");
+                setTimeout(() => { if (CHECKLIST_API_URL) syncChecklist(); }, 5000);
             } finally {
                 checklistSyncBusy = false;
                 if (checklistSyncQueued) {
@@ -2075,7 +2076,7 @@
                 lastSyncedChecklist = cloneChecklist(data.items);
                 // Keep browser-only items during the first migration, without duplicating
                 // tasks that are already present in the shared class list.
-                const sharedByText = new Map(data.items.map(item => [item.text.trim().toLowerCase(), item]));
+                const sharedByText = new Map(combined.map(item => [item.text.trim().toLowerCase(), item]));
                 const combined = cloneChecklist(data.items);
                 for (const localItem of checklistItems) {
                     const key = localItem.text.trim().toLowerCase();
