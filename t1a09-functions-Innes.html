@@ -45,6 +45,18 @@ const myAnswer = myAddNumbers(3, 6);</pre>
     <button type="button" class="secondary" onclick="showGreeting()">Call greeting function</button>
   </section>
   <section class="card">
+    <h2>More function examples</h2>
+    <p>A function can accept one or several parameters, and can return a calculated value.</p>
+    <pre>function myPower(myBase, myExponent) {
+  return myBase ** myExponent;
+}
+function myIsEven(myNumber) {
+  return myNumber % 2 === 0;
+}</pre>
+    <button type="button" class="secondary" onclick="showPower()">Calculate first number to the power of second</button>
+    <button type="button" class="secondary" onclick="showEven()">Check whether first number is even</button>
+  </section>
+  <section class="card">
     <h2>Challenge</h2>
     <p>Create a function that divides the first number by the second. Return a useful message instead of dividing by zero. Then try writing a function that accepts one parameter.</p>
   </section>
@@ -107,6 +119,6 @@ function resetInputs() {
   document.getElementById('myText02').value = '6';
   document.getElementById('myDiv01').textContent = 'Enter two numbers and call a function.';
 }
-</script>
+function showPower(){const a=readNumber('myText01'),b=readNumber('myText02');if(a===null||b===null)return;document.getElementById('myDiv01').textContent=a+' to the power of '+b+' = '+myPower(a,b);}\nfunction myPower(myBase,myExponent){return myBase**myExponent;}\nfunction showEven(){const a=readNumber('myText01');if(a===null)return;document.getElementById('myDiv01').textContent=a+' is '+(myIsEven(a)?'even':'odd')+'.';}\nfunction myIsEven(myNumber){return Number.isInteger(myNumber)&&myNumber%2===0;}\n</script>
 </body>
 </html>
