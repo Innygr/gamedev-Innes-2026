@@ -4,21 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>t1a06 - Proper Names and Variables | Innes</title>
-  <style>
-    :root { color-scheme:dark; --bg:#080d18; --panel:#111c2e; --cyan:#53f4ff; --purple:#a78bfa; --text:#e8f4ff; --muted:#a7bad0; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; padding:32px 18px; font:16px/1.6 system-ui,sans-serif; color:var(--text); background:radial-gradient(ellipse at top,#172b49 0,#080d18 65%); }
-    main { max-width:900px; margin:auto; }
-    header,.card { border:1px solid #29415d; border-radius:18px; background:rgba(17,28,46,.94); padding:24px; margin-bottom:20px; box-shadow:0 12px 36px #0005; }
-    h1 { color:var(--cyan); margin-top:0; } h2 { color:var(--purple); }
-    .muted { color:var(--muted); } b { color:var(--cyan); }
-    button { font:inherit; font-weight:750; padding:11px 15px; border-radius:10px; border:1px solid var(--cyan); background:var(--cyan); color:#06111c; cursor:pointer; margin:6px 8px 0 0; }
-    button.secondary { background:transparent; color:var(--cyan); }
-    button:hover { filter:brightness(1.12); }
-    pre,#myDiv01 { white-space:pre-wrap; overflow-wrap:anywhere; background:#07111e; border:1px solid #29415d; border-radius:10px; padding:16px; }
-    #toggle { background:linear-gradient(100deg,#53f4ff,#a78bfa); border:0; }
-    code { color:#b8faff; }
-  </style>
   <link rel="stylesheet" href="assignments.css">
 </head>
 <body class="assignment-page">
@@ -26,18 +11,22 @@
   <header>
     <p class="muted">GAME DEV 2026 · JAVASCRIPT FUNDAMENTALS</p>
     <h1>t1a06 — Proper Names and Variables by Innes</h1>
-    <p>This page demonstrates variables, data types, and a Boolean value that can be switched between <code>true</code> and <code>false</code>.</p>
+    <p>Variables store information so a program can use and change it. Good variable names make code easier to understand.</p>
+    <p><a href="https://www.w3schools.com/js/js_variables.asp" target="_blank" rel="noopener noreferrer">Reference: JavaScript Variables</a></p>
   </header>
   <section class="card">
     <h2>HTML formatting</h2>
-    <p>This is <b>bold</b> text. CSS controls its colour and appearance.</p>
+    <p>This is <b>bold</b> text. HTML describes the content, while CSS controls its appearance.</p>
   </section>
   <section class="card">
     <h2>Example variables</h2>
     <pre>let myNum = 3;             // number
 let myString = ' Hello ';  // string
 let myFloat = 17.5;        // decimal number
-let myBool = true;         // Boolean (true or false)</pre>
+let myBool = true;         // Boolean (true or false)
+
+const myName = 'Innes';    // constant string</pre>
+    <p>A variable name should describe the value it stores. JavaScript names are case-sensitive: <code>myNum</code> and <code>mynum</code> are different names. Use <code>let</code> when a value can change and <code>const</code> when it should not be reassigned.</p>
     <button type="button" onclick="sayHello()">Show variable values</button>
     <button type="button" class="secondary" onclick="clearOutput()">Clear output</button>
     <h2>Output</h2>
@@ -47,37 +36,46 @@ let myBool = true;         // Boolean (true or false)</pre>
     <h2>Boolean toggle</h2>
     <p>Current value: <strong id="boolValue">true</strong></p>
     <button type="button" id="toggle" onclick="myToggle()">Toggle myBool Value</button>
-    <p class="muted">Each click changes the Boolean to its opposite value.</p>
+    <p class="muted">A Boolean has only two values: <code>true</code> and <code>false</code>. The <code>!</code> operator reverses the value.</p>
+  </section>
+  <section class="card">
+    <h2>Challenge</h2>
+    <p>Add a variable for your favourite game, then display it with the other values. Try changing <code>myNum</code> and <code>myFloat</code> too.</p>
   </section>
 </main>
 <script>
-  let myBoolState = true;
+"use strict";
 
-  function sayHello() {
-    const myNum = 3;
-    const myString = ' Hello ';
-    const myFloat = 17.5;
-    const myBool = myBoolState;
-    const myOut = document.getElementById('myDiv01');
-    myOut.textContent =
-      'myNum: ' + myNum +
-      '\\nmyString: "' + myString.trim() + '"' +
-      '\\nmyFloat: ' + myFloat +
-      '\\nmyBool: ' + myBool +
-      (myBool ? '\\nWOW — the Boolean is true!' : '\\nThe Boolean is false.');
-  }
+let myBoolState = true;
 
-  function myToggle() {
-    myBoolState = !myBoolState;
-    document.getElementById('boolValue').textContent = String(myBoolState);
-    if (document.getElementById('myDiv01').textContent !== 'Click the button to display the variables.') {
-      sayHello();
-    }
-  }
+function sayHello() {
+  const myNum = 3;
+  const myString = ' Hello ';
+  const myFloat = 17.5;
+  const myBool = myBoolState;
+  const myName = 'Innes';
+  const myOut = document.getElementById('myDiv01');
 
-  function clearOutput() {
-    document.getElementById('myDiv01').textContent = 'Click the button to display the variables.';
+  myOut.textContent =
+    'myName: ' + myName +
+    '\nmyNum: ' + myNum +
+    '\nmyString: "' + myString.trim() + '"' +
+    '\nmyFloat: ' + myFloat +
+    '\nmyBool: ' + myBool +
+    (myBool ? '\nWOW — the Boolean is true!' : '\nThe Boolean is false.');
+}
+
+function myToggle() {
+  myBoolState = !myBoolState;
+  document.getElementById('boolValue').textContent = String(myBoolState);
+  if (document.getElementById('myDiv01').textContent !== 'Click the button to display the variables.') {
+    sayHello();
   }
+}
+
+function clearOutput() {
+  document.getElementById('myDiv01').textContent = 'Click the button to display the variables.';
+}
 </script>
 </body>
 </html>
