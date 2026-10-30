@@ -141,6 +141,7 @@
   document.getElementById('liveInput').addEventListener('input', event => showEvent('You typed: ' + event.target.value));
   document.getElementById('clearOutput').addEventListener('click', () => showEvent('Events will appear here!'));
 document.getElementById('eventForm').addEventListener('submit',e=>{e.preventDefault();showEvent('Form submitted for '+document.getElementById('eventName').value+'.');});
- document.getElementById('pointerArea').addEventListener('pointerdown',e=>showEvent('Pointer down: '+e.pointerType+' input.'));\n</script>
+ document.getElementById('pointerArea').addEventListener('pointerdown',e=>showEvent('Pointer down: '+e.pointerType+' input.'));
+</script>
 </body>
 </html>
