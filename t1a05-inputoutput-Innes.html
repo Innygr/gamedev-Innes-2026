@@ -4,23 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>t1a05 - Input/Output | Innes</title>
-  <style>
-    :root { color-scheme:dark; --bg:#080d18; --panel:#111c2e; --cyan:#53f4ff; --purple:#a78bfa; --text:#e8f4ff; --muted:#a7bad0; }
-    * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; padding:32px 18px; font:16px/1.6 system-ui,sans-serif; color:var(--text); background:radial-gradient(ellipse at top,#172b49 0,#080d18 65%); }
-    main { max-width:850px; margin:auto; }
-    header,.card { border:1px solid #29415d; border-radius:18px; background:rgba(17,28,46,.94); padding:24px; margin-bottom:20px; box-shadow:0 12px 36px #0005; }
-    h1 { color:var(--cyan); margin-top:0; } h2 { color:var(--purple); margin-top:0; }
-    a { color:var(--cyan); } label { display:block; margin:12px 0 6px; font-weight:650; }
-    input,button { font:inherit; border-radius:10px; padding:10px 12px; }
-    input[type=number] { width:100%; max-width:280px; background:#091321; color:var(--text); border:1px solid #45617d; }
-    button { cursor:pointer; border:1px solid var(--cyan); color:#06111c; background:var(--cyan); font-weight:750; margin:8px 8px 0 0; }
-    button.secondary { background:transparent; color:var(--cyan); }
-    button:hover { filter:brightness(1.12); transform:translateY(-1px); }
-    pre { white-space:pre-wrap; overflow-wrap:anywhere; background:#07111e; border:1px solid #29415d; border-radius:10px; padding:14px; color:#b8faff; }
-    #myDiv01 { min-height:70px; padding:16px; border-radius:10px; border:1px solid #34506e; background:#091321; }
-    .muted { color:var(--muted); }
-  </style>
   <link rel="stylesheet" href="assignments.css">
 </head>
 <body class="assignment-page">
@@ -28,63 +11,81 @@
   <header>
     <p class="muted">GAME DEV 2026 · JAVASCRIPT FUNDAMENTALS</p>
     <h1>t1a05 — Input / Output by Innes</h1>
-    <p>JavaScript can read a value from an input and display a result in an HTML element.</p>
-    <p><a href="https://www.w3schools.com/jsref/prop_html_innerhtml.asp" target="_blank" rel="noopener noreferrer">Reference: innerHTML</a></p>
+    <p>JavaScript can read information from an input and display a result in an HTML element. This is called input and output (I/O).</p>
+    <p><a href="https://www.w3schools.com/js/js_input.asp" target="_blank" rel="noopener noreferrer">Reference: JavaScript Input</a> · <a href="https://www.w3schools.com/js/js_output.asp" target="_blank" rel="noopener noreferrer">JavaScript Output</a></p>
   </header>
   <section class="card">
     <h2>Example code</h2>
     <pre>const myIn01 = Number(document.getElementById('myNum01').value);
-document.getElementById('myDiv01').textContent = 'Hi ' + myIn01;</pre>
-    <p class="muted">The input's value is the input. Updating the output element is the output.</p>
+const myAnswer = myIn01 * 2;
+document.getElementById('myDiv01').textContent = myAnswer;</pre>
+    <p class="muted">The input element provides a value. JavaScript can process that value, then send a result to an output element. <code>textContent</code> displays text safely.</p>
   </section>
   <section class="card">
-    <h2>Try it</h2>
+    <h2>Try it — input and output</h2>
     <label for="myNum01">Enter a number</label>
     <input id="myNum01" type="number" value="4" step="any">
     <div>
       <button type="button" onclick="calculateSquare()">Square it</button>
       <button type="button" class="secondary" onclick="doubleNumber()">Double it</button>
       <button type="button" class="secondary" onclick="showGreeting()">Show greeting</button>
+      <button type="button" class="secondary" onclick="showInput()">Show input</button>
       <button type="button" class="secondary" onclick="resetOutput()">Reset</button>
     </div>
-    <h2 style="margin-top:24px">Output</h2>
+    <h2>Output</h2>
     <div id="myDiv01" role="status" aria-live="polite">Your result will appear here.</div>
+  </section>
+  <section class="card">
+    <h2>Challenge</h2>
+    <p>Change the program so it calculates half of the number. Then add another button that displays the number multiplied by ten.</p>
+    <p><strong>Think about it:</strong> What should happen if the input is empty?</p>
   </section>
 </main>
 <script>
-  function readNumber() {
-    const input = document.getElementById('myNum01');
-    const value = input.value.trim();
-    if (value === '' || !Number.isFinite(Number(value))) {
-      document.getElementById('myDiv01').textContent = 'Please enter a valid number first.';
-      return null;
-    }
-    return Number(value);
-  }
+"use strict";
 
-  function calculateSquare() {
-    const myIn01 = readNumber();
-    if (myIn01 === null) return;
-    const myAnswer = myIn01 * myIn01;
-    document.getElementById('myDiv01').textContent = myIn01 + ' squared = ' + myAnswer;
-  }
+function readNumber() {
+  const myInput = document.getElementById('myNum01');
+  const myValue = myInput.value.trim();
+  const myOutput = document.getElementById('myDiv01');
 
-  function doubleNumber() {
-    const value = readNumber();
-    if (value === null) return;
-    document.getElementById('myDiv01').textContent = value + ' doubled = ' + (value * 2);
+  if (myValue === '' || !Number.isFinite(Number(myValue))) {
+    myOutput.textContent = 'Please enter a valid number first.';
+    myInput.focus();
+    return null;
   }
+  return Number(myValue);
+}
 
-  function showGreeting() {
-    const value = readNumber();
-    if (value === null) return;
-    document.getElementById('myDiv01').textContent = 'Hello! You entered ' + value + '.';
-  }
+function calculateSquare() {
+  const myIn01 = readNumber();
+  if (myIn01 === null) return;
+  const myAnswer = myIn01 * myIn01;
+  document.getElementById('myDiv01').textContent = myIn01 + ' squared = ' + myAnswer;
+}
 
-  function resetOutput() {
-    document.getElementById('myNum01').value = '4';
-    document.getElementById('myDiv01').textContent = 'Your result will appear here.';
-  }
+function doubleNumber() {
+  const myIn01 = readNumber();
+  if (myIn01 === null) return;
+  document.getElementById('myDiv01').textContent = myIn01 + ' doubled = ' + (myIn01 * 2);
+}
+
+function showGreeting() {
+  const myIn01 = readNumber();
+  if (myIn01 === null) return;
+  document.getElementById('myDiv01').textContent = 'Hello! You entered ' + myIn01 + '.';
+}
+
+function showInput() {
+  const myIn01 = readNumber();
+  if (myIn01 === null) return;
+  document.getElementById('myDiv01').textContent = 'The input value is: ' + myIn01;
+}
+
+function resetOutput() {
+  document.getElementById('myNum01').value = '4';
+  document.getElementById('myDiv01').textContent = 'Your result will appear here.';
+}
 </script>
 </body>
 </html>
