@@ -104,6 +104,12 @@
   </section>
 
   <section class="card">
+    <h2>11. Submit and 12. Pointer events</h2>
+    <form id="eventForm"><label for="eventName">Enter a name</label><input id="eventName" value="Innes"><button type="submit">Submit form</button></form>
+    <div id="pointerArea" tabindex="0" class="output">Click or tap this area (pointerdown event).</div>
+    <p class="muted">The submit event can intercept a form before it reloads the page. Pointer events work with mouse, pen, and touch input.</p>
+  </section>
+  <section class="card">
     <h2>Event output</h2>
     <div id="eventOutput" class="output" role="status" aria-live="polite">Events will appear here!</div>
     <button type="button" class="secondary" id="clearOutput">Clear output</button>
@@ -134,6 +140,6 @@
   document.getElementById('keyUpInput').addEventListener('keyup', () => showEvent('A key was released!'));
   document.getElementById('liveInput').addEventListener('input', event => showEvent('You typed: ' + event.target.value));
   document.getElementById('clearOutput').addEventListener('click', () => showEvent('Events will appear here!'));
-</script>
+document.getElementById('eventForm').addEventListener('submit',e=>{e.preventDefault();showEvent('Form submitted for '+document.getElementById('eventName').value+'.');});\n  document.getElementById('pointerArea').addEventListener('pointerdown',e=>showEvent('Pointer down: '+e.pointerType+' input.'));\n</script>
 </body>
 </html>
