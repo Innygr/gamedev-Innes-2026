@@ -2100,7 +2100,8 @@
                 }
             } catch (error) {
                 console.error("Could not load shared checklist:", error);
-                setChecklistSyncStatus("Cloud sync unavailable — showing this browser's saved copy.", "offline");
+                const detail = error && error.message ? error.message : String(error);
+                setChecklistSyncStatus("Cloud sync unavailable — " + detail + ". Showing this browser's saved copy.", "offline");
             }
         }
 
