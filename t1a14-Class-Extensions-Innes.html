@@ -59,6 +59,19 @@
     <button type="button" onclick="showCat()">Create and show extended cat class</button>
   </section>
   <section class="card">
+    <h2>Why use super()?</h2>
+    <p>When a child class defines its own constructor, it must call <code>super()</code> before using <code>this</code>. This runs the parent constructor and initializes inherited properties.</p>
+    <pre>class myDog extends myAnimal {
+  constructor(passName, passAge, passBreed) {
+    super(passName, passAge);
+    this.myBreed = passBreed;
+  }
+}</pre>
+    <label for="dogBreed">Dog breed</label><input id="dogBreed" value="Labrador" maxlength="40">
+    <button type="button" class="secondary" onclick="showDog()">Create extended dog</button>
+    <p class="muted">This is another child class example: it inherits the animal's name and age, then adds a breed.</p>
+  </section>
+  <section class="card">
     <h2>Output</h2>
     <div id="myDiv01" role="status" aria-live="polite">Choose a class example above to see the result.</div>
   </section>
@@ -106,7 +119,7 @@
     myDog.myShow();
   }
 
-  function showCat() {
+  class myDog extends myAnimal {\n    constructor(passName,passAge,passBreed){super(passName,passAge);this.myBreed=passBreed;}\n    myShow(){document.getElementById('myDiv01').textContent=this.myName+' is a '+this.myBreed+'.\\nAge: '+this.myAge+'\\nThis dog inherits from myAnimal.';}\n  }\n  function showDog(){const pet=readPet('myText01','myIn01');if(!pet)return;const dog=new myDog(pet.name,pet.age,document.getElementById('dogBreed').value.trim()||'unknown breed');dog.myShow();}\n\n  function showCat() {
     const pet = readPet('myText02', 'myIn02');
     if (!pet) return;
     const myPet = new myCat(pet.name, pet.age);
