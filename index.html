@@ -1130,6 +1130,19 @@
             line-height: 1;
         }
 
+    
+        .grade-tool { margin: 28px 0; padding: 22px; border: 1px solid rgba(0,255,255,.35); border-radius: 12px; background: rgba(4,14,28,.92); }
+        .grade-tool h2 { color: #00ffff; margin-top: 0; }
+        .grade-table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+        .grade-table th,.grade-table td { padding: 9px; border-bottom: 1px solid rgba(0,255,255,.16); text-align: left; }
+        .grade-table input { width: 86px; max-width: 100%; padding: 7px; color: #fff; background: #091321; border: 1px solid #45617d; border-radius: 6px; }
+        .grade-summary { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 12px; margin-top: 18px; }
+        .grade-stat { padding: 14px; border: 1px solid rgba(0,255,255,.25); border-radius: 9px; background: rgba(0,255,255,.045); }
+        .grade-stat strong { display: block; color: #00ffff; font-size: 1.35rem; }
+        .grade-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+        .grade-actions button { padding: 9px 13px; border:1px solid #00ffff; border-radius:7px; background:transparent; color:#00ffff; cursor:pointer; }
+        @media(max-width:600px) { .grade-table th:nth-child(2),.grade-table td:nth-child(2) { text-align:right; } .grade-table input { width:70px; } }
+
     </style>
 </head>
 
@@ -2985,5 +2998,62 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 
+
+<section class="grade-tool" id="gradeCalculator">
+  <h2>GameDev Grade Calculator</h2>
+  <p>Track your progress toward <strong>8/9 on every core assignment</strong>. Change any score to see the totals update. X-assignments are intentionally excluded from this core average.</p>
+  <div style="overflow-x:auto">
+  <table class="grade-table">
+    <thead><tr><th>Assignment</th><th>Score / 9</th><th>Progress to 8/9</th></tr></thead>
+    <tbody id="gradeRows"></tbody>
+  </table>
+  </div>
+  <div class="grade-summary" aria-live="polite">
+    <div class="grade-stat">Current average<strong id="gradeAverage">—</strong></div>
+    <div class="grade-stat">Overall percentage<strong id="gradePercent">—</strong></div>
+    <div class="grade-stat">Assignments below 8<strong id="gradeBelow">—</strong></div>
+    <div class="grade-stat">Points needed for all 8s<strong id="gradeNeeded">—</strong></div>
+  </div>
+  <p id="gradeMessage" role="status" style="margin-top:14px">Loading grade summary…</p>
+  <div class="grade-actions"><button type="button" id="resetGrades">Reset to supplied grades</button><button type="button" id="setEight">Set all to 8/9 (preview)</button></div>
+  <p class="muted" style="font-size:.9rem">Starting scores are the grades supplied for T1A01–T1A16. Changes are saved in this browser only. This is a planning calculator, not an official gradebook.</p>
+</section>
+
+<script>
+(function(){
+ const initial=[8,6,7,7,6,8,8,7,6,7,8,8,8,6,9,8.9];
+ const names=['T1A01 · Tables','T1A02 · Lists','T1A03 · Forms','T1A04 · CSS','T1A05 · Input / Output','T1A06 · Variables','T1A07 · Decisions','T1A08 · Loops','T1A09 · Functions','T1A10 · Events','T1A11 · Arrays','T1A12 · Objects','T1A13 · Classes','T1A14 · Class Extensions','T1A15 · Mandelbrot','T1A16 · Powerup'];
+ const rows=document.getElementById('gradeRows');
+ let scores=initial.slice();
+ try { const saved=JSON.parse(localStorage.getItem('gamedevCoreGrades')); if(Array.isArray(saved)&&saved.length===16)scores=saved.map((v,i)=>Number.isFinite(Number(v))?Math.min(9,Math.max(0,Number(v))):initial[i]); } catch(e){}
+ function render(){
+   rows.innerHTML='';
+   names.forEach((name,i)=>{
+     const tr=document.createElement('tr');
+     const nameCell=document.createElement('td');nameCell.textContent=name;
+     const scoreCell=document.createElement('td');
+     const input=document.createElement('input');input.type='number';input.min='0';input.max='9';input.step='0.1';input.value=scores[i];input.setAttribute('aria-label',name+' score out of 9');
+     input.addEventListener('input',()=>{if(input.value==='')return;const v=Number(input.value);if(!Number.isFinite(v))return;scores[i]=Math.min(9,Math.max(0,v));save();update();});
+     scoreCell.appendChild(input);
+     const progress=document.createElement('td');progress.textContent=scores[i]>=8?'Target reached':(8-scores[i]).toFixed(2)+' points to go';
+     tr.append(nameCell,scoreCell,progress);rows.appendChild(tr);
+   });
+   update();
+ }
+ function save(){try{localStorage.setItem('gamedevCoreGrades',JSON.stringify(scores));}catch(e){}}
+ function update(){
+   const total=scores.reduce((a,b)=>a+b,0),average=total/scores.length,below=scores.filter(x=>x<8).length,needed=scores.reduce((a,b)=>a+Math.max(0,8-b),0);
+   document.getElementById('gradeAverage').textContent=average.toFixed(2)+' / 9';
+   document.getElementById('gradePercent').textContent=(average/9*100).toFixed(2)+'%';
+   document.getElementById('gradeBelow').textContent=below+' / 16';
+   document.getElementById('gradeNeeded').textContent=needed.toFixed(2);
+   document.getElementById('gradeMessage').textContent=below===0?'All core assignments are at least 8/9. Excellent!':'You need '+needed.toFixed(2)+' more total points across '+below+' assignment(s) to bring every core assignment to at least 8/9.';
+   [...rows.querySelectorAll('tr')].forEach((tr,i)=>{const cell=tr.children[2];cell.textContent=scores[i]>=8?'✓ Target reached':(8-scores[i]).toFixed(2)+' points to go';});
+ }
+ document.getElementById('resetGrades').addEventListener('click',()=>{scores=initial.slice();save();render();});
+ document.getElementById('setEight').addEventListener('click',()=>{scores=scores.map(()=>8);save();render();});
+ render();
+})();
+</script>
 </body>
 </html>
