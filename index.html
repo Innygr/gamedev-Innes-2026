@@ -1143,6 +1143,19 @@
         .grade-actions button { padding: 9px 13px; border:1px solid #00ffff; border-radius:7px; background:transparent; color:#00ffff; cursor:pointer; }
         @media(max-width:600px) { .grade-table th:nth-child(2),.grade-table td:nth-child(2) { text-align:right; } .grade-table input { width:70px; } }
 
+    
+        .workflowHub { margin: 18px 0; padding: 18px; border: 1px solid rgba(167,139,250,.42); border-radius: 12px; background: linear-gradient(135deg,rgba(12,20,43,.96),rgba(7,29,43,.94)); box-shadow: 0 0 18px rgba(83,244,255,.08); }
+        .workflowHub h2 { margin:0 0 6px; }
+        .workflowIntro { color:#c5d5e8; margin:0 0 14px; }
+        .workflowGrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+        .workflowCard { padding:14px; border:1px solid rgba(83,244,255,.22); border-radius:9px; background:rgba(4,12,27,.72); }
+        .workflowCard h3 { color:#a78bfa; margin:0 0 7px; }
+        .workflowCard p { margin:0 0 12px; font-size:.94rem; color:#d5e4f3; }
+        .workflowCard button,.workflowTools button { border:1px solid #53f4ff; border-radius:7px; padding:8px 11px; background:rgba(0,255,255,.08); color:#53f4ff; cursor:pointer; font:inherit; }
+        .workflowCard button:hover,.workflowTools button:hover { background:#53f4ff; color:#06101e; }
+        .workflowTools { display:flex; flex-wrap:wrap; gap:8px; margin-top:13px; }
+        #workflowFeedback { min-height:1.4em; margin:10px 0 0; color:#8fffd5; }
+
     </style>
 </head>
 
@@ -1263,6 +1276,40 @@
 
         </div>
 
+        <!-- =====================
+             WORKFLOW LAUNCHPAD
+             ===================== -->
+        <section class="workflowHub" aria-labelledby="workflowTitle">
+            <h2 id="workflowTitle">Workflow Launchpad</h2>
+            <p class="workflowIntro">One click adds a practical step-by-step workflow to your checklist. Your checklist remains saved in this browser.</p>
+            <div class="workflowGrid">
+                <article class="workflowCard">
+                    <h3>🚀 Build an assignment</h3>
+                    <p>Go from understanding the task to a finished, checked assignment.</p>
+                    <button type="button" data-workflow="build">Start workflow</button>
+                </article>
+                <article class="workflowCard">
+                    <h3>🛠️ Debug a problem</h3>
+                    <p>Find the cause systematically instead of changing random code.</p>
+                    <button type="button" data-workflow="debug">Start workflow</button>
+                </article>
+                <article class="workflowCard">
+                    <h3>📤 Submission check</h3>
+                    <p>Catch missing files, broken links, unfinished examples and layout issues.</p>
+                    <button type="button" data-workflow="submit">Start workflow</button>
+                </article>
+                <article class="workflowCard">
+                    <h3>📈 Raise an assignment grade</h3>
+                    <p>Review feedback, improve the weakest criteria and verify the result.</p>
+                    <button type="button" data-workflow="grade">Start workflow</button>
+                </article>
+            </div>
+            <div class="workflowTools">
+                <button type="button" id="clearCompletedWorkflow">Remove completed checklist items</button>
+                <button type="button" id="copyChecklistWorkflow">Copy checklist as text</button>
+            </div>
+            <p id="workflowFeedback" role="status" aria-live="polite"></p>
+        </section>
 
         <!-- =====================
              FUN FACT
@@ -1948,6 +1995,14 @@
             "t1a06": "t1a06-proper-and-variables-Innes.html",
             "t1a07": "t1a07-decision-Innes.html",
             "t1a08": "t1a08-loops-Innes.html",
+            "t1a09": "t1a09-functions-Innes.html",
+            "t1a10": "t1a10-Events-by-Innes.html",
+            "t1a11": "t1a11-array-Innes.html",
+            "t1a12": "t1a12-objects-Innes.html",
+            "t1a13": "t1a13-Classes-Innes.html",
+            "t1a14": "t1a14-Class-Extensions-Innes.html",
+            "t1a15": "t1a15-mandelbrot-Innes.html",
+            "t1a16": "t1a16-powerup-Innes.html",
             "t1ax4": "t1ax4-crystal-Innes.html"
         };
 
@@ -3018,6 +3073,71 @@ document.addEventListener('DOMContentLoaded', function () {
   <div class="grade-actions"><button type="button" id="resetGrades">Reset to supplied grades</button><button type="button" id="setEight">What-if: preview all at 8/9</button></div>
   <p class="muted" style="font-size:.9rem">Starting scores are the grades supplied for T1A01–T1A16. Changes are saved in this browser only. This is a planning calculator, not an official gradebook.</p>
 </section>
+
+
+<script>
+(function(){
+ const workflows={
+  build:[
+   "BUILD WORKFLOW — Read the assignment instructions and identify the required outcome.",
+   "BUILD WORKFLOW — List the HTML elements, CSS rules, or JavaScript features needed.",
+   "BUILD WORKFLOW — Make the smallest working version first.",
+   "BUILD WORKFLOW — Add the required examples and interactive behaviour.",
+   "BUILD WORKFLOW — Test normal, empty, unusual, and invalid inputs.",
+   "BUILD WORKFLOW — Check spelling, headings, labels, and code formatting.",
+   "BUILD WORKFLOW — Save the file and verify every link and asset."
+  ],
+  debug:[
+   "DEBUG WORKFLOW — Reproduce the problem and write down the exact steps.",
+   "DEBUG WORKFLOW — Read the browser console and note the first relevant error.",
+   "DEBUG WORKFLOW — Check element IDs, spelling, brackets, quotes, and file paths.",
+   "DEBUG WORKFLOW — Inspect the failing value with console.log or the debugger.",
+   "DEBUG WORKFLOW — Change one thing at a time and test again.",
+   "DEBUG WORKFLOW — Remove temporary debug output and retest the full page."
+  ],
+  submit:[
+   "SUBMISSION WORKFLOW — Confirm the correct assignment file and filename.",
+   "SUBMISSION WORKFLOW — Open the page from its normal location, not only the editor preview.",
+   "SUBMISSION WORKFLOW — Test every button, input, link, and interactive example.",
+   "SUBMISSION WORKFLOW — Check images, audio, scripts, stylesheets, and other required assets.",
+   "SUBMISSION WORKFLOW — Check desktop and mobile layout.",
+   "SUBMISSION WORKFLOW — Check spelling, accessibility labels, and browser console errors.",
+   "SUBMISSION WORKFLOW — Save, commit/upload, and reopen the submitted version."
+  ],
+  grade:[
+   "GRADE IMPROVEMENT — Open the teacher feedback and identify the exact missing criteria.",
+   "GRADE IMPROVEMENT — Compare the assignment against the instructions and examples.",
+   "GRADE IMPROVEMENT — Add a clear example for each missing concept.",
+   "GRADE IMPROVEMENT — Make the examples usable, not just decorative.",
+   "GRADE IMPROVEMENT — Explain important code with short comments or descriptions.",
+   "GRADE IMPROVEMENT — Test the new work and capture evidence if required.",
+   "GRADE IMPROVEMENT — Ask for reassessment only after checking every criterion."
+  ]
+ };
+ document.querySelectorAll('[data-workflow]').forEach(button=>button.addEventListener('click',()=>{
+  const key=button.dataset.workflow;
+  const existing=new Set(checklistItems.map(item=>item.text));
+  const fresh=workflows[key].filter(item=>!existing.has(item));
+  fresh.forEach(text=>checklistItems.push({text,checked:false}));
+  saveChecklist();renderChecklist();
+  const feedback=document.getElementById('workflowFeedback');
+  feedback.textContent=fresh.length?('Added '+fresh.length+' steps to your checklist. Scroll to the checklist to work through them.'): 'Those workflow steps are already in your checklist.';
+  document.getElementById('checklist').scrollIntoView({behavior:'smooth',block:'start'});
+ }));
+ document.getElementById('clearCompletedWorkflow').addEventListener('click',()=>{
+  const before=checklistItems.length;
+  checklistItems=checklistItems.filter(item=>!item.checked);
+  saveChecklist();renderChecklist();
+  document.getElementById('workflowFeedback').textContent='Removed '+(before-checklistItems.length)+' completed item(s).';
+ });
+ document.getElementById('copyChecklistWorkflow').addEventListener('click',async()=>{
+  const content=checklistItems.map(item=>(item.checked?'[x] ':'[ ] ')+item.text).join('\n');
+  const feedback=document.getElementById('workflowFeedback');
+  try{await navigator.clipboard.writeText(content);feedback.textContent='Checklist copied to clipboard.';}
+  catch(error){feedback.textContent='Clipboard access is unavailable here. Select and copy your checklist manually.';}
+ });
+})();
+</script>
 
 <script>
 (function(){
