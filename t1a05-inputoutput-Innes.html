@@ -94,6 +94,8 @@ function resetOutput() {
   document.getElementById('myNum01').value = '4';
   document.getElementById('myDiv01').textContent = 'Your result will appear here.';
 }
-function showPercent(){const n=readNumber();if(n===null)return;document.getElementById('myDiv01').textContent='15% of '+n+' = '+(n*.15);}\nfunction showCelsius(){const n=readNumber();if(n===null)return;document.getElementById('myDiv01').textContent=n+'°C = '+((n*9/5)+32)+'°F';}\nfunction countCharacters(){const t=document.getElementById('textInput').value;document.getElementById('myDiv01').textContent='Character count: '+t.length;}\n</script>
+function showPercent(){const n=readNumber();if(n===null)return;document.getElementById('myDiv01').textContent='15% of '+n+' = '+(n*.15);}
+function showCelsius(){const n=readNumber();if(n===null)return;document.getElementById('myDiv01').textContent=n+'°C = '+((n*9/5)+32)+'°F';}
+function countCharacters(){const t=document.getElementById('textInput').value;document.getElementById('myDiv01').textContent='Character count: '+t.length;}\n</script>
 </body>
 </html>
