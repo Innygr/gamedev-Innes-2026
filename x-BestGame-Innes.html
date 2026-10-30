@@ -46,4 +46,6 @@ for(let i=particles.length-1;i>=0;i--){let q=particles[i];q.mesh.position.addSca
 if(conn&&conn.open&&performance.now()-lastNet>80){conn.send(serialize());lastNet=performance.now()}updateHud()}
 function netSend(d){try{if(conn&&conn.open)conn.send(d)}catch{}}
 function animate(){requestAnimationFrame(animate);let dt=Math.min(clock.getDelta(),.04);update(dt);if(player){let p=player.group.position;camera.position.lerp(vec(p.x,25,p.z+27),.055);camera.lookAt(p.x,0,p.z-2)}renderer.render(scene,camera)}init3D();animate();
-</script></body></html>
+</script>
+<nav aria-label="Site navigation" style="margin:24px auto;padding:14px;text-align:center"><a href="index.html">← Back to GameDev Home</a></nav>
+</body></html>
