@@ -32,4 +32,6 @@ document.getElementById('evenLoop').addEventListener('click',()=>{const v=getLoo
 document.getElementById('multiplesLoop').addEventListener('click',()=>{const v=getLoopValues();if(!v)return;outputLines(Array.from({length:v.max},(_,i)=>(i+1)+' × '+v.mult+' = '+((i+1)*v.mult)));});
 document.getElementById('countdownLoop').addEventListener('click',()=>{const v=getLoopValues();if(!v)return;const a=[];for(let i=v.max;i>=0;i--)a.push(i);a.push('Launch!');outputLines(a);});
 document.getElementById('clearLoop').addEventListener('click',()=>document.getElementById('myDiv01').textContent='Choose an example to run the loop.');
-</script></body></html>
+</script>
+<nav aria-label="Site navigation" style="margin:24px auto;padding:14px;text-align:center"><a href="index.html">← Back to GameDev Home</a></nav>
+</body></html>
