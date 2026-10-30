@@ -1091,6 +1091,45 @@
             #upgradeNotice * { animation: none !important; transition: none !important; }
         }
 
+
+        /* Visually group links that belong to the same project. */
+        .project-group {
+            list-style: none;
+            margin: 10px 0 10px -22px;
+            padding: 10px 12px;
+            border: 1px solid rgba(0, 255, 255, 0.22);
+            border-radius: 8px;
+            background: rgba(0, 255, 255, 0.035);
+        }
+
+        .project-group-title {
+            color: #00ffff;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .project-group-links {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-left: 22px;
+            padding-left: 15px;
+            border-left: 2px solid rgba(0, 255, 255, 0.55);
+            position: relative;
+        }
+
+        .project-group-links::before {
+            content: "}";
+            position: absolute;
+            left: -14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00ffff;
+            font-family: monospace;
+            font-size: 30px;
+            line-height: 1;
+        }
+
     </style>
 </head>
 
@@ -1482,20 +1521,16 @@
                     </a>
                 </li>
 
-                 <li>
-                    <a
-                        href="https://github.com/Innygr/iCreate-Order-Networking"
-                    >
-                        iCreate: Order Networking (File Download)
-                    </a>
-                </li>
-
-                <li>
-                    <a
-                        href="https://github.com/Innygr/iCreate-Order-Networking"
-                    >
-                        iCreate: Order Networking (GitHub)
-                    </a>
+                <li class="project-group">
+                    <div class="project-group-title">iCreate: Order Networking</div>
+                    <div class="project-group-links">
+                        <a href="https://github.com/Innygr/iCreate-Order-Networking">
+                            File Download
+                        </a>
+                        <a href="https://github.com/Innygr/iCreate-Order-Networking">
+                            GitHub Repository
+                        </a>
+                    </div>
                 </li>
 
                 <li>
