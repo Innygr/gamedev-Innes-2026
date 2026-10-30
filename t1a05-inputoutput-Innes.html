@@ -36,6 +36,14 @@ document.getElementById('myDiv01').textContent = myAnswer;</pre>
     <div id="myDiv01" role="status" aria-live="polite">Your result will appear here.</div>
   </section>
   <section class="card">
+    <h2>More input/output examples</h2>
+    <p>One input can be used for several calculations. Try a percentage, a temperature conversion, or a word counter.</p>
+    <button type="button" class="secondary" onclick="showPercent()">Calculate 15% of input</button>
+    <button type="button" class="secondary" onclick="showCelsius()">Convert Celsius to Fahrenheit</button>
+    <label for="textInput">Text input example</label><input id="textInput" type="text" value="Hello GameDev">
+    <button type="button" class="secondary" onclick="countCharacters()">Count characters</button>
+  </section>
+  <section class="card">
     <h2>Challenge</h2>
     <p>Change the program so it calculates half of the number. Then add another button that displays the number multiplied by ten.</p>
     <p><strong>Think about it:</strong> What should happen if the input is empty?</p>
@@ -86,6 +94,6 @@ function resetOutput() {
   document.getElementById('myNum01').value = '4';
   document.getElementById('myDiv01').textContent = 'Your result will appear here.';
 }
-</script>
+function showPercent(){const n=readNumber();if(n===null)return;document.getElementById('myDiv01').textContent='15% of '+n+' = '+(n*.15);}\nfunction showCelsius(){const n=readNumber();if(n===null)return;document.getElementById('myDiv01').textContent=n+'°C = '+((n*9/5)+32)+'°F';}\nfunction countCharacters(){const t=document.getElementById('textInput').value;document.getElementById('myDiv01').textContent='Character count: '+t.length;}\n</script>
 </body>
 </html>
