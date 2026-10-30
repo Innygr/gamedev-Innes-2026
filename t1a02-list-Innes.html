@@ -67,5 +67,6 @@
   <section><h2>Quick list builder</h2><label for="newListItem">Add a favourite game or animal</label><input id="newListItem" type="text" maxlength="60" placeholder="Type an item"><button type="button" id="addListItem">Add to list</button><ul id="customList"><li>Minecraft</li><li>Celeste</li></ul><p class="tag">This demonstrates how JavaScript can add new list items to an HTML list.</p></section>
   <footer>t1a02 · Unordered lists + nested lists</footer>
 </main>
-<script>document.getElementById('addListItem').addEventListener('click',()=>{const input=document.getElementById('newListItem');const value=input.value.trim();if(!value)return;const li=document.createElement('li');li.textContent=value;document.getElementById('customList').appendChild(li);input.value='';input.focus();});</script>\n</body>
+<script>document.getElementById('addListItem').addEventListener('click',()=>{const input=document.getElementById('newListItem');const value=input.value.trim();if(!value)return;const li=document.createElement('li');li.textContent=value;document.getElementById('customList').appendChild(li);input.value='';input.focus();});</script>\n<section class="panel"><h2>Challenge: Build a nested list</h2><p>Create a nested list of three game genres, with at least two example games under each genre. Try changing the list type and nesting level.</p></section>
+</body>
 </html>
