@@ -2022,6 +2022,7 @@
         }
 
         async function syncChecklist() {
+            checklistSaveTimer = null;
             if (!CHECKLIST_API_URL) return;
             if (checklistSyncBusy) {
                 checklistSyncQueued = true;
