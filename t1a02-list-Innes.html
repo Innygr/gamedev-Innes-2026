@@ -55,7 +55,17 @@
       </ul>
     </section>
   </div>
+  <section>
+    <h2>More list types</h2>
+    <p>An unordered list uses bullets. An ordered list uses a sequence, and a description list pairs terms with explanations.</p>
+    <div class="layout">
+      <div><h3>Ordered list</h3><ol><li>Plan the project</li><li>Write the HTML</li><li>Style the page</li><li>Test the result</li></ol></div>
+      <div><h3>Description list</h3><dl><dt><strong>HTML</strong></dt><dd>Structures the page.</dd><dt><strong>CSS</strong></dt><dd>Styles the page.</dd><dt><strong>JavaScript</strong></dt><dd>Adds behaviour.</dd></dl></div>
+    </div>
+    <h3>Nested ordered list</h3><ol><li>Build a game<ul><li>Create a player</li><li>Add controls</li><li>Add a goal</li></ul></li><li>Test the game</li></ol>
+  </section>
+  <section><h2>Quick list builder</h2><label for="newListItem">Add a favourite game or animal</label><input id="newListItem" type="text" maxlength="60" placeholder="Type an item"><button type="button" id="addListItem">Add to list</button><ul id="customList"><li>Minecraft</li><li>Celeste</li></ul><p class="tag">This demonstrates how JavaScript can add new list items to an HTML list.</p></section>
   <footer>t1a02 · Unordered lists + nested lists</footer>
 </main>
-</body>
+<script>document.getElementById('addListItem').addEventListener('click',()=>{const input=document.getElementById('newListItem');const value=input.value.trim();if(!value)return;const li=document.createElement('li');li.textContent=value;document.getElementById('customList').appendChild(li);input.value='';input.focus();});</script>\n</body>
 </html>
