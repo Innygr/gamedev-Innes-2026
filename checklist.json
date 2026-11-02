@@ -1,4 +1,6 @@
 {
+  "version": 1,
+  "updatedAt": "2026-11-02T15:22:49.725Z",
   "items": [
     {
       "id": "seed-t1a06",
@@ -14,12 +16,6 @@
       "id": "seed-t1a08",
       "text": "t1a08 (added to the list)",
       "completed": false
-    },
-    {
-      "id": "4cd2e9d8-726b-48ca-960f-e3642210d1f4",
-      "text": "ahoy there",
-      "completed": false
     }
-  ],
-  "updatedAt": "2026-10-30T17:33:33.301Z"
+  ]
 }
