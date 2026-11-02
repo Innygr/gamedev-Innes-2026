@@ -1,12 +1,7 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-02T15:23:35.205Z",
+  "updatedAt": "2026-11-02T15:23:36.779Z",
   "items": [
-    {
-      "id": "seed-t1a07",
-      "text": "t1a07 (fixed links)",
-      "completed": true
-    },
     {
       "id": "seed-t1a08",
       "text": "t1a08 (added to the list)",
