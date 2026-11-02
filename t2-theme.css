@@ -112,6 +112,11 @@ body.t2-page pre,
 body.t2-page code {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
+body.t2-page textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
 body.t2-page textarea,
 body.t2-page pre {
   max-width: 100%;
