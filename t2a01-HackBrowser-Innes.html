@@ -70,6 +70,7 @@
       <button type="button" data-inspect="links">27. All links (&lt;a&gt;)</button>
       <button type="button" data-inspect="images">28. All images (&lt;img&gt;)</button>
       <button type="button" data-inspect="bold">29. Bold elements (&lt;b&gt; / &lt;strong&gt;)</button>
+      <button type="button" data-inspect="browserInfo">30. Browser and system information</button>
     </div>
   </section>
 
@@ -121,7 +122,8 @@
     elements: () => Array.from(document.querySelectorAll("*")),
     links: () => Array.from(document.querySelectorAll("a")),
     images: () => Array.from(document.querySelectorAll("img")),
-    bold: () => Array.from(document.querySelectorAll("b, strong"))
+    bold: () => Array.from(document.querySelectorAll("b, strong")),
+    browserInfo: () => navigator
   };
 
   function describeValue(value) {
@@ -135,6 +137,63 @@
       return tag;
     }
     return String(value);
+  }
+
+  async function inspectBrowserInfo() {
+    objectName.value = "browserInfo";
+    const lines = [];
+    const add = (label, value) => lines.push(label + ": " + (value ?? "Not exposed by this browser"));
+
+    const ua = navigator.userAgent || "";
+    const brands = navigator.userAgentData?.brands;
+    add("Browser", brands?.map(item => item.brand).join(", ") || "Could not identify reliably from browser data");
+    add("Browser version", brands?.map(item => item.brand + " " + item.version).join("; ") || "See user agent below (may be reduced)");
+    add("Browser vendor", navigator.vendor);
+    add("User agent", ua);
+    add("Platform", navigator.userAgentData?.platform || navigator.platform);
+    add("OS version", "Not consistently exposed by browsers for privacy; see platform and user agent");
+    add("Architecture", navigator.userAgentData?.architecture);
+    add("Device bitness", navigator.userAgentData?.bitness);
+    add("CPU model", "Not exposed by standard browser APIs");
+    add("Browser build", "Usually not exposed separately; browser version above is the available value");
+    add("Language", navigator.language);
+    add("Languages", navigator.languages?.join(", "));
+    add("Online status", navigator.onLine ? "Online" : "Offline");
+    add("Cookies enabled", navigator.cookieEnabled);
+    add("Do Not Track", navigator.doNotTrack);
+    add("Logical CPU cores", navigator.hardwareConcurrency);
+    add("Approx. device memory (GB)", navigator.deviceMemory);
+    add("Touch points", navigator.maxTouchPoints);
+    add("Screen size", screen.width + " × " + screen.height);
+    add("Available screen size", screen.availWidth + " × " + screen.availHeight);
+    add("Color depth", screen.colorDepth + " bits");
+    add("Pixel ratio", window.devicePixelRatio);
+    add("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone);
+    add("JavaScript", "Enabled (this report is running)");
+    add("Secure context", window.isSecureContext);
+
+    if (navigator.userAgentData?.getHighEntropyValues) {
+      try {
+        const high = await navigator.userAgentData.getHighEntropyValues([
+          "architecture", "bitness", "model", "platformVersion", "fullVersionList", "wow64"
+        ]);
+        lines.push("", "Additional browser-provided details:");
+        addHigh("Platform version", high.platformVersion);
+        addHigh("Device model", high.model);
+        addHigh("Full browser versions", high.fullVersionList?.map(item => item.brand + " " + item.version).join("; "));
+        addHigh("WOW64", high.wow64);
+        function addHigh(label, value) {
+          lines.push(label + ": " + (value ?? "Not exposed"));
+        }
+      } catch (error) {
+        lines.push("", "Additional details unavailable: " + error.name);
+      }
+    } else {
+      lines.push("", "Detailed browser version / OS version: User-Agent Client Hints are not supported here.");
+    }
+
+    output.value = lines.join("\\n");
+    status.textContent = "Displayed browser and device information exposed by this browser.";
   }
 
   function inspectElementCollection(name, elements) {
@@ -234,6 +293,13 @@
     button.addEventListener("click", () => {
       const key = button.dataset.inspect;
       try {
+        if (key === "browserInfo") {
+          inspectBrowserInfo().catch(error => {
+            output.value = "Could not read browser information: " + error.message;
+            status.textContent = "Browser information read failed.";
+          });
+          return;
+        }
         const value = objects[key]();
         if (["elements", "links", "images", "bold"].includes(key)) {
           inspectElementCollection(key, value);
