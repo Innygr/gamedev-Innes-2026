@@ -1,245 +1,176 @@
-<b>Browser Hack by Innes</b>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Browser Object Inspector</title>
+  <style>
+    :root { color-scheme: light; font-family: Arial, sans-serif; }
+    body { margin: 0; padding: 24px; background: #81f7f3; color: #102b35; }
+    main { max-width: 1050px; margin: 0 auto; }
+    h1, h2 { color: #123e50; }
+    .panel { background: rgba(255,255,255,.88); border: 1px solid #267b83; border-radius: 10px; padding: 16px; margin: 16px 0; }
+    .buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+    button { padding: 10px; border: 1px solid #17636c; border-radius: 6px; background: #e3ffff; color: #123e50; cursor: pointer; text-align: left; }
+    button:hover, button:focus-visible { background: #b9f4f2; outline: 2px solid #123e50; }
+    input, textarea { box-sizing: border-box; width: 100%; padding: 9px; border: 1px solid #53858a; border-radius: 5px; font: inherit; }
+    textarea { min-height: 280px; resize: vertical; font-family: ui-monospace, monospace; white-space: pre; }
+    .demo-box { display: inline-grid; place-items: center; width: 130px; height: 70px; margin: 8px 0; border-radius: 8px; background: #173e72; color: white; font-weight: bold; }
+    .muted { color: #365b62; }
+    footer { margin-top: 24px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Browser Object Inspector</h1>
+  <p>Explore JavaScript browser objects and inspect the properties of objects that exist on this page. Results depend on your browser.</p>
 
+  <section class="panel" aria-labelledby="demo-heading">
+    <h2 id="demo-heading">Page objects</h2>
+    <p>This box is a real HTML element, so you can inspect it and its style.</p>
+    <div id="demoBox" class="demo-box">Demo object</div>
+    <p class="muted">The inspector avoids displaying cookie contents, storage values, and other potentially private data.</p>
+  </section>
 
-<body bgcolor="#81F7F3">		<br>
-		Object Sort base
-<html xmlns:v="urn:schemas-microsoft-com:vml">
-<head><title>moving objects</title>
-<style>
- v\:* {BEHAVIOR: url(#default#VML)}
-</style>
+  <section class="panel" aria-labelledby="inspect-heading">
+    <h2 id="inspect-heading">Inspect an object</h2>
+    <div class="buttons">
+      <button type="button" data-inspect="window">1. window</button>
+      <button type="button" data-inspect="document">2. document</button>
+      <button type="button" data-inspect="form">3. Inspector form</button>
+      <button type="button" data-inspect="textarea">4. Output textarea</button>
+      <button type="button" data-inspect="location">5. window.location</button>
+      <button type="button" data-inspect="parent">6. window.parent</button>
+      <button type="button" data-inspect="navigator">7. navigator</button>
+      <button type="button" data-inspect="boxStyle">8. Demo box style</button>
+      <button type="button" data-inspect="screen">9. screen</button>
+      <button type="button" data-inspect="box">10. Demo box element</button>
+      <button type="button" data-inspect="storage">11. localStorage (keys only)</button>
+      <button type="button" data-inspect="boxStyle">12. getElementById().style</button>
+      <button type="button" data-inspect="input">13. Object-name input</button>
+      <button type="button" data-inspect="input">14. getElementById() input</button>
+      <button type="button" data-inspect="history">15. history</button>
+      <button type="button" data-inspect="performance">16. performance</button>
+      <button type="button" data-inspect="date">17. Date object</button>
+      <button type="button" data-inspect="array">18. Array object</button>
+      <button type="button" data-inspect="math">19. Math object</button>
+      <button type="button" data-inspect="json">20. JSON object</button>
+    </div>
+  </section>
 
+  <section class="panel" aria-labelledby="output-heading">
+    <h2 id="output-heading">Inspection results</h2>
+    <label for="objectName">Selected object</label>
+    <input id="objectName" type="text" readonly value="Nothing selected yet">
+    <label for="output">Properties and values</label>
+    <textarea id="output" rows="18" readonly aria-live="polite" spellcheck="false">Choose one of the buttons above to inspect an object.</textarea>
+    <p id="status" class="muted" role="status" aria-live="polite">Ready.</p>
+  </section>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<head><title>objects</title>
-
+  <footer>
+    <button type="button" id="backButton">Back to previous page</button>
+  </footer>
+</main>
 
 <script>
-document.name="myDocument"
-window.name="myWindow"
-document.cookie = "cookieName=fred"
+  "use strict";
 
+  const output = document.getElementById("output");
+  const objectName = document.getElementById("objectName");
+  const status = document.getElementById("status");
 
-var splitIndex = 0;
-var splitArray = new Array();
+  const objects = {
+    window: () => window,
+    document: () => document,
+    form: () => document.getElementById("inspect-heading"),
+    textarea: () => output,
+    location: () => window.location,
+    parent: () => window.parent,
+    navigator: () => navigator,
+    boxStyle: () => document.getElementById("demoBox").style,
+    screen: () => screen,
+    box: () => document.getElementById("demoBox"),
+    storage: () => ({ length: localStorage.length, keys: Object.keys(localStorage) }),
+    input: () => objectName,
+    history: () => ({ length: history.length, state: history.state }),
+    performance: () => performance,
+    date: () => new Date(),
+    array: () => ["browser", "document", "element"],
+    math: () => Math,
+    json: () => JSON
+  };
 
-function splits(string,text) {
-    var strLength = string.length, txtLength = text.length;
-    if ((strLength == 0) || (txtLength == 0)) return;
-
-    var i = string.indexOf(text);
-    if ((!i) && (text != string.substring(0,txtLength))) return;
-    if (i == -1) {
-        splitArray[splitIndex++] = string;
-        return;
+  function describeValue(value) {
+    if (value === null) return "null";
+    if (value === undefined) return "undefined";
+    if (typeof value === "function") return "[Function " + (value.name || "anonymous") + "]";
+    if (typeof value === "string") return JSON.stringify(value.length > 180 ? value.slice(0, 180) + "…" : value);
+    if (typeof value === "object") {
+      if (Array.isArray(value)) return "[Array(" + value.length + ")]";
+      const tag = Object.prototype.toString.call(value);
+      return tag;
     }
-
-    splitArray[splitIndex++] = string.substring(0,i);
-    
-    if (i+txtLength < strLength)
-        splits(string.substring(i+txtLength,strLength),text);
-
-    return;
-}
-
-function split(string,text) {
-    splitIndex = 0;
-    splits(string,text);
-}
-
-function join(arrayName) {
-    var temp = '';
-    for (var i=0; i<splitIndex; i++)
-        temp += arrayName[i] + '\n';
-    if (escape(temp.substring(0,1)) == '%0A')
-        return temp.substring(1,temp.length);
-    else
-        return temp;
-}
-
-function sort(arrayName) {
-    for (var i=0; i<(splitIndex-1); i++)
-        for (var j=i+1; j<splitIndex; j++)
-            if (arrayName[j] < arrayName[i]) {
-                var dummy = arrayName[i];
-                arrayName[i] = arrayName[j];
-                arrayName[j] = dummy;
-            }
-}
-
-function sorttext() {
-    split(document.myForm.myTextarea.value,'\n');
-    sort(splitArray);
-    document.myForm.myTextarea.value = join(splitArray);
-}
-//--></script>
-
-<script language="JavaScript1.1"><!--
-function split(string,text) {
-    splitArray = string.split(text);
-    splitIndex = splitArray.length;
-}
-
-
-
-
-
-
-
-
-
-function myObjectData(myObject){
- window.status = 'Please Wait'
- document.myForm.myText1.value = ''
- document.myForm.myTextarea.value = ''
- myLoop = 0
- for (var prop in myObject){
-    myLoop+=1
-    document.myForm.myTextarea.value+=myObject.name+'.'+prop+'='+myObject[prop]+ '\n'
-    if (myLoop % 3 == 1){
- window.status += '.'}   
- }
- document.myForm.myText1.value =this.parent.name + '.'+myObject.name
- window.status += 'Loaded '  
-  sorttext() 
- window.status += 'Sorted.'  
-}
-
-
-
-
-
-
-document.counter=0   // one time set counter = 0
-function moreAnimations(){
-  document.counter+=1
-  document.all.myPic1.style.pixelLeft+=2
-  document.all.myPic1.style.pixelTop+=1
-  if ((document.counter>10) && (document.counter<20)){
-      document.all.myPic1.style.height=parseInt(document.all.myPic1.style.height)+10
+    return String(value);
   }
 
-}
+  function inspect(name, value) {
+    objectName.value = name;
+    if (value === null || value === undefined) {
+      output.value = "This object is not available in this browser or page.";
+      status.textContent = "Inspection finished: object unavailable.";
+      return;
+    }
 
+    let keys;
+    try {
+      keys = Object.getOwnPropertyNames(Object(value));
+    } catch (error) {
+      output.value = "Could not list properties: " + error.message;
+      status.textContent = "Inspection failed.";
+      return;
+    }
 
+    keys.sort((a, b) => a.localeCompare(b));
+    const limit = 100;
+    const lines = [];
 
+    for (const key of keys.slice(0, limit)) {
+      let rendered;
+      try {
+        const descriptor = Object.getOwnPropertyDescriptor(Object(value), key);
+        if (descriptor && !("value" in descriptor)) {
+          rendered = "[Getter/setter]";
+        } else {
+          rendered = describeValue(value[key]);
+        }
+      } catch (error) {
+        rendered = "[Access blocked: " + error.name + "]";
+      }
+      lines.push(name + "." + key + " = " + rendered);
+    }
 
+    if (keys.length > limit) lines.push("… " + (keys.length - limit) + " more properties not shown.");
+    output.value = lines.length ? lines.join("\n") : "No own properties found.";
+    status.textContent = "Displayed " + Math.min(keys.length, limit) + " of " + keys.length + " properties.";
+  }
 
+  document.querySelectorAll("[data-inspect]").forEach(button => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.inspect;
+      try {
+        inspect(key, objects[key]());
+      } catch (error) {
+        objectName.value = key;
+        output.value = "Could not inspect this object: " + error.message;
+        status.textContent = "Inspection failed.";
+      }
+    });
+  });
 
-
-
-
-
-
-
-
-
-</script></head>
-
-
-
-<BODY >
-
- 
-  
-  
-  
-<h3>Instructions t2a17-Hackbrowser</h3>
-Use the first 15 buttons to decide on what words to enter for the last 5 buttons to gain
-  interesting information from your present web browser. Note: The results may be different on
-  Chrome, Safari, IE or phonegap. Those differences may be useful when programming. Also note: 
-  Objects will not work until a real instance of the object is on the web page!
-
-
-
-<br><br>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
- 
-
-
-<img id="move1" style="position:absolute;left:600px;top:560px" src="http://www.autos.ca/wp-content/uploads/2013/03/001-ferrari-laferrari.jpg" width="400" height="200">
-
-<form name="myForm2">
-  <textarea name="myTextarea">wow</textarea>
-
-  <input type=text name="myText1" id="myText2" size=50 value=""><br>
-
-
-</form>
-
-
-<h3>Click the buttons to see all useable properties and methods of the object. Click refresh to reset Browser</h3>
-<form name="myForm">
-
-
-
-
-<bgsound id="myFred3" src="">
-<input type=text name="myText1" size=50 value=""><br>
-
-
-<input type=button value="1 window" onclick="{myObjectData(window)}">
-<input type=button value="2 document" onclick="{myObjectData(document)}">
-<input type=button value="3 document.myForm2" onclick="{myObjectData(document.myForm2)}">
-<input type=button value="4 document.myForm2.myTextarea" onclick="{myObjectData(document.myForm2.myTextarea)}">
-
-
-<input type=button value="5 window.location" onclick="{myObjectData(window.location)}">
-<input type=button value="6 window.parent" onclick="{myObjectData(window.parent)}">
-<input type=button value="7 window.chrome" onclick="{myObjectData(window.chrome)}">
-<input type=button value="8 document.all.move1.style" onclick="{myObjectData(document.all.move1.style)}">
-<input type=button value="9 style" onclick="{myObjectData(style)}">
-<input type=button value="10 document.all.move1" onclick="{myObjectData(document.all.move1)}">
-<input type=button value="11 window.localStorage" onclick="{myObjectData(window.localStorage)}">
-<input type=button value="12 document.getElementById('move1').style" onclick="{myObjectData(document.getElementById('move1').style)}">
-<input type=button id="my10" value="13 document.myForm2.myText1" onclick="{myObjectData(document.myForm2.myText1)}">
-<input type=button value="14 document.getElementById('myText2')" onclick="{myObjectData(document.getElementById('myText2'))}">
-<input type=button value="15 " onclick="{myObjectData()}">
-<input type=button value="16 " onclick="{myObjectData()}">
-<input type=button value="17 " onclick="{myObjectData()}">
-<input type=button value="18 " onclick="{myObjectData()}">
-<input type=button value="19 " onclick="{myObjectData()}">
-<input type=button value="20 " onclick="{myObjectData()}">
-<br>
-
-
-<textarea name="myTextarea" rows=20 cols=70 wrap></textarea>
-</form>
-
-
-
-
-
-<br>At the bottom of every page make sure you include the following button:<br>
-
-<input type=button value="Back" style="font-size:25px" onclick="{window.history.back()}"><br><br>
-
+  document.getElementById("backButton").addEventListener("click", () => {
+    if (history.length > 1) history.back();
+    else status.textContent = "There is no previous page in this tab's history.";
+  });
+</script>
 </body>
 </html>
