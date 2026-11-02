@@ -66,6 +66,10 @@
       <button type="button" data-inspect="demoImage">23. Demo element</button>
       <button type="button" data-inspect="cookieInfo">24. Cookie API (safe metadata)</button>
       <button type="button" data-inspect="documentElement">25. document.documentElement</button>
+      <button type="button" data-inspect="elements">26. All HTML elements and tag data</button>
+      <button type="button" data-inspect="links">27. All links (&lt;a&gt;)</button>
+      <button type="button" data-inspect="images">28. All images (&lt;img&gt;)</button>
+      <button type="button" data-inspect="bold">29. Bold elements (&lt;b&gt; / &lt;strong&gt;)</button>
     </div>
   </section>
 
@@ -113,7 +117,11 @@
     legacyStyle: () => window.style,
     demoImage: () => document.getElementById("demoBox"),
     cookieInfo: () => ({ cookieEnabled: navigator.cookieEnabled, cookieStringLength: document.cookie.length }),
-    documentElement: () => document.documentElement
+    documentElement: () => document.documentElement,
+    elements: () => Array.from(document.querySelectorAll("*")),
+    links: () => Array.from(document.querySelectorAll("a")),
+    images: () => Array.from(document.querySelectorAll("img")),
+    bold: () => Array.from(document.querySelectorAll("b, strong"))
   };
 
   function describeValue(value) {
@@ -127,6 +135,46 @@
       return tag;
     }
     return String(value);
+  }
+
+  function inspectElementCollection(name, elements) {
+    objectName.value = name;
+    if (!elements.length) {
+      output.value = "No matching elements found.";
+      status.textContent = "No elements matched this tag query.";
+      return;
+    }
+
+    const lines = [];
+    elements.forEach((element, index) => {
+      lines.push("[" + (index + 1) + "] <" + element.tagName.toLowerCase() + ">");
+      lines.push("  class: " + (element.className && typeof element.className === "string" ? element.className : "(none)"));
+      lines.push("  classList: " + (element.classList.length ? Array.from(element.classList).join(", ") : "(empty)"));
+      lines.push("  id: " + (element.id || "(none)"));
+      lines.push("  attributes:");
+      if (element.attributes.length) {
+        for (const attribute of Array.from(element.attributes)) {
+          lines.push("    " + attribute.name + ' = "' + attribute.value + '"');
+        }
+      } else {
+        lines.push("    (none)");
+      }
+      const text = (element.innerText || element.textContent || "").trim().replace(/\\s+/g, " ");
+      lines.push("  text: " + (text ? JSON.stringify(text.length > 240 ? text.slice(0, 240) + "…" : text) : "(empty)"));
+      if (element instanceof HTMLImageElement) {
+        lines.push("  src: " + element.currentSrc);
+        lines.push("  alt: " + (element.alt || "(no alt text)"));
+        lines.push("  natural size: " + element.naturalWidth + " × " + element.naturalHeight);
+      }
+      if (element instanceof HTMLAnchorElement) {
+        lines.push("  href: " + element.href);
+        lines.push("  target: " + (element.target || "(default)"));
+      }
+      lines.push("");
+    });
+
+    output.value = lines.join("\\n");
+    status.textContent = "Found " + elements.length + " matching HTML element(s).";
   }
 
   function inspect(name, value) {
@@ -186,7 +234,12 @@
     button.addEventListener("click", () => {
       const key = button.dataset.inspect;
       try {
-        inspect(key, objects[key]());
+        const value = objects[key]();
+        if (["elements", "links", "images", "bold"].includes(key)) {
+          inspectElementCollection(key, value);
+        } else {
+          inspect(key, value);
+        }
       } catch (error) {
         objectName.value = key;
         output.value = "Could not inspect this object: " + error.message;
