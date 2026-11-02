@@ -21,8 +21,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Attach theme to every T2 HTML assignment
-        shell: python
+        shell: bash
         run: |
+          python - <<'PY'
           from pathlib import Path
           import re
 
@@ -67,13 +68,14 @@ jobs:
 
           print("Updated pages:")
           print("\\n".join(changed) if changed else "No changes needed.")
+          PY
 
       - name: Commit theme updates
         if: success()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add '**/t2*.html' '*.html'
+          git add -A -- ':(glob)**/t2*.html'
           if git diff --cached --quiet; then
             echo "All T2 pages already use the shared theme."
           else
