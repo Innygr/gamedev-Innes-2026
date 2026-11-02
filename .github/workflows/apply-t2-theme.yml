@@ -1,0 +1,82 @@
+name: Apply T2 Assignment Theme
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-t2-theme
+  cancel-in-progress: false
+
+jobs:
+  apply-theme:
+    name: Attach shared T2 CSS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Attach theme to every T2 HTML assignment
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          root = Path(".")
+          stylesheet = root / "t2-theme.css"
+          if not stylesheet.exists():
+              raise SystemExit("t2-theme.css is missing")
+
+          changed = []
+          for page in sorted(root.rglob("t2*.html")):
+              if ".git" in page.parts or "Lua" in page.parts:
+                  continue
+
+              html = page.read_text(encoding="utf-8")
+              relative_css = Path(__import__("os").path.relpath(stylesheet, page.parent)).as_posix()
+              link = f'<link rel="stylesheet" href="{relative_css}">'
+
+              # Keep the shared theme after page-local styles so it can override old assignment styling.
+              if not re.search(r'<link[^>]+href=["\']' + re.escape(relative_css) + r'["\']', html, re.I):
+                  if re.search(r'</head\s*>', html, re.I):
+                      html = re.sub(r'</head\s*>', f'  {link}\n</head>', html, count=1, flags=re.I)
+                  else:
+                      html = link + "\n" + html
+
+              body_match = re.search(r'<body\b([^>]*)>', html, re.I)
+              if body_match:
+                  attrs = body_match.group(1)
+                  class_match = re.search(r'\bclass\s*=\s*(["\'])(.*?)\1', attrs, re.I)
+                  if class_match:
+                      classes = class_match.group(2).split()
+                      if "t2-page" not in classes:
+                          classes.append("t2-page")
+                          replacement = 'class=' + class_match.group(1) + " ".join(classes) + class_match.group(1)
+                          attrs = attrs[:class_match.start()] + replacement + attrs[class_match.end():]
+                          html = html[:body_match.start(1)] + attrs + html[body_match.end(1):]
+                  else:
+                      html = html[:body_match.end(1)] + ' class="t2-page"' + html[body_match.end(1):]
+
+              if html != page.read_text(encoding="utf-8"):
+                  page.write_text(html, encoding="utf-8")
+                  changed.append(str(page))
+
+          print("Updated pages:")
+          print("\\n".join(changed) if changed else "No changes needed.")
+
+      - name: Commit theme updates
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '**/t2*.html' '*.html'
+          if git diff --cached --quiet; then
+            echo "All T2 pages already use the shared theme."
+          else
+            git commit -m "Apply shared T2 assignment theme"
+            git push
+          fi
