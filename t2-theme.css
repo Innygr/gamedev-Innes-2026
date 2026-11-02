@@ -151,6 +151,92 @@ body.t2-page pre {
 body.t2-page hr { border: 0; border-top: 1px solid var(--t2-border); }
 body.t2-page .muted,
 body.t2-page small { color: var(--t2-muted); }
+/* Common HTML elements used in T2 examples and assignments. */
+body.t2-page strong,
+body.t2-page b { color: #fff; font-weight: 800; }
+body.t2-page em,
+body.t2-page i { color: var(--t2-purple); }
+body.t2-page mark {
+  padding: .08em .3em;
+  border-radius: 4px;
+  color: #111827;
+  background: #ffe58a;
+}
+body.t2-page del,
+body.t2-page s { color: var(--t2-muted); }
+body.t2-page ins {
+  color: #9fffc2;
+  text-decoration-color: #9fffc2;
+}
+body.t2-page blockquote {
+  margin: 1.2rem 0;
+  padding: .8rem 1.2rem;
+  border-left: 4px solid var(--t2-purple);
+  border-radius: 0 10px 10px 0;
+  color: var(--t2-muted);
+  background: rgba(179,154,255,.08);
+}
+body.t2-page ul,
+body.t2-page ol { padding-left: 1.6rem; }
+body.t2-page li { padding-left: .2rem; margin: .25rem 0; }
+body.t2-page li::marker { color: var(--t2-cyan); }
+body.t2-page dl { display: grid; gap: .35rem; }
+body.t2-page dt { color: var(--t2-cyan); font-weight: 750; }
+body.t2-page dd { margin-left: 1.25rem; }
+body.t2-page code,
+body.t2-page kbd,
+body.t2-page samp,
+body.t2-page var {
+  padding: .12em .35em;
+  border: 1px solid var(--t2-border);
+  border-radius: 5px;
+  color: #b8f4ff;
+  background: #070d19;
+  overflow-wrap: anywhere;
+}
+body.t2-page kbd { box-shadow: 0 2px 0 var(--t2-border); }
+body.t2-page figure { max-width: 100%; margin: 1.25rem 0; }
+body.t2-page figcaption,
+body.t2-page caption { color: var(--t2-muted); font-size: .9rem; }
+body.t2-page img,
+body.t2-page video,
+body.t2-page canvas,
+body.t2-page iframe,
+body.t2-page embed,
+body.t2-page object {
+  max-width: 100%;
+}
+body.t2-page img,
+body.t2-page video { height: auto; }
+body.t2-page audio { max-width: 100%; }
+body.t2-page iframe { border: 1px solid var(--t2-border); border-radius: 10px; }
+body.t2-page label { color: var(--t2-muted); font-weight: 650; }
+body.t2-page fieldset {
+  min-width: 0;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--t2-border);
+  border-radius: 12px;
+}
+body.t2-page legend { padding: 0 .4rem; color: var(--t2-cyan); font-weight: 750; }
+body.t2-page input[type="checkbox"],
+body.t2-page input[type="radio"] { accent-color: var(--t2-cyan); }
+body.t2-page input[type="range"],
+body.t2-page progress,
+body.t2-page meter { max-width: 100%; accent-color: var(--t2-cyan); }
+body.t2-page details {
+  padding: .8rem 1rem;
+  margin: .8rem 0;
+  border: 1px solid var(--t2-border);
+  border-radius: 10px;
+  background: rgba(17,26,45,.7);
+}
+body.t2-page summary { color: var(--t2-cyan); cursor: pointer; font-weight: 700; }
+body.t2-page abbr[title] { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+body.t2-page sup,
+body.t2-page sub { color: var(--t2-purple); }
+body.t2-page time,
+body.t2-page cite { color: var(--t2-muted); }
 @media (max-width: 640px) {
   body.t2-page { padding: 16px 12px; }
   body.t2-page table { display: block; overflow-x: auto; }
