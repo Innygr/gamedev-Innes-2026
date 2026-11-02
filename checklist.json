@@ -1,16 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-02T15:22:49.725Z",
+  "updatedAt": "2026-11-02T15:23:35.205Z",
   "items": [
-    {
-      "id": "seed-t1a06",
-      "text": "t1a06",
-      "completed": false
-    },
     {
       "id": "seed-t1a07",
       "text": "t1a07 (fixed links)",
-      "completed": false
+      "completed": true
     },
     {
       "id": "seed-t1a08",
