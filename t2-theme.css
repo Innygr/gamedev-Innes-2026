@@ -1,0 +1,154 @@
+/* T2 assignment theme — automatically attached by the T2 theme workflow. */
+:root {
+  color-scheme: dark;
+  --t2-bg: #080b16;
+  --t2-surface: #111a2d;
+  --t2-surface-raised: #182641;
+  --t2-cyan: #55e8ff;
+  --t2-purple: #b39aff;
+  --t2-text: #eaf2ff;
+  --t2-muted: #a8b8d2;
+  --t2-border: #2c4264;
+  --t2-input: #080f1e;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--t2-bg); }
+body.t2-page {
+  min-height: 100vh;
+  margin: 0;
+  padding: clamp(18px, 4vw, 42px);
+  color: var(--t2-text);
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(85,232,255,.12), transparent 38rem),
+    radial-gradient(ellipse at 92% 12%, rgba(179,154,255,.13), transparent 34rem),
+    var(--t2-bg);
+  font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body.t2-page > main,
+body.t2-page > .container {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+}
+body.t2-page h1,
+body.t2-page h2,
+body.t2-page h3,
+body.t2-page h4 {
+  color: var(--t2-cyan);
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+body.t2-page h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+body.t2-page h2 { color: var(--t2-purple); font-size: clamp(1.25rem, 3vw, 1.7rem); }
+body.t2-page p { max-width: 85ch; }
+body.t2-page a { color: var(--t2-cyan); text-underline-offset: 3px; }
+body.t2-page a:hover { color: #fff; }
+body.t2-page img { max-width: 100%; height: auto; }
+body.t2-page .panel,
+body.t2-page .card,
+body.t2-page fieldset,
+body.t2-page section {
+  border-color: var(--t2-border);
+}
+body.t2-page .panel,
+body.t2-page .card {
+  padding: clamp(14px, 2.5vw, 24px);
+  margin: 1.2rem 0;
+  border: 1px solid var(--t2-border);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(24,38,65,.94), rgba(17,26,45,.94));
+  box-shadow: 0 12px 35px rgba(0,0,0,.22);
+}
+body.t2-page button,
+body.t2-page input[type="button"],
+body.t2-page input[type="submit"],
+body.t2-page input[type="reset"] {
+  max-width: 100%;
+  padding: .7rem 1rem;
+  margin: .25rem;
+  border: 1px solid var(--t2-cyan);
+  border-radius: 10px;
+  color: #06121d;
+  background: var(--t2-cyan);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+}
+body.t2-page button:hover,
+body.t2-page input[type="button"]:hover,
+body.t2-page input[type="submit"]:hover,
+body.t2-page input[type="reset"]:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+  box-shadow: 0 5px 18px rgba(85,232,255,.18);
+}
+body.t2-page button:focus-visible,
+body.t2-page a:focus-visible,
+body.t2-page input:focus-visible,
+body.t2-page textarea:focus-visible,
+body.t2-page select:focus-visible {
+  outline: 2px solid var(--t2-purple);
+  outline-offset: 3px;
+}
+body.t2-page button.secondary,
+body.t2-page .secondary {
+  color: var(--t2-cyan);
+  background: transparent;
+}
+body.t2-page input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]),
+body.t2-page select,
+body.t2-page textarea {
+  width: auto;
+  max-width: 100%;
+  padding: .7rem .8rem;
+  border: 1px solid #405a7d;
+  border-radius: 9px;
+  color: var(--t2-text);
+  background: var(--t2-input);
+  font: inherit;
+}
+body.t2-page textarea,
+body.t2-page pre,
+body.t2-page code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+body.t2-page textarea,
+body.t2-page pre {
+  max-width: 100%;
+  overflow: auto;
+  white-space: pre;
+}
+body.t2-page table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--t2-text);
+  background: rgba(8,15,30,.8);
+}
+body.t2-page th,
+body.t2-page td {
+  padding: .65rem .8rem;
+  border: 1px solid var(--t2-border);
+  text-align: left;
+}
+body.t2-page th { color: var(--t2-cyan); background: var(--t2-surface-raised); }
+body.t2-page pre {
+  padding: 1rem;
+  border: 1px solid var(--t2-border);
+  border-radius: 12px;
+  background: #070d19;
+}
+body.t2-page hr { border: 0; border-top: 1px solid var(--t2-border); }
+body.t2-page .muted,
+body.t2-page small { color: var(--t2-muted); }
+@media (max-width: 640px) {
+  body.t2-page { padding: 16px 12px; }
+  body.t2-page table { display: block; overflow-x: auto; }
+  body.t2-page .buttons { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.t2-page *, body.t2-page *::before, body.t2-page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}
