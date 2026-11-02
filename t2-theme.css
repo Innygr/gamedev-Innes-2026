@@ -15,6 +15,7 @@
 html { min-height: 100%; background: var(--t2-bg); }
 body.t2-page {
   min-height: 100vh;
+  overflow-wrap: anywhere;
   margin: 0;
   padding: clamp(18px, 4vw, 42px);
   color: var(--t2-text);
@@ -120,8 +121,13 @@ body.t2-page textarea {
 body.t2-page textarea,
 body.t2-page pre {
   max-width: 100%;
-  overflow: auto;
-  white-space: pre;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+body.t2-page * {
+  min-width: 0;
 }
 body.t2-page table {
   width: 100%;
