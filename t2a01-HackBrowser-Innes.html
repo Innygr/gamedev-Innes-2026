@@ -15,7 +15,8 @@
     button:hover, button:focus-visible { background: #b9f4f2; outline: 2px solid #123e50; }
     input, textarea { box-sizing: border-box; width: 100%; padding: 9px; border: 1px solid #53858a; border-radius: 5px; font: inherit; }
     textarea { min-height: 280px; resize: vertical; font-family: ui-monospace, monospace; white-space: pre; }
-    .demo-box { display: inline-grid; place-items: center; width: 130px; height: 70px; margin: 8px 0; border-radius: 8px; background: #173e72; color: white; font-weight: bold; }
+    .demo-box { display: inline-grid; place-items: center; width: 130px; height: 70px; margin: 8px 0; border-radius: 8px; background: #173e72; color: white; font-weight: bold; position: relative; left: 0; top: 0; }
+    .demo-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .muted { color: #365b62; }
     footer { margin-top: 24px; }
   </style>
@@ -29,6 +30,10 @@
     <h2 id="demo-heading">Page objects</h2>
     <p>This box is a real HTML element, so you can inspect it and its style.</p>
     <div id="demoBox" class="demo-box">Demo object</div>
+    <div class="demo-controls">
+      <button type="button" id="animateButton">Animate demo box</button>
+      <button type="button" id="resetButton">Reset demo box</button>
+    </div>
     <p class="muted">The inspector avoids displaying cookie contents, storage values, and other potentially private data.</p>
   </section>
 
@@ -55,6 +60,11 @@
       <button type="button" data-inspect="array">18. Array object</button>
       <button type="button" data-inspect="math">19. Math object</button>
       <button type="button" data-inspect="json">20. JSON object</button>
+      <button type="button" data-inspect="all">21. document.all (legacy)</button>
+      <button type="button" data-inspect="legacyStyle">22. Legacy global style</button>
+      <button type="button" data-inspect="demoImage">23. Demo element</button>
+      <button type="button" data-inspect="cookieInfo">24. Cookie API (safe metadata)</button>
+      <button type="button" data-inspect="documentElement">25. document.documentElement</button>
     </div>
   </section>
 
@@ -97,7 +107,12 @@
     date: () => new Date(),
     array: () => ["browser", "document", "element"],
     math: () => Math,
-    json: () => JSON
+    json: () => JSON,
+    all: () => document.all,
+    legacyStyle: () => window.style,
+    demoImage: () => document.getElementById("demoBox"),
+    cookieInfo: () => ({ cookieEnabled: navigator.cookieEnabled, cookieStringLength: document.cookie.length }),
+    documentElement: () => document.documentElement
   };
 
   function describeValue(value) {
@@ -121,40 +136,52 @@
       return;
     }
 
-    let keys;
-    try {
-      keys = Object.getOwnPropertyNames(Object(value));
-    } catch (error) {
-      output.value = "Could not list properties: " + error.message;
-      status.textContent = "Inspection failed.";
-      return;
-    }
-
-    keys.sort((a, b) => a.localeCompare(b));
-    const limit = 100;
     const lines = [];
+    const seen = new Set();
+    let current = Object(value);
+    let depth = 0;
 
-    for (const key of keys.slice(0, limit)) {
-      let rendered;
+    // Include own and inherited properties from every prototype level.
+    while (current !== null) {
+      let keys;
       try {
-        const descriptor = Object.getOwnPropertyDescriptor(Object(value), key);
-        if (descriptor && !("value" in descriptor)) {
-          rendered = "[Getter/setter]";
-        } else {
-          rendered = describeValue(value[key]);
-        }
+        keys = Object.getOwnPropertyNames(current).sort((a, b) => a.localeCompare(b));
       } catch (error) {
-        rendered = "[Access blocked: " + error.name + "]";
+        lines.push("[Could not enumerate this prototype: " + error.name + "]");
+        break;
       }
-      lines.push(name + "." + key + " = " + rendered);
+
+      for (const key of keys) {
+        if (seen.has(key)) continue;
+        seen.add(key);
+        let rendered;
+        try {
+          const descriptor = Object.getOwnPropertyDescriptor(current, key);
+          if (descriptor && !("value" in descriptor)) {
+            rendered = "[Getter/setter — not executed]";
+          } else {
+            rendered = describeValue(descriptor ? descriptor.value : undefined);
+          }
+        } catch (error) {
+          rendered = "[Access blocked: " + error.name + "]";
+        }
+        lines.push(name + "." + key + " = " + rendered + "  [prototype level " + depth + "]");
+      }
+
+      try {
+        current = Object.getPrototypeOf(current);
+      } catch (error) {
+        lines.push("[Could not read next prototype: " + error.name + "]");
+        break;
+      }
+      depth += 1;
     }
 
-    if (keys.length > limit) lines.push("… " + (keys.length - limit) + " more properties not shown.");
-    output.value = lines.length ? lines.join("\n") : "No own properties found.";
-    status.textContent = "Displayed " + Math.min(keys.length, limit) + " of " + keys.length + " properties.";
+    output.value = lines.length ? lines.join("\\n") : "No properties found.";
+    status.textContent = "Displayed " + seen.size + " unique properties across " + depth + " prototype levels.";
   }
 
-  document.querySelectorAll("[data-inspect]").forEach(button => {
+    document.querySelectorAll("[data-inspect]").forEach(button => {
     button.addEventListener("click", () => {
       const key = button.dataset.inspect;
       try {
@@ -165,6 +192,30 @@
         status.textContent = "Inspection failed.";
       }
     });
+  });
+
+  const demoBox = document.getElementById("demoBox");
+  let animationFrame = null;
+  let animationStep = 0;
+
+  document.getElementById("animateButton").addEventListener("click", () => {
+    if (animationFrame !== null) return;
+    animationStep = 0;
+    function animate() {
+      animationStep += 1;
+      demoBox.style.left = (Math.sin(animationStep / 12) * 150) + "px";
+      demoBox.style.top = (Math.cos(animationStep / 12) * 24) + "px";
+      if (animationStep < 240) animationFrame = requestAnimationFrame(animate);
+      else animationFrame = null;
+    }
+    animationFrame = requestAnimationFrame(animate);
+  });
+
+  document.getElementById("resetButton").addEventListener("click", () => {
+    if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+    animationFrame = null;
+    demoBox.style.left = "0px";
+    demoBox.style.top = "0px";
   });
 
   document.getElementById("backButton").addEventListener("click", () => {
