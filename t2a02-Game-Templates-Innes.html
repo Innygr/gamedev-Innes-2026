@@ -386,6 +386,7 @@
 
     <span class="key">Space</span> Jump
     <p><strong>Space PvP:</strong> P1 uses WASD + F to fire. P2 uses arrow keys + Enter to fire.</p>
+    <p><strong>Memory Match:</strong> Click or tap two cards to find matching pairs.</p>
 
     <div class="controls" style="margin-top:15px">
         <button onclick="myResetGame()">Restart Campaign</button>
@@ -1508,9 +1509,7 @@ function myFlipMemoryCard(index, button) {
         myElement('myScore').textContent = myScore;
         if (myMemoryMatches === 8) {
             mySetGameState('CAMPAIGN COMPLETE');
-            mySetMessage('MEMORY MATCH COMPLETE! +400 POINTS — CAMPAIGN FINISHED!');
-            myScore += 400;
-            myElement('myScore').textContent = myScore;
+            mySetMessage('MEMORY MATCH COMPLETE! ALL 8 PAIRS FOUND — CAMPAIGN FINISHED!');
             myElement('myLevelInfo').textContent =
                 'All five games complete. Final score: ' + myScore + '. Restart Campaign to play again.';
         } else {
