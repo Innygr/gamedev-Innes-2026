@@ -91,9 +91,8 @@
         touch-action: none;
     }
 
-    #mySpaceCanvas {
-        z-index: 4;
-    }
+    #mySpaceCanvas, #myDodgeCanvas { z-index: 4; }
+    #myDodgeHud { position:relative; z-index:5; display:none; justify-content:space-between; gap:10px; padding:10px; font-weight:bold; text-shadow:0 2px 5px #000; pointer-events:none; }
 
     #myMemoryBoard {
         position: absolute;
@@ -360,6 +359,8 @@
             <span id="myP2Health">P2: 5 HP</span>
         </div>
         <canvas id="mySpaceCanvas" aria-label="Two player space battle arena"></canvas>
+        <div id="myDodgeHud"><span id="myDodgeTime">Time: 0 / 30s</span><span id="myDodgeLives">Lives: 3</span></div>
+        <canvas id="myDodgeCanvas" aria-label="Dodge falling obstacles"></canvas>
         <div id="myMemoryBoard" aria-label="Memory match card board"></div>
         <img id="myImg01" src="myImage01.jpg" alt="Player">
         <img id="myImg02" src="myImage02.jpg" alt="Target">
@@ -386,6 +387,7 @@
 
     <span class="key">Space</span> Jump
     <p><strong>Space PvP:</strong> P1 uses WASD + F to fire. P2 uses arrow keys + Enter to fire.</p>
+    <p><strong>Dodge Arena:</strong> A / D or ← / → to move; touch screens can move by sliding across the arena.</p>
     <p><strong>Memory Match:</strong> Click or tap two cards to find matching pairs.</p>
 
     <div class="controls" style="margin-top:15px">
@@ -473,6 +475,10 @@ let mySpaceKeys = {};
 let mySpaceShots = [];
 let mySpacePlayers = [];
 let mySpaceRoundOver = false;
+let myDodgeCanvas=null, myDodgeContext=null, myDodgeFrame=null;
+let myDodgeLastTime=0, myDodgeElapsed=0, myDodgeSpawnClock=0, myDodgeLives=3;
+let myDodgeKeys={}, myDodgeHazards=[], myDodgeOver=false;
+let myDodgePlayer={x:0,y:0,radius:13};
 
 let myMemoryCards = [];
 let myMemoryFirst = null;
@@ -531,12 +537,13 @@ function mySetArenaBackground(myGameNumber) {
         'myBackground0' + myGameNumber + '.jpg';
 }
 
+function myHideDodge() { myElement('myDodgeCanvas').style.display='none'; myElement('myDodgeHud').style.display='none'; }
 function myHideMemory() {
     myElement('myMemoryBoard').style.display = 'none';
 }
 
 function myShowPlatformer() {
-    myHideMemory();
+    myHideMemory(); myHideDodge();
     myElement('myImg01').style.display = 'block';
     myElement('myImg02').style.display = 'block';
     myElement('mySnakeCanvas').style.display = 'none';
@@ -545,7 +552,7 @@ function myShowPlatformer() {
 }
 
 function myShowSnake() {
-    myHideMemory();
+    myHideMemory(); myHideDodge();
     myElement('myImg01').style.display = 'none';
     myElement('myImg02').style.display = 'none';
     myElement('mySnakeCanvas').style.display = 'block';
@@ -975,7 +982,9 @@ function myToggleBackground() {
 function myResetGame() {
 
     clearTimeout(myNextLevelClock);
-    myHideMemory();
+    myHideMemory(); myHideDodge();
+    if (myDodgeFrame) cancelAnimationFrame(myDodgeFrame);
+    myDodgeFrame=null; myDodgeKeys={};
     myMemoryLocked = false;
     myMemoryFirst = null;
     myMemoryMatches = 0;
@@ -1145,18 +1154,14 @@ function mySnakeTick() {
             clearInterval(mySnakeClock);
             mySnakeClock = null;
             mySetGameState('GAME 2 CLEAR');
-            mySetMessage('SNAKE COMPLETE! +250 POINTS — Loading Space PvP...');
+            mySetMessage('SNAKE COMPLETE! +250 POINTS — Loading Dodge Arena...');
             myLevelTransition = true;
             myNextLevelClock = setTimeout(function() {
-                myCurrentGame = 4;
-                myLevel = 4;
-                myLevelTransition = false;
-                myElement('myLevel').textContent = '4 / 5';
-                myElement('myLevelInfo').textContent =
-                    'Game 4: Space PvP — local two-player ship battle. First pilot to score 5 hits wins.';
-                mySetGameState('SPACE PvP');
-                myShowSpacePvP();
-            }, 1500);
+                myCurrentGame=3; myLevel=3; myLevelTransition=false;
+                myElement('myLevel').textContent='3 / 5';
+                myElement('myLevelInfo').textContent='Game 3: Dodge Arena — avoid falling hazards for 30 seconds. You have 3 lives.';
+                mySetGameState('DODGE ARENA'); myShowDodgeArena();
+            },1500);
         } else {
             myPlaceSnakeFood();
             if (mySnakeFoodCount % 3 === 0) {
@@ -1221,7 +1226,7 @@ myElement('myGame').addEventListener('touchend', function(event) {
 // ================================================
 
 function myShowSpacePvP() {
-    myHideMemory();
+    myHideMemory(); myHideDodge();
     myStopMoving();
     clearInterval(mySnakeClock);
     mySnakeClock = null;
@@ -1432,6 +1437,79 @@ document.addEventListener('keyup', function(event) {
 
 
 // ================================================
+// GAME 3: DODGE ARENA
+// ================================================
+
+function myShowDodgeArena() {
+    myHideMemory(); myStopMoving(); clearInterval(mySnakeClock); mySnakeClock=null;
+    if(mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
+    mySpaceFrame=null;
+    ['myImg01','myImg02','mySnakeCanvas','mySpaceCanvas','mySpaceHud'].forEach(id=>myElement(id).style.display='none');
+    myElement('myDodgeCanvas').style.display='block'; myElement('myDodgeHud').style.display='flex';
+    mySetArenaBackground(3); myDodgeCanvas=myElement('myDodgeCanvas');
+    myDodgeContext=myDodgeCanvas.getContext('2d'); myStartDodgeRound(); myResizeDodgeCanvas();
+}
+function myResizeDodgeCanvas() {
+    const arena=myElement('myGame'), dpr=window.devicePixelRatio||1;
+    myDodgeCanvas.width=Math.floor(arena.clientWidth*dpr); myDodgeCanvas.height=Math.floor(arena.clientHeight*dpr);
+    myDodgeCanvas.style.width=arena.clientWidth+'px'; myDodgeCanvas.style.height=arena.clientHeight+'px';
+    myDodgeContext=myDodgeCanvas.getContext('2d'); myDodgeContext.setTransform(dpr,0,0,dpr,0,0); myDrawDodgeArena();
+}
+function myStartDodgeRound() {
+    if(myDodgeFrame) cancelAnimationFrame(myDodgeFrame);
+    const w=myElement('myGame').clientWidth,h=myElement('myGame').clientHeight;
+    myDodgeElapsed=0; myDodgeSpawnClock=0; myDodgeLives=3; myDodgeHazards=[]; myDodgeKeys={}; myDodgeOver=false; myDodgeLastTime=0;
+    myDodgePlayer={x:w/2,y:h-38,radius:13}; myUpdateDodgeHud();
+    mySetMessage('Dodge the falling blocks. Survive for 30 seconds!'); myDodgeFrame=requestAnimationFrame(myDodgeLoop);
+}
+function myUpdateDodgeHud() {
+    myElement('myDodgeTime').textContent='Time: '+Math.min(30,Math.floor(myDodgeElapsed/1000))+' / 30s';
+    myElement('myDodgeLives').textContent='Lives: '+myDodgeLives;
+}
+function myDodgeLoop(now) {
+    if(myCurrentGame!==3||myDodgeOver)return;
+    const dt=myDodgeLastTime?Math.min(40,now-myDodgeLastTime):16; myDodgeLastTime=now; myDodgeElapsed+=dt;
+    const w=myDodgeCanvas.clientWidth,h=myDodgeCanvas.clientHeight;
+    if(myDodgeKeys.left)myDodgePlayer.x-=0.3*dt; if(myDodgeKeys.right)myDodgePlayer.x+=0.3*dt;
+    myDodgePlayer.x=Math.max(13,Math.min(w-13,myDodgePlayer.x)); myDodgeSpawnClock+=dt;
+    if(myDodgeSpawnClock>=620){myDodgeSpawnClock=0;const z=18+Math.random()*22;myDodgeHazards.push({x:z+Math.random()*Math.max(1,w-z*2),y:-z,size:z,speed:0.14+Math.random()*0.1+myDodgeElapsed/180000});}
+    myDodgeHazards=myDodgeHazards.filter(o=>{
+        o.y+=o.speed*dt;
+        const x=Math.max(o.x-o.size/2,Math.min(myDodgePlayer.x,o.x+o.size/2));
+        const y=Math.max(o.y-o.size/2,Math.min(myDodgePlayer.y,o.y+o.size/2));
+        if(Math.hypot(myDodgePlayer.x-x,myDodgePlayer.y-y)<myDodgePlayer.radius){
+            myDodgeLives--;myUpdateDodgeHud();if(myDodgeLives<=0)myEndDodgeRound(false);return false;
+        }
+        return o.y<h+o.size;
+    });
+    myUpdateDodgeHud();myDrawDodgeArena();
+    if(myDodgeElapsed>=30000){myEndDodgeRound(true);return;}
+    if(!myDodgeOver)myDodgeFrame=requestAnimationFrame(myDodgeLoop);
+}
+function myDrawDodgeArena() {
+    if(!myDodgeContext||!myDodgeCanvas)return;
+    const c=myDodgeContext,w=myDodgeCanvas.clientWidth,h=myDodgeCanvas.clientHeight;c.clearRect(0,0,w,h);
+    myDodgeHazards.forEach(o=>{c.fillStyle='#ff5478';c.shadowColor='#ff315e';c.shadowBlur=12;c.fillRect(o.x-o.size/2,o.y-o.size/2,o.size,o.size);});
+    c.fillStyle='#69e8ff';c.shadowColor='#00cfff';c.shadowBlur=18;c.beginPath();c.arc(myDodgePlayer.x,myDodgePlayer.y,13,0,Math.PI*2);c.fill();c.shadowBlur=0;
+}
+function myEndDodgeRound(won) {
+    myDodgeOver=true;if(myDodgeFrame)cancelAnimationFrame(myDodgeFrame);myDodgeFrame=null;myDodgeKeys={};
+    if(!won){mySetGameState('DODGE FAILED');mySetMessage('OUT OF LIVES! Restart Campaign to try again.');return;}
+    myScore+=300;myElement('myScore').textContent=myScore;mySetGameState('DODGE CLEAR');
+    mySetMessage('30 SECONDS SURVIVED! +300 POINTS — Loading Space PvP...');myLevelTransition=true;
+    myNextLevelClock=setTimeout(()=>{myCurrentGame=4;myLevel=4;myLevelTransition=false;myElement('myLevel').textContent='4 / 5';myElement('myLevelInfo').textContent='Game 4: Space PvP — local two-player ship battle. First pilot to score 5 hits wins.';mySetGameState('SPACE PvP');myShowSpacePvP();},1500);
+}
+document.addEventListener('keydown',e=>{
+    if(myCurrentGame!==3||myDodgeOver)return;const k=e.key.toLowerCase();
+    if(['a','d','arrowleft','arrowright'].includes(k)){e.preventDefault();if(k==='a'||k==='arrowleft')myDodgeKeys.left=true;if(k==='d'||k==='arrowright')myDodgeKeys.right=true;}
+});
+document.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(k==='a'||k==='arrowleft')myDodgeKeys.left=false;if(k==='d'||k==='arrowright')myDodgeKeys.right=false;});
+myElement('myGame').addEventListener('pointermove',e=>{
+    if(myCurrentGame!==3||myDodgeOver)return;const r=myDodgeCanvas.getBoundingClientRect();
+    myDodgePlayer.x=Math.max(13,Math.min(r.width-13,e.clientX-r.left));
+});
+
+// ================================================
 // GAME 5: MEMORY MATCH
 // ================================================
 
@@ -1532,6 +1610,7 @@ function myFlipMemoryCard(index, button) {
 
 
 window.addEventListener('resize', function() {
+    if (myCurrentGame === 3) { myResizeDodgeCanvas(); return; }
     if (myCurrentGame === 4) {
         myResizeSpaceCanvas();
         return;
