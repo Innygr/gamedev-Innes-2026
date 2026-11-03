@@ -81,7 +81,7 @@
         transition: opacity 0.25s;
     }
 
-    #mySnakeCanvas {
+    #mySnakeCanvas, #mySpaceCanvas {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -89,6 +89,22 @@
         z-index: 2;
         display: none;
         touch-action: none;
+    }
+
+    #mySpaceCanvas {
+        z-index: 4;
+    }
+
+    #mySpaceHud {
+        position: relative;
+        z-index: 5;
+        display: none;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px;
+        font-weight: bold;
+        text-shadow: 0 2px 5px #000;
+        pointer-events: none;
     }
 
     #myImg01, #myImg02 {
@@ -303,6 +319,11 @@
     <div id="myGame">
         <img id="myBackgroundImage" src="myBackground01.jpg" alt="" aria-hidden="true">
         <canvas id="mySnakeCanvas" aria-label="Snake game arena"></canvas>
+        <div id="mySpaceHud">
+            <span id="myP1Health">P1: 5 HP</span>
+            <span id="myP2Health">P2: 5 HP</span>
+        </div>
+        <canvas id="mySpaceCanvas" aria-label="Two player space battle arena"></canvas>
         <img id="myImg01" src="myImage01.jpg" alt="Player">
         <img id="myImg02" src="myImage02.jpg" alt="Target">
     </div>
@@ -327,6 +348,7 @@
     <span class="key">→</span> Right
 
     <span class="key">Space</span> Jump
+    <p><strong>Space PvP:</strong> P1 uses WASD + F to fire. P2 uses arrow keys + Enter to fire.</p>
 
     <div class="controls" style="margin-top:15px">
         <button onclick="myResetGame()">Restart Campaign</button>
@@ -405,6 +427,15 @@ let mySnakeClock = null;
 let mySnakeFoodCount = 0;
 let mySnakeCell = 20;
 
+let mySpaceCanvas = null;
+let mySpaceContext = null;
+let mySpaceFrame = null;
+let mySpaceLastTime = 0;
+let mySpaceKeys = {};
+let mySpaceShots = [];
+let mySpacePlayers = [];
+let mySpaceRoundOver = false;
+
 let myGameOver = false;
 let myLevelTransition = false;
 let myIsJumping = false;
@@ -460,12 +491,16 @@ function myShowPlatformer() {
     myElement('myImg01').style.display = 'block';
     myElement('myImg02').style.display = 'block';
     myElement('mySnakeCanvas').style.display = 'none';
+    myElement('mySpaceCanvas').style.display = 'none';
+    myElement('mySpaceHud').style.display = 'none';
 }
 
 function myShowSnake() {
     myElement('myImg01').style.display = 'none';
     myElement('myImg02').style.display = 'none';
     myElement('mySnakeCanvas').style.display = 'block';
+    myElement('mySpaceCanvas').style.display = 'none';
+    myElement('mySpaceHud').style.display = 'none';
     mySetArenaBackground(2);
     myResizeSnakeCanvas();
     myStartSnake();
@@ -653,7 +688,7 @@ myElement('myJumpButton').addEventListener('pointerdown', function(myEvent) {
 
 document.addEventListener('keydown', function(myEvent) {
 
-    if (myEvent.repeat || myGameOver || myLevelTransition) return;
+    if (myEvent.repeat || myGameOver || myLevelTransition || myCurrentGame !== 1) return;
 
     if (myEvent.target.matches('input, textarea, select')) return;
 
@@ -892,6 +927,10 @@ function myResetGame() {
     clearTimeout(myNextLevelClock);
     clearInterval(mySnakeClock);
     mySnakeClock = null;
+    if (mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
+    mySpaceFrame = null;
+    mySpaceRoundOver = true;
+    mySpaceKeys = {};
     myCurrentGame = 1;
     mySnakeFoodCount = 0;
 
@@ -1050,10 +1089,18 @@ function mySnakeTick() {
             clearInterval(mySnakeClock);
             mySnakeClock = null;
             mySetGameState('GAME 2 CLEAR');
-            mySetMessage('SNAKE COMPLETE! +250 POINTS — Game 3 is next in development.');
-            myElement('myLevelInfo').textContent =
-                'Game 2 complete! The next game in the collection is being built.';
-            myGameOver = true;
+            mySetMessage('SNAKE COMPLETE! +250 POINTS — Loading Space PvP...');
+            myLevelTransition = true;
+            myNextLevelClock = setTimeout(function() {
+                myCurrentGame = 4;
+                myLevel = 4;
+                myLevelTransition = false;
+                myElement('myLevel').textContent = '4 / 5';
+                myElement('myLevelInfo').textContent =
+                    'Game 4: Space PvP — local two-player ship battle. First pilot to score 5 hits wins.';
+                mySetGameState('SPACE PvP');
+                myShowSpacePvP();
+            }, 1500);
         } else {
             myPlaceSnakeFood();
             if (mySnakeFoodCount % 3 === 0) {
@@ -1112,7 +1159,215 @@ myElement('myGame').addEventListener('touchend', function(event) {
     mySnakeTouchStart = null;
 }, { passive: true });
 
+
+// ================================================
+// GAME 4: SPACE PvP (GAME 3 SKIPPED)
+// ================================================
+
+function myShowSpacePvP() {
+    myStopMoving();
+    clearInterval(mySnakeClock);
+    mySnakeClock = null;
+    myElement('myImg01').style.display = 'none';
+    myElement('myImg02').style.display = 'none';
+    myElement('mySnakeCanvas').style.display = 'none';
+    myElement('mySpaceCanvas').style.display = 'block';
+    myElement('mySpaceHud').style.display = 'flex';
+    mySetArenaBackground(4);
+
+    mySpaceCanvas = myElement('mySpaceCanvas');
+    mySpaceContext = mySpaceCanvas.getContext('2d');
+    myResizeSpaceCanvas();
+    myStartSpaceRound();
+}
+
+function myResizeSpaceCanvas() {
+    if (!mySpaceCanvas) mySpaceCanvas = myElement('mySpaceCanvas');
+    const arena = myElement('myGame');
+    const dpr = window.devicePixelRatio || 1;
+    mySpaceCanvas.width = Math.floor(arena.clientWidth * dpr);
+    mySpaceCanvas.height = Math.floor(arena.clientHeight * dpr);
+    mySpaceCanvas.style.width = arena.clientWidth + 'px';
+    mySpaceCanvas.style.height = arena.clientHeight + 'px';
+    mySpaceContext = mySpaceCanvas.getContext('2d');
+    mySpaceContext.setTransform(dpr, 0, 0, dpr, 0, 0);
+    myDrawSpaceBattle();
+}
+
+function myStartSpaceRound() {
+    if (mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
+    const w = mySpaceCanvas.clientWidth;
+    const h = mySpaceCanvas.clientHeight;
+    mySpacePlayers = [
+        { x: w * 0.18, y: h * 0.5, angle: 0, hp: 5, color: '#45c9ff',
+          controls: { up: 'w', down: 's', left: 'a', right: 'd', fire: 'f' },
+          cooldown: 0, invulnerable: 0, score: 0 },
+        { x: w * 0.82, y: h * 0.5, angle: Math.PI, hp: 5, color: '#ff6685',
+          controls: { up: 'arrowup', down: 'arrowdown', left: 'arrowleft',
+                      right: 'arrowright', fire: 'enter' },
+          cooldown: 0, invulnerable: 0, score: 0 }
+    ];
+    mySpaceShots = [];
+    mySpaceKeys = {};
+    mySpaceRoundOver = false;
+    mySpaceLastTime = performance.now();
+    myUpdateSpaceHud();
+    mySetMessage('SPACE PvP: P1 (WASD + F) vs P2 (arrows + Enter).');
+    mySpaceFrame = requestAnimationFrame(mySpaceLoop);
+}
+
+function myUpdateSpaceHud() {
+    myElement('myP1Health').textContent =
+        'P1: ' + mySpacePlayers[0].hp + ' HP  |  Hits: ' + mySpacePlayers[0].score;
+    myElement('myP2Health').textContent =
+        'P2: ' + mySpacePlayers[1].hp + ' HP  |  Hits: ' + mySpacePlayers[1].score;
+}
+
+function myFireSpaceShot(player, owner) {
+    if (player.cooldown > 0 || mySpaceRoundOver) return;
+    mySpaceShots.push({
+        x: player.x + Math.cos(player.angle) * 20,
+        y: player.y + Math.sin(player.angle) * 20,
+        vx: Math.cos(player.angle) * 7,
+        vy: Math.sin(player.angle) * 7,
+        owner: owner,
+        life: 90
+    });
+    player.cooldown = 260;
+}
+
+function mySpaceLoop(now) {
+    if (myCurrentGame !== 4 || mySpaceRoundOver) return;
+    const delta = Math.min(32, now - mySpaceLastTime);
+    mySpaceLastTime = now;
+    const w = mySpaceCanvas.clientWidth;
+    const h = mySpaceCanvas.clientHeight;
+
+    mySpacePlayers.forEach((player, index) => {
+        const c = player.controls;
+        const speed = 0.19 * delta;
+        if (mySpaceKeys[c.left]) player.angle -= 0.0045 * delta;
+        if (mySpaceKeys[c.right]) player.angle += 0.0045 * delta;
+        if (mySpaceKeys[c.up]) {
+            player.x += Math.cos(player.angle) * speed;
+            player.y += Math.sin(player.angle) * speed;
+        }
+        if (mySpaceKeys[c.down]) {
+            player.x -= Math.cos(player.angle) * speed * 0.65;
+            player.y -= Math.sin(player.angle) * speed * 0.65;
+        }
+        player.x = Math.max(16, Math.min(w - 16, player.x));
+        player.y = Math.max(16, Math.min(h - 16, player.y));
+        player.cooldown = Math.max(0, player.cooldown - delta);
+        player.invulnerable = Math.max(0, player.invulnerable - delta);
+        if (mySpaceKeys[c.fire]) myFireSpaceShot(player, index);
+    });
+
+    mySpaceShots = mySpaceShots.filter(shot => {
+        shot.x += shot.vx * delta / 16;
+        shot.y += shot.vy * delta / 16;
+        shot.life--;
+        if (shot.life <= 0 || shot.x < 0 || shot.y < 0 ||
+            shot.x > w || shot.y > h) return false;
+        const targetIndex = shot.owner === 0 ? 1 : 0;
+        const target = mySpacePlayers[targetIndex];
+        if (target.invulnerable <= 0 &&
+            Math.hypot(shot.x - target.x, shot.y - target.y) < 19) {
+            target.hp--;
+            target.invulnerable = 850;
+            mySpacePlayers[shot.owner].score++;
+            myUpdateSpaceHud();
+            if (target.hp <= 0) {
+                myEndSpaceRound(shot.owner);
+            }
+            return false;
+        }
+        return true;
+    });
+
+    myDrawSpaceBattle();
+    if (!mySpaceRoundOver) mySpaceFrame = requestAnimationFrame(mySpaceLoop);
+}
+
+function myDrawSpaceShip(ctx, player) {
+    ctx.save();
+    ctx.translate(player.x, player.y);
+    ctx.rotate(player.angle);
+    ctx.fillStyle = player.color;
+    ctx.shadowColor = player.color;
+    ctx.shadowBlur = 15;
+    ctx.beginPath();
+    ctx.moveTo(20, 0);
+    ctx.lineTo(-13, -11);
+    ctx.lineTo(-8, 0);
+    ctx.lineTo(-13, 11);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    ctx.shadowBlur = 0;
+}
+
+function myDrawSpaceBattle() {
+    if (!mySpaceContext || !mySpaceCanvas) return;
+    const ctx = mySpaceContext;
+    const w = mySpaceCanvas.clientWidth;
+    const h = mySpaceCanvas.clientHeight;
+    ctx.clearRect(0, 0, w, h);
+
+    mySpaceShots.forEach(shot => {
+        ctx.fillStyle = shot.owner === 0 ? '#8be5ff' : '#ff9caf';
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.arc(shot.x, shot.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.shadowBlur = 0;
+    mySpacePlayers.forEach(player => {
+        if (player.invulnerable > 0 && Math.floor(player.invulnerable / 90) % 2) return;
+        myDrawSpaceShip(ctx, player);
+    });
+    ctx.fillStyle = 'rgba(255,255,255,0.65)';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('P1', mySpacePlayers[0].x, mySpacePlayers[0].y + 28);
+    ctx.fillText('P2', mySpacePlayers[1].x, mySpacePlayers[1].y + 28);
+}
+
+function myEndSpaceRound(winnerIndex) {
+    mySpaceRoundOver = true;
+    if (mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
+    mySpaceFrame = null;
+    const winner = winnerIndex === 0 ? 'PLAYER 1' : 'PLAYER 2';
+    myScore += 500;
+    myElement('myScore').textContent = myScore;
+    mySetGameState('P' + (winnerIndex + 1) + ' WINS');
+    mySetMessage(winner + ' WINS THE SPACE BATTLE! +500 POINTS. Restart to play again.');
+    myElement('myLevelInfo').textContent =
+        winner + ' wins! Game 3 remains intentionally skipped for now.';
+}
+
+document.addEventListener('keydown', function(event) {
+    if (myCurrentGame !== 4 || mySpaceRoundOver) return;
+    const key = event.key.toLowerCase();
+    if (['w','a','s','d','f','arrowup','arrowdown','arrowleft',
+         'arrowright','enter'].includes(key)) {
+        event.preventDefault();
+        mySpaceKeys[key] = true;
+    }
+});
+
+document.addEventListener('keyup', function(event) {
+    if (myCurrentGame !== 4) return;
+    mySpaceKeys[event.key.toLowerCase()] = false;
+});
+
+
 window.addEventListener('resize', function() {
+    if (myCurrentGame === 4) {
+        myResizeSpaceCanvas();
+        return;
+    }
     if (myCurrentGame === 2) {
         myResizeSnakeCanvas();
         return;
