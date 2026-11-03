@@ -485,6 +485,7 @@ let myMemoryFirst = null;
 let myMemoryLocked = false;
 let myMemoryMatches = 0;
 let myMemoryMoves = 0;
+let myMemoryTimeout = null;
 
 let myGameOver = false;
 let myLevelTransition = false;
@@ -982,6 +983,8 @@ function myToggleBackground() {
 function myResetGame() {
 
     clearTimeout(myNextLevelClock);
+    clearTimeout(myMemoryTimeout);
+    myMemoryTimeout = null;
     myHideMemory(); myHideDodge();
     if (myDodgeFrame) cancelAnimationFrame(myDodgeFrame);
     myDodgeFrame=null; myDodgeKeys={};
@@ -1222,10 +1225,11 @@ myElement('myGame').addEventListener('touchend', function(event) {
 
 
 // ================================================
-// GAME 4: SPACE PvP (GAME 3 SKIPPED)
+// GAME 4: SPACE PvP
 // ================================================
 
 function myShowSpacePvP() {
+    clearTimeout(myMemoryTimeout); myMemoryTimeout=null;
     myHideMemory(); myHideDodge();
     myStopMoving();
     clearInterval(mySnakeClock);
@@ -1326,6 +1330,7 @@ function mySpaceLoop(now) {
     });
 
     mySpaceShots = mySpaceShots.filter(shot => {
+        if (mySpaceRoundOver) return false;
         shot.x += shot.vx * delta / 16;
         shot.y += shot.vy * delta / 16;
         shot.life--;
@@ -1441,6 +1446,7 @@ document.addEventListener('keyup', function(event) {
 // ================================================
 
 function myShowDodgeArena() {
+    clearTimeout(myMemoryTimeout); myMemoryTimeout=null;
     myHideMemory(); myStopMoving(); clearInterval(mySnakeClock); mySnakeClock=null;
     if(mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
     mySpaceFrame=null;
@@ -1529,6 +1535,9 @@ function myShowMemoryMatch() {
 }
 
 function myStartMemoryMatch() {
+    clearTimeout(myMemoryTimeout);
+    myMemoryTimeout = null;
+    myMemoryLocked = false;
     const symbols = ['🚀', '🌙', '⭐', '🪐', '☄️', '🌍', '👾', '🛰️'];
     myMemoryCards = [...symbols, ...symbols]
         .map((symbol, index) => ({ symbol, id: index, matched: false }));
@@ -1596,7 +1605,7 @@ function myFlipMemoryCard(index, button) {
     } else {
         myMemoryLocked = true;
         mySetMessage('No match. Try again — Moves: ' + myMemoryMoves);
-        setTimeout(function() {
+        myMemoryTimeout = setTimeout(function() {
             first.button.textContent = '?';
             button.textContent = '?';
             first.button.classList.remove('revealed');
@@ -1604,6 +1613,7 @@ function myFlipMemoryCard(index, button) {
             first.button.setAttribute('aria-label', 'Hidden card ' + (first.index + 1));
             button.setAttribute('aria-label', 'Hidden card ' + (index + 1));
             myMemoryLocked = false;
+            myMemoryTimeout = null;
         }, 750);
     }
 }
