@@ -95,6 +95,42 @@
         z-index: 4;
     }
 
+    #myMemoryBoard {
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        display: none;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 9px;
+        padding: 14px;
+        align-content: center;
+        background: rgba(5, 12, 22, 0.5);
+    }
+
+    .my-memory-card {
+        min-width: 0;
+        min-height: 55px;
+        padding: 4px;
+        border: 2px solid #5c8da5;
+        border-radius: 9px;
+        background: linear-gradient(145deg, #19384d, #101c30);
+        color: #e8faff;
+        font-size: clamp(1.1rem, 5vw, 2rem);
+        box-shadow: 0 4px 12px #0006;
+    }
+
+    .my-memory-card.revealed,
+    .my-memory-card.matched {
+        background: #d8f5ff;
+        color: #102431;
+        border-color: #00e5ff;
+    }
+
+    .my-memory-card.matched {
+        opacity: 0.65;
+        cursor: default;
+    }
+
     #mySpaceHud {
         position: relative;
         z-index: 5;
@@ -324,6 +360,7 @@
             <span id="myP2Health">P2: 5 HP</span>
         </div>
         <canvas id="mySpaceCanvas" aria-label="Two player space battle arena"></canvas>
+        <div id="myMemoryBoard" aria-label="Memory match card board"></div>
         <img id="myImg01" src="myImage01.jpg" alt="Player">
         <img id="myImg02" src="myImage02.jpg" alt="Target">
     </div>
@@ -436,6 +473,12 @@ let mySpaceShots = [];
 let mySpacePlayers = [];
 let mySpaceRoundOver = false;
 
+let myMemoryCards = [];
+let myMemoryFirst = null;
+let myMemoryLocked = false;
+let myMemoryMatches = 0;
+let myMemoryMoves = 0;
+
 let myGameOver = false;
 let myLevelTransition = false;
 let myIsJumping = false;
@@ -487,7 +530,12 @@ function mySetArenaBackground(myGameNumber) {
         'myBackground0' + myGameNumber + '.jpg';
 }
 
+function myHideMemory() {
+    myElement('myMemoryBoard').style.display = 'none';
+}
+
 function myShowPlatformer() {
+    myHideMemory();
     myElement('myImg01').style.display = 'block';
     myElement('myImg02').style.display = 'block';
     myElement('mySnakeCanvas').style.display = 'none';
@@ -496,6 +544,7 @@ function myShowPlatformer() {
 }
 
 function myShowSnake() {
+    myHideMemory();
     myElement('myImg01').style.display = 'none';
     myElement('myImg02').style.display = 'none';
     myElement('mySnakeCanvas').style.display = 'block';
@@ -925,6 +974,12 @@ function myToggleBackground() {
 function myResetGame() {
 
     clearTimeout(myNextLevelClock);
+    myHideMemory();
+    myMemoryLocked = false;
+    myMemoryFirst = null;
+    myMemoryMatches = 0;
+    myMemoryMoves = 0;
+
     clearInterval(mySnakeClock);
     mySnakeClock = null;
     if (mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
@@ -1165,6 +1220,7 @@ myElement('myGame').addEventListener('touchend', function(event) {
 // ================================================
 
 function myShowSpacePvP() {
+    myHideMemory();
     myStopMoving();
     clearInterval(mySnakeClock);
     mySnakeClock = null;
@@ -1342,9 +1398,20 @@ function myEndSpaceRound(winnerIndex) {
     myScore += 500;
     myElement('myScore').textContent = myScore;
     mySetGameState('P' + (winnerIndex + 1) + ' WINS');
-    mySetMessage(winner + ' WINS THE SPACE BATTLE! +500 POINTS. Restart to play again.');
+    mySetMessage(winner + ' WINS THE SPACE BATTLE! +500 POINTS. Loading Memory Match...');
     myElement('myLevelInfo').textContent =
-        winner + ' wins! Game 3 remains intentionally skipped for now.';
+        winner + ' wins! Next: Game 5 — Memory Match.';
+    myLevelTransition = true;
+    myNextLevelClock = setTimeout(function() {
+        myCurrentGame = 5;
+        myLevel = 5;
+        myLevelTransition = false;
+        myElement('myLevel').textContent = '5 / 5';
+        myElement('myLevelInfo').textContent =
+            'Game 5: Memory Match — flip two cards and find all 8 matching pairs.';
+        mySetGameState('MEMORY MATCH');
+        myShowMemoryMatch();
+    }, 1600);
 }
 
 document.addEventListener('keydown', function(event) {
@@ -1361,6 +1428,108 @@ document.addEventListener('keyup', function(event) {
     if (myCurrentGame !== 4) return;
     mySpaceKeys[event.key.toLowerCase()] = false;
 });
+
+
+// ================================================
+// GAME 5: MEMORY MATCH
+// ================================================
+
+function myShowMemoryMatch() {
+    myStopMoving();
+    clearInterval(mySnakeClock);
+    mySnakeClock = null;
+    if (mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
+    mySpaceFrame = null;
+    myElement('myImg01').style.display = 'none';
+    myElement('myImg02').style.display = 'none';
+    myElement('mySnakeCanvas').style.display = 'none';
+    myElement('mySpaceCanvas').style.display = 'none';
+    myElement('mySpaceHud').style.display = 'none';
+    mySetArenaBackground(5);
+    myStartMemoryMatch();
+}
+
+function myStartMemoryMatch() {
+    const symbols = ['🚀', '🌙', '⭐', '🪐', '☄️', '🌍', '👾', '🛰️'];
+    myMemoryCards = [...symbols, ...symbols]
+        .map((symbol, index) => ({ symbol, id: index, matched: false }));
+    for (let i = myMemoryCards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [myMemoryCards[i], myMemoryCards[j]] =
+            [myMemoryCards[j], myMemoryCards[i]];
+    }
+    myMemoryFirst = null;
+    myMemoryLocked = false;
+    myMemoryMatches = 0;
+    myMemoryMoves = 0;
+    myElement('myMemoryBoard').innerHTML = '';
+    myElement('myMemoryBoard').style.display = 'grid';
+    myMemoryCards.forEach((card, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'my-memory-card';
+        button.textContent = '?';
+        button.setAttribute('aria-label', 'Hidden card ' + (index + 1));
+        button.addEventListener('click', () => myFlipMemoryCard(index, button));
+        myElement('myMemoryBoard').appendChild(button);
+    });
+    mySetMessage('Find all 8 pairs. Moves: 0');
+}
+
+function myFlipMemoryCard(index, button) {
+    const card = myMemoryCards[index];
+    if (myCurrentGame !== 5 || myMemoryLocked ||
+        card.matched || button.classList.contains('revealed')) return;
+
+    button.textContent = card.symbol;
+    button.classList.add('revealed');
+    button.setAttribute('aria-label', card.symbol);
+    if (myMemoryFirst === null) {
+        myMemoryFirst = { index, button };
+        return;
+    }
+
+    myMemoryMoves++;
+    const first = myMemoryFirst;
+    const firstCard = myMemoryCards[first.index];
+    myMemoryFirst = null;
+
+    if (firstCard.symbol === card.symbol) {
+        firstCard.matched = true;
+        card.matched = true;
+        first.button.classList.remove('revealed');
+        button.classList.remove('revealed');
+        first.button.classList.add('matched');
+        button.classList.add('matched');
+        first.button.disabled = true;
+        button.disabled = true;
+        myMemoryMatches++;
+        myScore += 50;
+        myElement('myScore').textContent = myScore;
+        if (myMemoryMatches === 8) {
+            mySetGameState('CAMPAIGN COMPLETE');
+            mySetMessage('MEMORY MATCH COMPLETE! +400 POINTS — CAMPAIGN FINISHED!');
+            myScore += 400;
+            myElement('myScore').textContent = myScore;
+            myElement('myLevelInfo').textContent =
+                'All five games complete. Final score: ' + myScore + '. Restart Campaign to play again.';
+        } else {
+            mySetMessage('Match found! ' + myMemoryMatches + ' / 8 pairs — Moves: ' + myMemoryMoves);
+        }
+    } else {
+        myMemoryLocked = true;
+        mySetMessage('No match. Try again — Moves: ' + myMemoryMoves);
+        setTimeout(function() {
+            first.button.textContent = '?';
+            button.textContent = '?';
+            first.button.classList.remove('revealed');
+            button.classList.remove('revealed');
+            first.button.setAttribute('aria-label', 'Hidden card ' + (first.index + 1));
+            button.setAttribute('aria-label', 'Hidden card ' + (index + 1));
+            myMemoryLocked = false;
+        }, 750);
+    }
+}
 
 
 window.addEventListener('resize', function() {
