@@ -1488,6 +1488,7 @@ function myDodgeLoop(now) {
         }
         return o.y<h+o.size;
     });
+    if(myDodgeOver)return;
     myUpdateDodgeHud();myDrawDodgeArena();
     if(myDodgeElapsed>=30000){myEndDodgeRound(true);return;}
     if(!myDodgeOver)myDodgeFrame=requestAnimationFrame(myDodgeLoop);
