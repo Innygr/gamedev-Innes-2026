@@ -1,77 +1,878 @@
-!DOCTYPE=HTML
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<link rel="stylesheet" href="t2-theme.css">
-</head>
-<body id="myBody" style="background-repeat:repeat; background-size: 80%" background="myBackground01.jpg" class="t2-page">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<h1 align=center>t2a18-game-template-fred</h1>
-<br><br><br><br>
+<title>t2a18 - Game Template - Innes</title>
+
+<link rel="stylesheet" href="t2-theme.css">
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background-color: #101820;
+        background-repeat: repeat;
+        background-size: 80%;
+        color: #e6edf3;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+        touch-action: pan-y;
+    }
+
+    .container {
+        max-width: 950px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #00e5ff;
+        padding: 20px;
+        background: #172630;
+        border: 2px solid #00e5ff;
+        border-radius: 12px;
+        box-shadow: 0 0 18px #00e5ff22;
+    }
+
+    h2, h3 {
+        color: #00e5ff;
+    }
+
+    .panel {
+        background: #172630;
+        border: 1px solid #344955;
+        border-radius: 12px;
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    #myGame {
+        position: relative;
+        width: 100%;
+        height: clamp(240px, 55vw, 400px);
+        min-height: 240px;
+        overflow: hidden;
+        border: 2px solid #00bcd4;
+        border-radius: 10px;
+        background-color: #0c141a;
+        background-image:
+            linear-gradient(#24343e 1px, transparent 1px),
+            linear-gradient(90deg, #24343e 1px, transparent 1px);
+        background-size: 40px 40px;
+        touch-action: none;
+    }
+
+    #myImg01, #myImg02 {
+        position: absolute;
+        width: clamp(48px, 13vw, 100px);
+        height: clamp(42px, 10vw, 80px);
+        object-fit: contain;
+        user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
+    }
+
+    #myImg01 {
+        left: 20px;
+        top: 72%;
+        filter: drop-shadow(0 0 10px #238cff99);
+    }
+
+    #myImg02 {
+        left: 75%;
+        top: 72%;
+        filter: drop-shadow(0 0 10px #ff465899);
+    }
+
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    button {
+        border: none;
+        border-radius: 8px;
+        padding: 13px 18px;
+        font-weight: bold;
+        font-size: 0.95rem;
+        cursor: pointer;
+        background: #00bcd4;
+        color: #101820;
+        transition: 0.15s;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: none;
+    }
+
+    button:hover {
+        background: #7df9ff;
+    }
+
+    button:active, button.pressed {
+        background: #7df9ff;
+        transform: scale(0.96);
+    }
+
+    button.secondary {
+        background: #344955;
+        color: white;
+    }
+
+    button.danger {
+        background: #b83245;
+        color: white;
+    }
+
+    button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .stat {
+        flex: 1;
+        min-width: 100px;
+        padding: 15px;
+        border-radius: 8px;
+        background: #0c141a;
+        border: 1px solid #344955;
+    }
+
+    .stat-label {
+        color: #a4b6c3;
+        font-size: 0.8rem;
+    }
+
+    .stat-value {
+        color: #00e5ff;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    #myMessage {
+        color: #7df9ff;
+        font-weight: bold;
+        min-height: 28px;
+        text-align: center;
+    }
+
+    .key {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 3px;
+        background: #0c141a;
+        border: 1px solid #526875;
+        border-radius: 5px;
+        color: #7df9ff;
+        font-family: monospace;
+    }
+
+    .mobile-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .mobile-controls button {
+        min-height: 65px;
+        font-size: 1.2rem;
+    }
+
+    .mobile-controls .jump {
+        background: #8b5cf6;
+        color: white;
+    }
+
+    .mobile-controls .jump:hover {
+        background: #aa8bfa;
+    }
+
+    .progress-track {
+        width: 100%;
+        height: 9px;
+        background: #263640;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-top: 15px;
+    }
+
+    #myProgress {
+        width: 0%;
+        height: 100%;
+        background: #00e5ff;
+        transition: width 0.15s;
+    }
+
+    footer {
+        text-align: center;
+        color: #8296a5;
+        padding: 25px;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            padding: 10px;
+        }
+
+        .panel {
+            padding: 14px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+        }
+
+        .controls button {
+            flex: 1 1 100%;
+        }
+
+        .mobile-controls button {
+            min-height: 75px;
+        }
+    }
+</style>
+</head>
+
+<body id="myBody" background="myBackground01.jpg">
+
+<div class="container">
+
+<h1>t2a18-game-template-Innes</h1>
+
+<div class="panel">
+    <h2>GAME CONTROL CENTER</h2>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-label">Level</div>
+            <div class="stat-value" id="myLevel">1 / 5</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Score</div>
+            <div class="stat-value" id="myScore">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Game State</div>
+            <div class="stat-value" id="myGameState">READY</div>
+        </div>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>GAME ARENA</h2>
+
+    <div id="myGame">
+        <img id="myImg01" src="myImage01.jpg" alt="Player">
+        <img id="myImg02" src="myImage02.jpg" alt="Target">
+    </div>
+
+    <div class="progress-track">
+        <div id="myProgress"></div>
+    </div>
+
+    <p id="myMessage" aria-live="polite">
+        Ready! Reach the target to complete Level 1.
+    </p>
+</div>
+
+<div class="panel">
+    <h2>PLAYER CONTROLS</h2>
+
+    <p>Keyboard:</p>
+    <span class="key">A</span>
+    <span class="key">←</span> Left
+
+    <span class="key">D</span>
+    <span class="key">→</span> Right
+
+    <span class="key">Space</span> Jump
+
+    <div class="controls" style="margin-top:15px">
+        <button onclick="myResetGame()">Restart Campaign</button>
+        <button class="secondary" onclick="myToggleBackground()">
+            Toggle Background
+        </button>
+    </div>
+
+    <h3>Mobile / Touch Controls</h3>
+
+    <p class="muted">
+        Hold the buttons to move continuously. Tap jump to jump.
+    </p>
+
+    <div class="mobile-controls">
+
+        <button id="myLeftButton" class="secondary"
+                aria-label="Move left">
+            ◀
+        </button>
+
+        <button id="myJumpButton" class="jump"
+                aria-label="Jump">
+            ▲ JUMP
+        </button>
+
+        <button id="myRightButton" class="secondary"
+                aria-label="Move right">
+            ▶
+        </button>
+
+    </div>
+</div>
+
+<div class="panel">
+    <h2>LEVEL INFORMATION</h2>
+
+    <p id="myLevelInfo">
+        Level 1: Reach the target!
+    </p>
+
+    <p>
+        Complete all five levels to finish the campaign.
+        Each level takes place in the same game arena.
+    </p>
+</div>
+
+<footer>
+    JavaScript Game Template | Multi-Level Edition
+</footer>
+
+</div>
 
 <script>
 
-   // global variables here
-   let myGlobalX = 0
-   let myClock
+// ================================================
+// GLOBAL VARIABLES
+// ================================================
+
+let myGlobalX = 0;
+let myClock = null;
+let myMoveClock = null;
+let myJumpClock = null;
+let myNextLevelClock = null;
+
+let myScore = 0;
+let myLevel = 1;
+let myMaxLevel = 5;
+
+let myGameOver = false;
+let myLevelTransition = false;
+let myIsJumping = false;
+
+let myBackgroundEnabled = true;
+let myHeldDirection = 0;
+
+let myJumpStart = 0;
+let myJumpFrame = 0;
+
+const myMoveSpeed = 5;
+const myMoveDelay = 25;
 
 
-   // global functions here
-function myHitOther(my1,my2){
-   left1   = parseInt(document.getElementById(my1).style.left)
-   right1  = left1 + parseInt(document.getElementById(my1).style.width)
-   top1    = parseInt(document.getElementById(my1).style.top)   
-   bottom1 = top1   + parseInt(document.getElementById(my1).style.height)
-   left2   = parseInt(document.getElementById(my2).style.left)
-   right2  = left2 + parseInt(document.getElementById(my2).style.width)
-   top2    = parseInt(document.getElementById(my2).style.top)   
-   bottom2 = top2   + parseInt(document.getElementById(my2).style.height)
-   if ((right1  >=  left2  ) &&      	   
-       (bottom1 >=  top2   ) &&
-       (left1   <=  right2 ) &&
-       (top1    <=  bottom2) ){
-       return true
-   }
+// ================================================
+// LEVEL CONFIGURATION
+// ================================================
+
+// Target positions are percentages of the arena width.
+// Each level gets progressively farther away.
+
+const myLevels = [
+    { target: 45, description: "Level 1: Reach the nearby target!" },
+    { target: 55, description: "Level 2: A little farther this time!" },
+    { target: 65, description: "Level 3: Keep moving!" },
+    { target: 75, description: "Level 4: Almost there!" },
+    { target: 85, description: "Level 5: Final challenge!" }
+];
+
+
+// ================================================
+// HELPER FUNCTIONS
+// ================================================
+
+function myElement(myId) {
+    return document.getElementById(myId);
+}
+
+function mySetMessage(myText) {
+    myElement('myMessage').textContent = myText;
+}
+
+function mySetGameState(myText) {
+    myElement('myGameState').textContent = myText;
 }
 
 
-function myCheckHit(){
-   if ( myHitOther('myImg01','myImg02') ){
-       alert('you lose')  
-       document.getElementById('myImg01').style.left = '20px'
-       location = 't2a13-keydown.html'  // go to your next level
-   }
+// ================================================
+// COLLISION DETECTION
+// ================================================
+
+function myHitOther(my1, my2) {
+
+    let myObject1 = myElement(my1);
+    let myObject2 = myElement(my2);
+
+    let left1 = myObject1.offsetLeft;
+    let right1 = left1 + myObject1.offsetWidth;
+    let top1 = myObject1.offsetTop;
+    let bottom1 = top1 + myObject1.offsetHeight;
+
+    let left2 = myObject2.offsetLeft;
+    let right2 = left2 + myObject2.offsetWidth;
+    let top2 = myObject2.offsetTop;
+    let bottom2 = top2 + myObject2.offsetHeight;
+
+    return (
+        right1 >= left2 &&
+        bottom1 >= top2 &&
+        left1 <= right2 &&
+        top1 <= bottom2
+    );
+}
 
 
-   // more if statements here like the above
+// ================================================
+// PLAYER MOVEMENT
+// ================================================
+
+function myMovePlayer(myDirection) {
+
+    if (myGameOver || myLevelTransition) return;
+
+    let myPlayer = myElement('myImg01');
+    let myArena = myElement('myGame');
+
+    let myNewLeft =
+        myPlayer.offsetLeft + myDirection * myMoveSpeed;
+
+    let myMaxLeft =
+        myArena.clientWidth - myPlayer.offsetWidth;
+
+    myNewLeft = Math.max(0, Math.min(myMaxLeft, myNewLeft));
+
+    myPlayer.style.left = myNewLeft + 'px';
+
+    myCheckHit();
+    myUpdateProgress();
+}
 
 
+// ================================================
+// CONTINUOUS MOVEMENT
+// ================================================
 
-}  // end of myCheckHit()
+function myStartMoving(myDirection) {
 
+    if (myGameOver || myLevelTransition) return;
+
+    myStopMoving();
+
+    myHeldDirection = myDirection;
+
+    myMoveClock = setInterval(function() {
+
+        if (myGameOver || myLevelTransition) {
+            myStopMoving();
+            return;
+        }
+
+        myMovePlayer(myHeldDirection);
+
+    }, myMoveDelay);
+}
+
+function myStopMoving() {
+
+    clearInterval(myMoveClock);
+    myMoveClock = null;
+    myHeldDirection = 0;
+}
+
+
+// ================================================
+// MOBILE TOUCH CONTROLS
+// ================================================
+
+function mySetupHoldButton(myId, myDirection) {
+
+    const myButton = myElement(myId);
+
+    myButton.addEventListener('pointerdown', function(myEvent) {
+
+        myEvent.preventDefault();
+
+        if (myGameOver || myLevelTransition) return;
+
+        myButton.setPointerCapture(myEvent.pointerId);
+        myButton.classList.add('pressed');
+
+        myStartMoving(myDirection);
+
+    });
+
+    function myRelease(myEvent) {
+
+        myButton.classList.remove('pressed');
+
+        if (myMoveClock !== null) {
+            myStopMoving();
+        }
+    }
+
+    myButton.addEventListener('pointerup', myRelease);
+    myButton.addEventListener('pointercancel', myRelease);
+    myButton.addEventListener('lostpointercapture', myRelease);
+}
+
+mySetupHoldButton('myLeftButton', -1);
+mySetupHoldButton('myRightButton', 1);
+
+
+// ================================================
+// JUMP
+// ================================================
+
+function myJump() {
+
+    if (myGameOver || myLevelTransition || myIsJumping) return;
+
+    let myPlayer = myElement('myImg01');
+
+    myIsJumping = true;
+    myJumpStart = myPlayer.offsetTop;
+    myJumpFrame = 0;
+
+    myJumpClock = setInterval(function() {
+
+        myJumpFrame++;
+
+        let myHeight;
+
+        if (myJumpFrame <= 15) {
+            myHeight = myJumpFrame * 6;
+        } else {
+            myHeight = (30 - myJumpFrame) * 6;
+        }
+
+        myPlayer.style.top =
+            (myJumpStart - Math.max(0, myHeight)) + 'px';
+
+        myCheckHit();
+
+        if (myJumpFrame >= 30 || myGameOver || myLevelTransition) {
+
+            clearInterval(myJumpClock);
+            myJumpClock = null;
+
+            myPlayer.style.top = myJumpStart + 'px';
+            myIsJumping = false;
+
+        }
+
+    }, 16);
+}
+
+myElement('myJumpButton').addEventListener('pointerdown', function(myEvent) {
+    myEvent.preventDefault();
+    myJump();
+});
+
+
+// ================================================
+// KEYBOARD CONTROLS
+// ================================================
+
+document.addEventListener('keydown', function(myEvent) {
+
+    if (myEvent.repeat || myGameOver || myLevelTransition) return;
+
+    if (myEvent.target.matches('input, textarea, select')) return;
+
+    switch (myEvent.key.toLowerCase()) {
+
+        case 'a':
+        case 'arrowleft':
+            myEvent.preventDefault();
+            myStartMoving(-1);
+            break;
+
+        case 'd':
+        case 'arrowright':
+            myEvent.preventDefault();
+            myStartMoving(1);
+            break;
+
+        case ' ':
+            myEvent.preventDefault();
+            myJump();
+            break;
+    }
+});
+
+document.addEventListener('keyup', function(myEvent) {
+
+    if (
+        myEvent.key === 'a' ||
+        myEvent.key === 'd' ||
+        myEvent.key === 'ArrowLeft' ||
+        myEvent.key === 'ArrowRight'
+    ) {
+        myStopMoving();
+    }
+});
+
+
+// ================================================
+// COLLISION CHECK
+// ================================================
+
+function myCheckHit() {
+
+    if (myGameOver || myLevelTransition) return;
+
+    if (myHitOther('myImg01', 'myImg02')) {
+
+        myCompleteLevel();
+
+    }
+}
+
+
+// ================================================
+// LEVEL PROGRESSION
+// ================================================
+
+function myCompleteLevel() {
+
+    if (myLevelTransition || myGameOver) return;
+
+    myLevelTransition = true;
+
+    myStopMoving();
+    clearInterval(myJumpClock);
+
+    myIsJumping = false;
+
+    myScore += 100;
+
+    myElement('myScore').textContent = myScore;
+
+    mySetGameState('COMPLETED');
+
+    mySetMessage(
+        'LEVEL ' + myLevel + ' COMPLETE! +100 POINTS'
+    );
+
+    myElement('myImg01').style.filter =
+        'drop-shadow(0 0 20px #38e89b)';
+
+    if (myLevel >= myMaxLevel) {
+
+        mySetGameState('VICTORY');
+
+        mySetMessage(
+            'CAMPAIGN COMPLETE! YOU BEAT ALL FIVE LEVELS!'
+        );
+
+        myElement('myLevelInfo').textContent =
+            'Congratulations! You completed the campaign!';
+
+        myGameOver = true;
+        myLevelTransition = false;
+
+        return;
+    }
+
+    mySetMessage(
+        'LEVEL ' + myLevel + ' COMPLETE! Loading next level...'
+    );
+
+    myNextLevelClock = setTimeout(function() {
+
+        myLevel++;
+
+        myLoadLevel();
+
+    }, 1400);
+}
+
+
+// ================================================
+// LOAD NEXT LEVEL
+// ================================================
+
+function myLoadLevel() {
+
+    if (myLevel > myMaxLevel) return;
+
+    myLevelTransition = false;
+
+    myStopMoving();
+
+    clearInterval(myJumpClock);
+
+    myIsJumping = false;
+
+    let myPlayer = myElement('myImg01');
+    let myTarget = myElement('myImg02');
+    let myArena = myElement('myGame');
+
+    let myConfig = myLevels[myLevel - 1];
+
+    // Reset player position.
+    myPlayer.style.left = '20px';
+    myPlayer.style.top =
+        (myArena.clientHeight * 0.72) + 'px';
+
+    // Position target for this level.
+    myTarget.style.left =
+        (myArena.clientWidth * myConfig.target / 100) + 'px';
+
+    myTarget.style.top =
+        (myArena.clientHeight * 0.72) + 'px';
+
+    myPlayer.style.filter =
+        'drop-shadow(0 0 10px #238cff99)';
+
+    myElement('myLevel').textContent =
+        myLevel + ' / ' + myMaxLevel;
+
+    myElement('myLevelInfo').textContent =
+        myConfig.description;
+
+    myElement('myProgress').style.width = '0%';
+
+    mySetGameState('READY');
+
+    mySetMessage(
+        'LEVEL ' + myLevel + ' — REACH THE TARGET!'
+    );
+
+}
+
+
+// ================================================
+// PROGRESS BAR
+// ================================================
+
+function myUpdateProgress() {
+
+    let myPlayer = myElement('myImg01');
+    let myTarget = myElement('myImg02');
+
+    let myDistance = myTarget.offsetLeft - myPlayer.offsetLeft;
+
+    let myStartDistance =
+        myTarget.offsetLeft - 20;
+
+    let myProgress = myStartDistance > 0
+        ? Math.max(0, Math.min(100,
+            (myStartDistance - myDistance) /
+            myStartDistance * 100))
+        : 100;
+
+    myElement('myProgress').style.width =
+        myProgress + '%';
+}
+
+
+// ================================================
+// BACKGROUND MOVEMENT
+// ================================================
+
+function myToggleBackground() {
+
+    if (myClock) {
+
+        clearInterval(myClock);
+        myClock = null;
+
+        mySetMessage('Background movement stopped.');
+
+        return;
+    }
+
+    myClock = setInterval(function() {
+
+        myGlobalX -= 2;
+
+        myElement('myGame').style.backgroundPosition =
+            myGlobalX + 'px 0px';
+
+        myElement('myBody').style.backgroundPosition =
+            myGlobalX + 'px 0px';
+
+    }, 30);
+
+    mySetMessage('Background movement started!');
+}
+
+
+// ================================================
+// CAMPAIGN RESET
+// ================================================
+
+function myResetGame() {
+
+    clearTimeout(myNextLevelClock);
+
+    clearInterval(myClock);
+    clearInterval(myJumpClock);
+
+    myClock = null;
+    myJumpClock = null;
+    myNextLevelClock = null;
+
+    myStopMoving();
+
+    myScore = 0;
+    myLevel = 1;
+
+    myGameOver = false;
+    myLevelTransition = false;
+    myIsJumping = false;
+
+    myGlobalX = 0;
+
+    myElement('myScore').textContent = '0';
+
+    myElement('myGame').style.backgroundPosition = '0px 0px';
+    myElement('myBody').style.backgroundPosition = '0px 0px';
+
+    myLoadLevel();
+
+}
+
+
+// ================================================
+// INITIALIZATION
+// ================================================
+
+window.addEventListener('resize', function() {
+
+    if (myGameOver || myLevelTransition) return;
+
+    myLoadLevel();
+
+});
+
+myLoadLevel();
 
 </script>
-
-<img id="myImg01" style="position:absolute; width:100px; height:80px; top:0px; left:50px;"  src="myImage01.jpg">
-<img id="myImg02" style="position:absolute; width:100px; height:80px; top:0px; left:250px;" src="myImage02.jpg">
-
-<input type=button value="Auto Background Left" onclick="{
-  clearInterval(myClock)
-  let myTemp = '100px 0px'
-  myClock = setInterval(function(){
-      myGlobalX -= 5
-      myTemp =  myGlobalX + 'px 0px'
-      document.getElementById('myBody').style.backgroundPosition = myTemp
-  }, 100)
-    
-}">
-
-
-<input type=button value="Image Right Fast Button" onTouchStart="{this.click(); event.preventDefault();}" onclick="{
-  document.getElementById('myImg01').style.left = parseInt(document.getElementById('myImg01').style.left) + 10 + 'px'
-  myCheckHit()     // checks for all collisions
-}"><br><br>
-
-
-
 </body>
 </html>
