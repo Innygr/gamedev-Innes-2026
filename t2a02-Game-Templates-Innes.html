@@ -69,6 +69,28 @@
         touch-action: none;
     }
 
+    #myBackgroundImage {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+        opacity: 0.72;
+        pointer-events: none;
+        transition: opacity 0.25s;
+    }
+
+    #mySnakeCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        display: none;
+        touch-action: none;
+    }
+
     #myImg01, #myImg02 {
         position: absolute;
         width: clamp(48px, 13vw, 100px);
@@ -77,6 +99,7 @@
         user-select: none;
         -webkit-user-drag: none;
         pointer-events: none;
+        z-index: 3;
     }
 
     #myImg01 {
@@ -278,6 +301,8 @@
     <h2>GAME ARENA</h2>
 
     <div id="myGame">
+        <img id="myBackgroundImage" src="myBackground01.jpg" alt="" aria-hidden="true">
+        <canvas id="mySnakeCanvas" aria-label="Snake game arena"></canvas>
         <img id="myImg01" src="myImage01.jpg" alt="Player">
         <img id="myImg02" src="myImage02.jpg" alt="Target">
     </div>
@@ -370,6 +395,15 @@ let myNextLevelClock = null;
 let myScore = 0;
 let myLevel = 1;
 let myMaxLevel = 5;
+let myCurrentGame = 1;
+
+let mySnake = [];
+let myFood = { x: 10, y: 8 };
+let mySnakeDirection = { x: 1, y: 0 };
+let mySnakeNextDirection = { x: 1, y: 0 };
+let mySnakeClock = null;
+let mySnakeFoodCount = 0;
+let mySnakeCell = 20;
 
 let myGameOver = false;
 let myLevelTransition = false;
@@ -417,6 +451,26 @@ function mySetGameState(myText) {
     myElement('myGameState').textContent = myText;
 }
 
+function mySetArenaBackground(myGameNumber) {
+    myElement('myBackgroundImage').src =
+        'myBackground0' + myGameNumber + '.jpg';
+}
+
+function myShowPlatformer() {
+    myElement('myImg01').style.display = 'block';
+    myElement('myImg02').style.display = 'block';
+    myElement('mySnakeCanvas').style.display = 'none';
+}
+
+function myShowSnake() {
+    myElement('myImg01').style.display = 'none';
+    myElement('myImg02').style.display = 'none';
+    myElement('mySnakeCanvas').style.display = 'block';
+    mySetArenaBackground(2);
+    myResizeSnakeCanvas();
+    myStartSnake();
+}
+
 
 // ================================================
 // COLLISION DETECTION
@@ -452,7 +506,7 @@ function myHitOther(my1, my2) {
 
 function myMovePlayer(myDirection) {
 
-    if (myGameOver || myLevelTransition) return;
+    if (myGameOver || myLevelTransition || myCurrentGame !== 1) return;
 
     let myPlayer = myElement('myImg01');
     let myArena = myElement('myGame');
@@ -643,7 +697,7 @@ document.addEventListener('keyup', function(myEvent) {
 
 function myCheckHit() {
 
-    if (myGameOver || myLevelTransition) return;
+    if (myGameOver || myLevelTransition || myCurrentGame !== 1) return;
 
     if (myHitOther('myImg01', 'myImg02')) {
 
@@ -682,19 +736,17 @@ function myCompleteLevel() {
         'drop-shadow(0 0 20px #38e89b)';
 
     if (myLevel >= myMaxLevel) {
-
-        mySetGameState('VICTORY');
-
-        mySetMessage(
-            'CAMPAIGN COMPLETE! YOU BEAT ALL FIVE LEVELS!'
-        );
-
-        myElement('myLevelInfo').textContent =
-            'Congratulations! You completed the campaign!';
-
-        myGameOver = true;
-        myLevelTransition = false;
-
+        mySetMessage('GAME 1 COMPLETE! Loading Snake...');
+        myNextLevelClock = setTimeout(function() {
+            myCurrentGame = 2;
+            myLevel = 2;
+            myLevelTransition = false;
+            myElement('myLevel').textContent = '2 / 5';
+            myElement('myLevelInfo').textContent =
+                'Game 2: Snake — collect 10 food items and avoid the walls and your tail.';
+            mySetGameState('SNAKE');
+            myShowSnake();
+        }, 1400);
         return;
     }
 
@@ -720,6 +772,9 @@ function myLoadLevel() {
 
     if (myLevel > myMaxLevel) return;
 
+    myCurrentGame = 1;
+    myShowPlatformer();
+    mySetArenaBackground(1);
     myLevelTransition = false;
 
     myStopMoving();
@@ -735,13 +790,16 @@ function myLoadLevel() {
     let myConfig = myLevels[myLevel - 1];
 
     // Reset player position.
+    myPlayer.style.display = 'block';
+    myTarget.style.display = 'block';
     myPlayer.style.left = '20px';
     myPlayer.style.top =
         (myArena.clientHeight * 0.72) + 'px';
 
     // Position target for this level.
     myTarget.style.left =
-        (myArena.clientWidth * myConfig.target / 100) + 'px';
+        Math.min(myArena.clientWidth - myTarget.offsetWidth - 4,
+            myArena.clientWidth * myConfig.target / 100) + 'px';
 
     myTarget.style.top =
         (myArena.clientHeight * 0.72) + 'px';
@@ -771,6 +829,8 @@ function myLoadLevel() {
 // ================================================
 
 function myUpdateProgress() {
+
+    if (myCurrentGame !== 1) return;
 
     let myPlayer = myElement('myImg01');
     let myTarget = myElement('myImg02');
@@ -830,6 +890,10 @@ function myToggleBackground() {
 function myResetGame() {
 
     clearTimeout(myNextLevelClock);
+    clearInterval(mySnakeClock);
+    mySnakeClock = null;
+    myCurrentGame = 1;
+    mySnakeFoodCount = 0;
 
     clearInterval(myClock);
     clearInterval(myJumpClock);
@@ -863,12 +927,204 @@ function myResetGame() {
 // INITIALIZATION
 // ================================================
 
+// ================================================
+// GAME 2: SNAKE
+// ================================================
+
+function mySnakeDimensions() {
+    const arena = myElement('myGame');
+    return {
+        cols: Math.max(8, Math.floor(arena.clientWidth / mySnakeCell)),
+        rows: Math.max(8, Math.floor(arena.clientHeight / mySnakeCell))
+    };
+}
+
+function myResizeSnakeCanvas() {
+    const canvas = myElement('mySnakeCanvas');
+    const arena = myElement('myGame');
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(arena.clientWidth * dpr);
+    canvas.height = Math.floor(arena.clientHeight * dpr);
+    canvas.style.width = arena.clientWidth + 'px';
+    canvas.style.height = arena.clientHeight + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    myDrawSnake();
+}
+
+function myPlaceSnakeFood() {
+    const size = mySnakeDimensions();
+    let spot;
+    do {
+        spot = {
+            x: Math.floor(Math.random() * size.cols),
+            y: Math.floor(Math.random() * size.rows)
+        };
+    } while (mySnake.some(part => part.x === spot.x && part.y === spot.y));
+    myFood = spot;
+}
+
+function myStartSnake() {
+    clearInterval(mySnakeClock);
+    mySnakeDirection = { x: 1, y: 0 };
+    mySnakeNextDirection = { x: 1, y: 0 };
+    mySnakeFoodCount = 0;
+    mySnake = [{ x: 4, y: 8 }, { x: 3, y: 8 }, { x: 2, y: 8 }];
+    myPlaceSnakeFood();
+    myUpdateSnakeStats();
+    myDrawSnake();
+    mySetMessage('SNAKE: Collect 10 food items. Use WASD or the arrow keys.');
+    mySnakeClock = setInterval(mySnakeTick, 145);
+}
+
+function myUpdateSnakeStats() {
+    myElement('myScore').textContent = myScore;
+    myElement('myLevel').textContent = '2 / 5';
+    myElement('myProgress').style.width =
+        (mySnakeFoodCount * 10) + '%';
+}
+
+function myDrawSnake() {
+    const canvas = myElement('mySnakeCanvas');
+    if (!canvas || canvas.style.display === 'none') return;
+    const ctx = canvas.getContext('2d');
+    const size = mySnakeDimensions();
+    const cellW = canvas.clientWidth / size.cols;
+    const cellH = canvas.clientHeight / size.rows;
+    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+    ctx.strokeStyle = 'rgba(125,249,255,0.13)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= size.cols; x++) {
+        ctx.beginPath(); ctx.moveTo(x * cellW, 0);
+        ctx.lineTo(x * cellW, canvas.clientHeight); ctx.stroke();
+    }
+    for (let y = 0; y <= size.rows; y++) {
+        ctx.beginPath(); ctx.moveTo(0, y * cellH);
+        ctx.lineTo(canvas.clientWidth, y * cellH); ctx.stroke();
+    }
+
+    ctx.fillStyle = '#ff5470';
+    ctx.beginPath();
+    ctx.arc((myFood.x + 0.5) * cellW, (myFood.y + 0.5) * cellH,
+        Math.min(cellW, cellH) * 0.34, 0, Math.PI * 2);
+    ctx.fill();
+
+    mySnake.forEach((part, index) => {
+        ctx.fillStyle = index === 0 ? '#7df9ff' : '#00bcd4';
+        ctx.shadowColor = '#00e5ff';
+        ctx.shadowBlur = index === 0 ? 12 : 4;
+        ctx.fillRect(part.x * cellW + 1, part.y * cellH + 1,
+            cellW - 2, cellH - 2);
+    });
+    ctx.shadowBlur = 0;
+}
+
+function mySnakeTick() {
+    if (myCurrentGame !== 2 || myGameOver) return;
+    mySnakeDirection = mySnakeNextDirection;
+    const size = mySnakeDimensions();
+    const head = {
+        x: mySnake[0].x + mySnakeDirection.x,
+        y: mySnake[0].y + mySnakeDirection.y
+    };
+    const eating = head.x === myFood.x && head.y === myFood.y;
+    const bodyToCheck = eating ? mySnake : mySnake.slice(0, -1);
+
+    if (head.x < 0 || head.y < 0 || head.x >= size.cols ||
+        head.y >= size.rows ||
+        bodyToCheck.some(part => part.x === head.x && part.y === head.y)) {
+        clearInterval(mySnakeClock);
+        mySnakeClock = null;
+        mySetGameState('TRY AGAIN');
+        mySetMessage('Snake hit something! Restart the campaign to try again.');
+        myGameOver = true;
+        return;
+    }
+
+    mySnake.unshift(head);
+    if (eating) {
+        mySnakeFoodCount++;
+        myScore += 25;
+        if (mySnakeFoodCount >= 10) {
+            clearInterval(mySnakeClock);
+            mySnakeClock = null;
+            mySetGameState('GAME 2 CLEAR');
+            mySetMessage('SNAKE COMPLETE! +250 POINTS — Game 3 is next in development.');
+            myElement('myLevelInfo').textContent =
+                'Game 2 complete! The next game in the collection is being built.';
+            myGameOver = true;
+        } else {
+            myPlaceSnakeFood();
+            if (mySnakeFoodCount % 3 === 0) {
+                clearInterval(mySnakeClock);
+                mySnakeClock = setInterval(mySnakeTick,
+                    Math.max(85, 145 - mySnakeFoodCount * 5));
+            }
+        }
+    } else {
+        mySnake.pop();
+    }
+    myUpdateSnakeStats();
+    myDrawSnake();
+}
+
+function mySetSnakeDirection(dx, dy) {
+    if (myCurrentGame !== 2 || myGameOver) return;
+    if (dx === -mySnakeDirection.x && dy === -mySnakeDirection.y) return;
+    mySnakeNextDirection = { x: dx, y: dy };
+}
+
+document.addEventListener('keydown', function(event) {
+    if (myCurrentGame !== 2 || myGameOver) return;
+    const key = event.key.toLowerCase();
+    const dirs = {
+        arrowup: [0, -1], w: [0, -1],
+        arrowdown: [0, 1], s: [0, 1],
+        arrowleft: [-1, 0], a: [-1, 0],
+        arrowright: [1, 0], d: [1, 0]
+    };
+    if (dirs[key]) {
+        event.preventDefault();
+        mySetSnakeDirection(dirs[key][0], dirs[key][1]);
+    }
+});
+
+let mySnakeTouchStart = null;
+myElement('myGame').addEventListener('touchstart', function(event) {
+    if (myCurrentGame !== 2 || !event.touches.length) return;
+    const touch = event.touches[0];
+    mySnakeTouchStart = { x: touch.clientX, y: touch.clientY };
+}, { passive: true });
+
+myElement('myGame').addEventListener('touchend', function(event) {
+    if (myCurrentGame !== 2 || !mySnakeTouchStart || !event.changedTouches.length) return;
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - mySnakeTouchStart.x;
+    const dy = touch.clientY - mySnakeTouchStart.y;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) > 18) {
+        if (Math.abs(dx) > Math.abs(dy)) {
+            mySetSnakeDirection(dx > 0 ? 1 : -1, 0);
+        } else {
+            mySetSnakeDirection(0, dy > 0 ? 1 : -1);
+        }
+    }
+    mySnakeTouchStart = null;
+}, { passive: true });
+
 window.addEventListener('resize', function() {
-
+    if (myCurrentGame === 2) {
+        myResizeSnakeCanvas();
+        return;
+    }
     if (myGameOver || myLevelTransition) return;
-
-    myLoadLevel();
-
+    const player = myElement('myImg01');
+    const target = myElement('myImg02');
+    const arena = myElement('myGame');
+    player.style.left = Math.min(player.offsetLeft,
+        arena.clientWidth - player.offsetWidth) + 'px';
+    target.style.left = Math.min(target.offsetLeft,
+        arena.clientWidth - target.offsetWidth) + 'px';
 });
 
 myLoadLevel();
