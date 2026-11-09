@@ -60,14 +60,14 @@ const myApis = {
     name: "Pokémon",
     url: "https://pokeapi.co/api/v2/pokemon/pikachu"
   },
-  weather: {
-    name: "Current Weather",
-    url: "https://api.open-meteo.com/v1/forecast?latitude=49.05&longitude=-122.33&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
+ weather: {
+    name: "Weather",
+    url: "https://api.open-meteo.com/v1/forecast?latitude=49.2827&longitude=-123.1207&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
   },
   country: {
     name: "Country Information",
-    url: "https://restcountries.com/v3.1/name/canada"
-  }
+    l: "https://restcountries.com/v5.1/name/canada"
+  },
 };
 
 async function fetchData(apiKey) {
@@ -144,18 +144,21 @@ async function fetchData(apiKey) {
           " " + data.current_units.wind_speed_10m;
         break;
 
-      case "country":
-        const country = data[0];
-        summary =
-          "Country: " + country.name.common +
-          "\nCapital: " + country.capital.join(", ") +
-          "\nRegion: " + country.region +
-          "\nPopulation: " + country.population.toLocaleString() +
-          "\nCurrency: " + Object.values(country.currencies)
-            .map(currency => currency.name).join(", ");
-        imageUrl = country.flags.png;
-        break;
-    }
+      case "country": {
+  const country = data[0];
+
+  summary =
+    "Country: " + country.name.common +
+    "\nCapital: " + country.capital.join(", ") +
+    "\nRegion: " + country.region +
+    "\nPopulation: " + country.population.toLocaleString() +
+    "\nCurrency: " +
+    Object.values(country.currencies)
+      .map(currency => currency.name).join(", ");
+
+  imageUrl = country.flags.png;
+  break;
+}
 
     const description = document.createElement("p");
     description.textContent = summary;
