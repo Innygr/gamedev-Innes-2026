@@ -732,16 +732,11 @@ function myJump() {
         const nextTop = Math.max(4, myJumpStart - Math.max(0, myHeight));
         myPlayer.style.top = nextTop + 'px';
         const obstacle = myGetHitPlatformObstacle(myPlayer);
-        if (obstacle) {
-            if (nextTop < oldTop) {
-                myPlayer.style.top = oldTop + 'px';
-                myJumpFrame = 15;
-            } else {
-                myPlayer.style.top = (obstacle.offsetTop - myPlayer.offsetHeight) + 'px';
-                clearInterval(myJumpClock);
-                myJumpClock = null;
-                myIsJumping = false;
-            }
+        if (obstacle && nextTop >= oldTop) {
+            myPlayer.style.top = (obstacle.offsetTop - myPlayer.offsetHeight) + 'px';
+            clearInterval(myJumpClock);
+            myJumpClock = null;
+            myIsJumping = false;
         }
         if (myPlayer.offsetTop + myPlayer.offsetHeight > arena.clientHeight) {
             myPlayer.style.top = (arena.clientHeight - myPlayer.offsetHeight) + 'px';
