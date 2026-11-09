@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-03T19:35:53.995Z",
+  "updatedAt": "2026-11-09T22:55:54.111Z",
   "items": [
     {
       "id": "045fb8a6-a41e-4c42-9645-fb87d01c194f",
@@ -25,6 +25,21 @@
     {
       "id": "c21e378f-4b7a-4c90-a068-2726a649eff8",
       "text": "t1a11 (upgraded)",
+      "completed": false
+    },
+    {
+      "id": "cd426168-2dd9-4d85-87c2-febc704acc62",
+      "text": "t1a06",
+      "completed": false
+    },
+    {
+      "id": "a8fccfb1-4a70-4716-85b6-1e9207afd06c",
+      "text": "t1a07 (fixed links)",
+      "completed": false
+    },
+    {
+      "id": "43b9e16e-b102-46ef-991b-b03305578982",
+      "text": "t1a08 (added to the list)",
       "completed": false
     }
   ]
