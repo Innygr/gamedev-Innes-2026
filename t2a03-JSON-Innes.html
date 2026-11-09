@@ -61,8 +61,8 @@ const myApis = {
     url: "https://pokeapi.co/api/v2/pokemon/pikachu"
   },
  weather: {
-    name: "Weather",
-    url: "https://api.open-meteo.com/v1/forecast?latitude=49.2827&longitude=-123.1207&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
+    name: "City Weather",
+    url: "https://api.open-meteo.com/v1/forecast"
   },
   country: {
     name: "Country Information",
@@ -134,15 +134,38 @@ async function fetchData(apiKey) {
         imageUrl = data.sprites.front_default;
         break;
 
-      case "weather":
-        summary =
-          "Temperature: " + data.current.temperature_2m +
-          " " + data.current_units.temperature_2m +
-          "\nHumidity: " + data.current.relative_humidity_2m +
-          "%" +
-          "\nWind Speed: " + data.current.wind_speed_10m +
-          " " + data.current_units.wind_speed_10m;
-        break;
+      case "weather": {
+  const city = document.getElementById("weatherCity");
+  const coordinates = city.value.split(",");
+
+  const weatherUrl =
+    myApis.weather.url +
+    "?latitude=" + coordinates[0] +
+    "&longitude=" + coordinates[1] +
+    "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
+
+  const weatherResponse = await fetch(weatherUrl);
+
+  if (!weatherResponse.ok) {
+    throw new Error("Weather API error: " + weatherResponse.status);
+  }
+
+  const weatherData = await weatherResponse.json();
+
+  summary =
+    "City: " + city.options[city.selectedIndex].text +
+    "\nTemperature: " + weatherData.current.temperature_2m +
+    weatherData.current_units.temperature_2m +
+    "\nHumidity: " + weatherData.current.relative_humidity_2m + "%" +
+    "\nWind Speed: " + weatherData.current.wind_speed_10m +
+    weatherData.current_units.wind_speed_10m;
+
+  // Display the actual weather response as JSON.
+  data.current = weatherData.current;
+  data.current_units = weatherData.current_units;
+  data.timezone = weatherData.timezone;
+
+  break;
 
       case "country": {
   const country = data[0];
@@ -224,6 +247,20 @@ function fetchAgain() {
     <option value="weather">Current Weather</option>
     <option value="country">Country Information</option>
   </optgroup>
+</select>
+
+<select id="weatherCity" onchange="
+  if (document.getElementById('mySelect').value === 'weather') {
+    fetchData('weather');
+  }
+">
+  <option value="49.2827,-123.1207">Vancouver</option>
+  <option value="43.6532,-79.3832">Toronto</option>
+  <option value="45.5019,-73.5674">Montreal</option>
+  <option value="51.5072,-0.1276">London</option>
+  <option value="35.6762,139.6503">Tokyo</option>
+  <option value="40.7128,-74.0060">New York</option>
+  <option value="-33.8688,151.2093">Sydney</option>
 </select>
 
 <div align="center">
