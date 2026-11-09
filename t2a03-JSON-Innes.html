@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="t2-theme.css">
 
 <h1 align="center">t2a20-json-fred.html</h1>
@@ -37,29 +36,57 @@
 
 <script>
 const myApis = {
-  fox: "https://randomfox.ca/floof/",
-  dog: "https://dog.ceo/api/breeds/image/random",
-  cat: "https://catfact.ninja/fact",
-  joke: "https://v2.jokeapi.dev/joke/Any?type=twopart",
-  advice: "https://api.adviceslip.com/advice",
-  pokemon: "https://pokeapi.co/api/v2/pokemon/pikachu"
+  fox: {
+    name: "Random Fox",
+    url: "https://randomfox.ca/floof/"
+  },
+  dog: {
+    name: "Random Dog",
+    url: "https://dog.ceo/api/breeds/image/random"
+  },
+  cat: {
+    name: "Cat Fact",
+    url: "https://catfact.ninja/fact"
+  },
+  joke: {
+    name: "Random Joke",
+    url: "https://v2.jokeapi.dev/joke/Any?type=twopart"
+  },
+  advice: {
+    name: "Random Advice",
+    url: "https://api.adviceslip.com/advice"
+  },
+  pokemon: {
+    name: "Pokémon",
+    url: "https://pokeapi.co/api/v2/pokemon/pikachu"
+  },
+  weather: {
+    name: "Current Weather",
+    url: "https://api.open-meteo.com/v1/forecast?latitude=49.05&longitude=-122.33&current=temperature_2m,relative_humidity_2m,wind_speed_10m"
+  },
+  country: {
+    name: "Country Information",
+    url: "https://restcountries.com/v3.1/name/canada"
+  }
 };
 
-async function fetchData(url) {
-  const output = document.getElementById('myDiv1');
+async function fetchData(apiKey) {
+  const output = document.getElementById("myDiv1");
 
-  if (!url) {
-    output.textContent = "Choose an API!";
+  if (!apiKey || !myApis[apiKey]) {
+    output.textContent = "Choose an API first!";
     return;
   }
 
-  output.textContent = "Loading API data...";
+  const api = myApis[apiKey];
+
+  output.textContent = "Loading " + api.name + "...";
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(api.url);
 
     if (!response.ok) {
-      throw new Error("HTTP error: " + response.status);
+      throw new Error("HTTP error " + response.status);
     }
 
     const data = await response.json();
@@ -67,47 +94,103 @@ async function fetchData(url) {
     output.replaceChildren();
 
     const heading = document.createElement("h2");
-    heading.textContent = "API Response";
+    heading.textContent = api.name;
     output.appendChild(heading);
+
+    // Build a readable summary
+    let summary = "";
+    let imageUrl = "";
+
+    switch (apiKey) {
+      case "fox":
+        summary = "Here's a random fox!";
+        imageUrl = data.image;
+        break;
+
+      case "dog":
+        summary = "Here's a random dog!";
+        imageUrl = data.message;
+        break;
+
+      case "cat":
+        summary = data.fact;
+        break;
+
+      case "joke":
+        summary = data.type === "twopart"
+          ? data.setup + "\n\n" + data.delivery
+          : data.joke || "No joke was returned.";
+        break;
+
+      case "advice":
+        summary = data.slip.advice;
+        break;
+
+      case "pokemon":
+        summary = "Name: " + data.name +
+          "\nID: " + data.id +
+          "\nHeight: " + data.height +
+          "\nWeight: " + data.weight;
+        imageUrl = data.sprites.front_default;
+        break;
+
+      case "weather":
+        summary =
+          "Temperature: " + data.current.temperature_2m +
+          " " + data.current_units.temperature_2m +
+          "\nHumidity: " + data.current.relative_humidity_2m +
+          "%" +
+          "\nWind Speed: " + data.current.wind_speed_10m +
+          " " + data.current_units.wind_speed_10m;
+        break;
+
+      case "country":
+        const country = data[0];
+        summary =
+          "Country: " + country.name.common +
+          "\nCapital: " + country.capital.join(", ") +
+          "\nRegion: " + country.region +
+          "\nPopulation: " + country.population.toLocaleString() +
+          "\nCurrency: " + Object.values(country.currencies)
+            .map(currency => currency.name).join(", ");
+        imageUrl = country.flags.png;
+        break;
+    }
+
+    const description = document.createElement("p");
+    description.textContent = summary;
+    output.appendChild(description);
+
+    if (imageUrl && typeof imageUrl === "string") {
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = "Image returned by " + api.name;
+      output.appendChild(img);
+    }
+
+    const jsonHeading = document.createElement("h3");
+    jsonHeading.textContent = "Full JSON Response";
+    output.appendChild(jsonHeading);
 
     const json = document.createElement("pre");
     json.textContent = JSON.stringify(data, null, 2);
     output.appendChild(json);
 
-    // Find an image if the API provides one
-    const imageUrl =
-      data.image ||
-      data.message && data.status === "success" ? 
-      (data.image || data.message) :
-      data.sprites?.front_default;
-
-    if (imageUrl && typeof imageUrl === "string" &&
-        imageUrl.startsWith("https://")) {
-      const img = document.createElement("img");
-      img.src = imageUrl;
-      img.alt = "Image returned by API";
-      output.appendChild(img);
-    }
-
-    // Display a readable summary for common APIs
-    let summary = "";
-
-    if (data.fact) summary = data.fact;
-    else if (data.slip?.advice) summary = data.slip.advice;
-    else if (data.setup) summary = data.setup + " " + data.punchline;
-    else if (data.name) summary = "Pokémon: " + data.name;
-    else if (data.message && data.status !== "success") {
-      summary = "Random image received!";
-    }
-
-    if (summary) {
-      const paragraph = document.createElement("p");
-      paragraph.textContent = summary;
-      output.insertBefore(paragraph, json);
-    }
-
   } catch (error) {
-    output.textContent = "Could not fetch API data: " + error.message;
+    output.replaceChildren();
+
+    const message = document.createElement("p");
+    message.textContent =
+      "Could not fetch " + api.name + ": " + error.message;
+
+    output.appendChild(message);
+
+    const link = document.createElement("a");
+    link.href = api.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Open API directly";
+    output.appendChild(link);
   }
 }
 
@@ -118,22 +201,30 @@ function fetchAgain() {
 
 <select id="mySelect" onchange="fetchData(this.value)">
   <option value="">-- Choose an API --</option>
+
   <optgroup label="Animals">
-    <option value="https://randomfox.ca/floof/">Random Fox</option>
-    <option value="https://dog.ceo/api/breeds/image/random">Random Dog</option>
-    <option value="https://catfact.ninja/fact">Cat Fact</option>
+    <option value="fox">Random Fox</option>
+    <option value="dog">Random Dog</option>
+    <option value="cat">Cat Fact</option>
   </optgroup>
+
   <optgroup label="Fun">
-    <option value="https://official-joke-api.appspot.com/random_joke">Random Joke</option>
-    <option value="https://api.adviceslip.com/advice">Random Advice</option>
+    <option value="joke">Random Joke</option>
+    <option value="advice">Random Advice</option>
   </optgroup>
+
   <optgroup label="Games">
-    <option value="https://pokeapi.co/api/v2/pokemon/pikachu">Pokémon: Pikachu</option>
+    <option value="pokemon">Pokémon</option>
+  </optgroup>
+
+  <optgroup label="Information">
+    <option value="weather">Current Weather</option>
+    <option value="country">Country Information</option>
   </optgroup>
 </select>
 
 <div align="center">
-  <button onclick="fetchAgain()">Fetch Another</button>
+  <button onclick="fetchAgain()">Fetch Again</button>
 </div>
 
 <div id="myDiv1">
