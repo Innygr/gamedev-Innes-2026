@@ -157,6 +157,28 @@
         left: 20px;
         top: 72%;
         filter: drop-shadow(0 0 10px #238cff99);
+        transition: filter 0.15s ease;
+        will-change: left, top;
+    }
+
+    #myImg02 {
+        animation: target-pulse 1.8s ease-in-out infinite;
+    }
+
+    .my-platform-obstacle {
+        position: absolute;
+        z-index: 2;
+        border: 2px solid #8cecff;
+        border-bottom: 5px solid #287d9c;
+        border-radius: 7px 7px 3px 3px;
+        background: linear-gradient(145deg, #3e849c, #163b55 75%);
+        box-shadow: 0 0 14px #00d9ff35, inset 0 2px 5px #ffffff30;
+        pointer-events: none;
+    }
+
+    @keyframes target-pulse {
+        0%, 100% { filter: drop-shadow(0 0 7px #ff465899); }
+        50% { filter: drop-shadow(0 0 17px #ff6685); }
     }
 
     #myImg02 {
@@ -509,11 +531,11 @@ const myMoveDelay = 25;
 // Each level gets progressively farther away.
 
 const myLevels = [
-    { target: 45, description: "Level 1: Reach the nearby target!" },
-    { target: 55, description: "Level 2: A little farther this time!" },
-    { target: 65, description: "Level 3: Keep moving!" },
-    { target: 75, description: "Level 4: Almost there!" },
-    { target: 85, description: "Level 5: Final challenge!" }
+    { target: 45, description: "Level 1: Reach the target. Jump over the energy crate!", obstacles: [30] },
+    { target: 55, description: "Level 2: Two crates stand between you and the exit.", obstacles: [28, 43] },
+    { target: 65, description: "Level 3: Time your jumps and clear the route.", obstacles: [25, 43, 56] },
+    { target: 75, description: "Level 4: Keep your momentum through the obstacle course.", obstacles: [24, 39, 57, 67] },
+    { target: 85, description: "Level 5: Final run. Clear every obstacle!", obstacles: [22, 36, 51, 65, 76] }
 ];
 
 
@@ -550,6 +572,7 @@ function myShowPlatformer() {
     myElement('mySnakeCanvas').style.display = 'none';
     myElement('mySpaceCanvas').style.display = 'none';
     myElement('mySpaceHud').style.display = 'none';
+    myElement('myDodgeCanvas').style.display = 'none';
 }
 
 function myShowSnake() {
@@ -598,22 +621,14 @@ function myHitOther(my1, my2) {
 // ================================================
 
 function myMovePlayer(myDirection) {
-
     if (myGameOver || myLevelTransition || myCurrentGame !== 1) return;
-
-    let myPlayer = myElement('myImg01');
-    let myArena = myElement('myGame');
-
-    let myNewLeft =
-        myPlayer.offsetLeft + myDirection * myMoveSpeed;
-
-    let myMaxLeft =
-        myArena.clientWidth - myPlayer.offsetWidth;
-
-    myNewLeft = Math.max(0, Math.min(myMaxLeft, myNewLeft));
-
-    myPlayer.style.left = myNewLeft + 'px';
-
+    const player = myElement('myImg01');
+    const arena = myElement('myGame');
+    const oldLeft = player.offsetLeft;
+    const maxLeft = arena.clientWidth - player.offsetWidth;
+    const nextLeft = Math.max(0, Math.min(maxLeft, oldLeft + myDirection * myMoveSpeed));
+    player.style.left = nextLeft + 'px';
+    if (myHitsPlatformObstacle(player)) player.style.left = oldLeft + 'px';
     myCheckHit();
     myUpdateProgress();
 }
@@ -709,16 +724,28 @@ function myJump() {
         myJumpFrame++;
 
         let myHeight;
+        if (myJumpFrame <= 15) myHeight = myJumpFrame * 6;
+        else myHeight = (30 - myJumpFrame) * 6;
 
-        if (myJumpFrame <= 15) {
-            myHeight = myJumpFrame * 6;
-        } else {
-            myHeight = (30 - myJumpFrame) * 6;
+        const oldTop = myPlayer.offsetTop;
+        const arena = myElement('myGame');
+        const nextTop = Math.max(4, myJumpStart - Math.max(0, myHeight));
+        myPlayer.style.top = nextTop + 'px';
+        const obstacle = myGetHitPlatformObstacle(myPlayer);
+        if (obstacle) {
+            if (nextTop < oldTop) {
+                myPlayer.style.top = oldTop + 'px';
+                myJumpFrame = 15;
+            } else {
+                myPlayer.style.top = (obstacle.offsetTop - myPlayer.offsetHeight) + 'px';
+                clearInterval(myJumpClock);
+                myJumpClock = null;
+                myIsJumping = false;
+            }
         }
-
-        myPlayer.style.top =
-            (myJumpStart - Math.max(0, myHeight)) + 'px';
-
+        if (myPlayer.offsetTop + myPlayer.offsetHeight > arena.clientHeight) {
+            myPlayer.style.top = (arena.clientHeight - myPlayer.offsetHeight) + 'px';
+        }
         myCheckHit();
 
         if (myJumpFrame >= 30 || myGameOver || myLevelTransition) {
@@ -789,14 +816,38 @@ document.addEventListener('keyup', function(myEvent) {
 // ================================================
 
 function myCheckHit() {
-
     if (myGameOver || myLevelTransition || myCurrentGame !== 1) return;
+    if (myHitOther('myImg01', 'myImg02')) myCompleteLevel();
+}
 
-    if (myHitOther('myImg01', 'myImg02')) {
+function myGetHitPlatformObstacle(player) {
+    return Array.from(myElement('myGame').querySelectorAll('.my-platform-obstacle'))
+        .find(obstacle => {
+            const a = player.getBoundingClientRect();
+            const b = obstacle.getBoundingClientRect();
+            return a.right > b.left + 2 && a.left < b.right - 2 &&
+                a.bottom > b.top + 2 && a.top < b.bottom - 2;
+        }) || null;
+}
 
-        myCompleteLevel();
+function myHitsPlatformObstacle(player) {
+    return !!myGetHitPlatformObstacle(player);
+}
 
-    }
+function myBuildPlatformerObstacles(config) {
+    const arena = myElement('myGame');
+    arena.querySelectorAll('.my-platform-obstacle').forEach(node => node.remove());
+    const width = Math.max(30, Math.min(52, arena.clientWidth * 0.055));
+    config.obstacles.forEach(percent => {
+        const block = document.createElement('div');
+        block.className = 'my-platform-obstacle';
+        block.setAttribute('aria-hidden', 'true');
+        block.style.left = Math.min(arena.clientWidth - width - 4, arena.clientWidth * percent / 100) + 'px';
+        block.style.top = (arena.clientHeight * 0.84) + 'px';
+        block.style.width = width + 'px';
+        block.style.height = Math.max(34, arena.clientHeight * 0.14) + 'px';
+        arena.appendChild(block);
+    });
 }
 
 
@@ -889,13 +940,11 @@ function myLoadLevel() {
     myPlayer.style.top =
         (myArena.clientHeight * 0.72) + 'px';
 
-    // Position target for this level.
-    myTarget.style.left =
-        Math.min(myArena.clientWidth - myTarget.offsetWidth - 4,
-            myArena.clientWidth * myConfig.target / 100) + 'px';
-
-    myTarget.style.top =
-        (myArena.clientHeight * 0.72) + 'px';
+    // Place the goal and build this level's solid obstacles.
+    myTarget.style.left = Math.min(myArena.clientWidth - myTarget.offsetWidth - 4,
+        myArena.clientWidth * myConfig.target / 100) + 'px';
+    myTarget.style.top = (myArena.clientHeight * 0.72) + 'px';
+    myBuildPlatformerObstacles(myConfig);
 
     myPlayer.style.filter =
         'drop-shadow(0 0 10px #238cff99)';
