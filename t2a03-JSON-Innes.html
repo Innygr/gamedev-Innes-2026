@@ -35,6 +35,7 @@
 </style>
 
 <script>
+
 const myApis = {
   fox: {
     name: "Random Fox",
@@ -57,17 +58,17 @@ const myApis = {
     url: "https://api.adviceslip.com/advice"
   },
   pokemon: {
-    name: "Pokémon",
+    name: "Pokemon",
     url: "https://pokeapi.co/api/v2/pokemon/pikachu"
   },
- weather: {
+  weather: {
     name: "City Weather",
     url: "https://api.open-meteo.com/v1/forecast"
   },
   country: {
     name: "Country Information",
-    l: "https://restcountries.com/v5.1/name/canada"
-  },
+    url: "https://api.restcountries.com/countries/v5/names.common/Canada"
+  }
 };
 
 async function fetchData(apiKey) {
@@ -79,30 +80,37 @@ async function fetchData(apiKey) {
   }
 
   const api = myApis[apiKey];
+  let requestUrl = api.url;
+  let requestOptions = {};
 
-let requestUrl = api.url;
+  // Build the weather request using the selected city.
+  if (apiKey === "weather") {
+    const city = document.getElementById("weatherCity");
+    const coordinates = city.value.split(",");
 
-// Weather gets coordinates from the city selector
-if (apiKey === "weather") {
-  const city = document.getElementById("weatherCity");
-  const coordinates = city.value.split(",");
-
-  requestUrl +=
-    "?latitude=" + coordinates[0] +
-    "&longitude=" + coordinates[1] +
-    "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
-}
-
-output.textContent = "Loading " + api.name + "...";
-
-try {
-  const response = await fetch(requestUrl);
-
-  if (!response.ok) {
-    throw new Error("HTTP error " + response.status);
+    requestUrl +=
+      "?latitude=" + coordinates[0] +
+      "&longitude=" + coordinates[1] +
+      "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
   }
 
-  const data = await response.json();
+  // Country API v5 requires authorization.
+  if (apiKey === "country") {
+    requestOptions.headers = {
+      "Authorization": "Bearer rc_live_demo"
+    };
+  }
+
+  output.textContent = "Loading " + api.name + "...";
+
+  try {
+    const response = await fetch(requestUrl, requestOptions);
+
+    if (!response.ok) {
+      throw new Error("HTTP error " + response.status);
+    }
+
+    const data = await response.json();
 
     output.replaceChildren();
 
@@ -110,7 +118,6 @@ try {
     heading.textContent = api.name;
     output.appendChild(heading);
 
-    // Build a readable summary
     let summary = "";
     let imageUrl = "";
 
@@ -132,7 +139,7 @@ try {
       case "joke":
         summary = data.type === "twopart"
           ? data.setup + "\n\n" + data.delivery
-          : data.joke || "No joke was returned.";
+          : data.joke || "No joke returned.";
         break;
 
       case "advice":
@@ -140,56 +147,44 @@ try {
         break;
 
       case "pokemon":
-        summary = "Name: " + data.name +
+        summary =
+          "Name: " + data.name +
           "\nID: " + data.id +
           "\nHeight: " + data.height +
           "\nWeight: " + data.weight;
+
         imageUrl = data.sprites.front_default;
         break;
 
       case "weather": {
-  const city = document.getElementById("weatherCity");
-  const coordinates = city.value.split(",");
+        const city = document.getElementById("weatherCity");
 
-  const weatherUrl =
-    myApis.weather.url +
-    "?latitude=" + coordinates[0] +
-    "&longitude=" + coordinates[1] +
-    "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
-
-  const weatherResponse = await fetch(weatherUrl);
-
-  if (!weatherResponse.ok) {
-    throw new Error("Weather API error: " + weatherResponse.status);
-  }
-
-  case "weather":
-  summary =
-    "City: " +
-    document.getElementById("weatherCity")
-      .selectedOptions[0].text +
-    "\nTemperature: " + data.current.temperature_2m +
-    data.current_units.temperature_2m +
-    "\nHumidity: " + data.current.relative_humidity_2m + "%" +
-    "\nWind Speed: " + data.current.wind_speed_10m +
-    data.current_units.wind_speed_10m;
-  break;
+        summary =
+          "City: " + city.selectedOptions[0].text +
+          "\nTemperature: " + data.current.temperature_2m +
+          data.current_units.temperature_2m +
+          "\nHumidity: " + data.current.relative_humidity_2m + "%" +
+          "\nWind Speed: " + data.current.wind_speed_10m +
+          data.current_units.wind_speed_10m;
+        break;
+      }
 
       case "country": {
-  const country = data[0];
+        const country = data.data?.objects?.[0];
 
-  summary =
-    "Country: " + country.name.common +
-    "\nCapital: " + country.capital.join(", ") +
-    "\nRegion: " + country.region +
-    "\nPopulation: " + country.population.toLocaleString() +
-    "\nCurrency: " +
-    Object.values(country.currencies)
-      .map(currency => currency.name).join(", ");
+        if (!country) {
+          throw new Error("Country data was not returned.");
+        }
 
-  imageUrl = country.flags.png;
-  break;
-}
+        summary =
+          "Country: " + country.names.common +
+          "\nRegion: " + country.region +
+          "\nCountry code: " + country.codes.alpha_2 +
+          "\nFlag: " + country.flag.emoji;
+
+        break;
+      }
+    }
 
     const description = document.createElement("p");
     description.textContent = summary;
@@ -220,10 +215,11 @@ try {
     output.appendChild(message);
 
     const link = document.createElement("a");
-    link.href = api.url;
+    link.href = requestUrl;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.textContent = "Open API directly";
+
     output.appendChild(link);
   }
 }
