@@ -1,25 +1,141 @@
+
 <link rel="stylesheet" href="t2-theme.css">
+
 <h1 align="center">t2a20-json-fred.html</h1>
 
-  <script>
-    async function fetchData(url){
-      const response = await fetch(url);
-      const data =  await response.json();
-      console.log(data);
+<style>
+#myDiv1 {
+  margin: 20px auto;
+  padding: 15px;
+  max-width: 850px;
+  background: #20202a;
+  color: white;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
 
-      const myJson = JSON.stringify(data, null, 2);
-      document.getElementById('myDiv1').innerHTML = `<pre>${myJson}</pre>`;
+#myDiv1 pre {
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
 
-      document.getElementById('myDiv1').innerHTML += `<img src="${data.image}" alt="Random Image" style="max-width: 100%; height: auto;">`;
-   
-   }
+#myDiv1 img {
+  display: block;
+  max-width: 100%;
+  max-height: 350px;
+  margin: 15px auto;
+  border-radius: 10px;
+}
 
-  </script>
+#mySelect {
+  display: block;
+  margin: 20px auto;
+  padding: 10px;
+  max-width: 90%;
+}
+</style>
 
+<script>
+const myApis = {
+  fox: "https://randomfox.ca/floof/",
+  dog: "https://dog.ceo/api/breeds/image/random",
+  cat: "https://catfact.ninja/fact",
+  joke: "https://official-joke-api.appspot.com/random_joke",
+  advice: "https://api.adviceslip.com/advice",
+  pokemon: "https://pokeapi.co/api/v2/pokemon/pikachu"
+};
 
-  <select id="mySelect" size="1" onchange="fetchData(this.value)">
-    <option ></option>  
-    <option value="https://randomfox.ca/floof/">randomfox</option>
-  </select><br><br>
+async function fetchData(url) {
+  const output = document.getElementById('myDiv1');
 
-  <div id="myDiv1">...</div>
+  if (!url) {
+    output.textContent = "Choose an API!";
+    return;
+  }
+
+  output.textContent = "Loading API data...";
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("HTTP error: " + response.status);
+    }
+
+    const data = await response.json();
+
+    output.replaceChildren();
+
+    const heading = document.createElement("h2");
+    heading.textContent = "API Response";
+    output.appendChild(heading);
+
+    const json = document.createElement("pre");
+    json.textContent = JSON.stringify(data, null, 2);
+    output.appendChild(json);
+
+    // Find an image if the API provides one
+    const imageUrl =
+      data.image ||
+      data.message && data.status === "success" ? 
+      (data.image || data.message) :
+      data.sprites?.front_default;
+
+    if (imageUrl && typeof imageUrl === "string" &&
+        imageUrl.startsWith("https://")) {
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = "Image returned by API";
+      output.appendChild(img);
+    }
+
+    // Display a readable summary for common APIs
+    let summary = "";
+
+    if (data.fact) summary = data.fact;
+    else if (data.slip?.advice) summary = data.slip.advice;
+    else if (data.setup) summary = data.setup + " " + data.punchline;
+    else if (data.name) summary = "Pokémon: " + data.name;
+    else if (data.message && data.status !== "success") {
+      summary = "Random image received!";
+    }
+
+    if (summary) {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = summary;
+      output.insertBefore(paragraph, json);
+    }
+
+  } catch (error) {
+    output.textContent = "Could not fetch API data: " + error.message;
+  }
+}
+
+function fetchAgain() {
+  fetchData(document.getElementById("mySelect").value);
+}
+</script>
+
+<select id="mySelect" onchange="fetchData(this.value)">
+  <option value="">-- Choose an API --</option>
+  <optgroup label="Animals">
+    <option value="https://randomfox.ca/floof/">Random Fox</option>
+    <option value="https://dog.ceo/api/breeds/image/random">Random Dog</option>
+    <option value="https://catfact.ninja/fact">Cat Fact</option>
+  </optgroup>
+  <optgroup label="Fun">
+    <option value="https://official-joke-api.appspot.com/random_joke">Random Joke</option>
+    <option value="https://api.adviceslip.com/advice">Random Advice</option>
+  </optgroup>
+  <optgroup label="Games">
+    <option value="https://pokeapi.co/api/v2/pokemon/pikachu">Pokémon: Pikachu</option>
+  </optgroup>
+</select>
+
+<div align="center">
+  <button onclick="fetchAgain()">Fetch Another</button>
+</div>
+
+<div id="myDiv1">
+  Choose an API from the dropdown above!
+</div>
