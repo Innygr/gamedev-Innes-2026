@@ -80,16 +80,29 @@ async function fetchData(apiKey) {
 
   const api = myApis[apiKey];
 
-  output.textContent = "Loading " + api.name + "...";
+let requestUrl = api.url;
 
-  try {
-    const response = await fetch(api.url);
+// Weather gets coordinates from the city selector
+if (apiKey === "weather") {
+  const city = document.getElementById("weatherCity");
+  const coordinates = city.value.split(",");
 
-    if (!response.ok) {
-      throw new Error("HTTP error " + response.status);
-    }
+  requestUrl +=
+    "?latitude=" + coordinates[0] +
+    "&longitude=" + coordinates[1] +
+    "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
+}
 
-    const data = await response.json();
+output.textContent = "Loading " + api.name + "...";
+
+try {
+  const response = await fetch(requestUrl);
+
+  if (!response.ok) {
+    throw new Error("HTTP error " + response.status);
+  }
+
+  const data = await response.json();
 
     output.replaceChildren();
 
@@ -150,21 +163,16 @@ async function fetchData(apiKey) {
     throw new Error("Weather API error: " + weatherResponse.status);
   }
 
-  const weatherData = await weatherResponse.json();
-
+  case "weather":
   summary =
-    "City: " + city.options[city.selectedIndex].text +
-    "\nTemperature: " + weatherData.current.temperature_2m +
-    weatherData.current_units.temperature_2m +
-    "\nHumidity: " + weatherData.current.relative_humidity_2m + "%" +
-    "\nWind Speed: " + weatherData.current.wind_speed_10m +
-    weatherData.current_units.wind_speed_10m;
-
-  // Display the actual weather response as JSON.
-  data.current = weatherData.current;
-  data.current_units = weatherData.current_units;
-  data.timezone = weatherData.timezone;
-
+    "City: " +
+    document.getElementById("weatherCity")
+      .selectedOptions[0].text +
+    "\nTemperature: " + data.current.temperature_2m +
+    data.current_units.temperature_2m +
+    "\nHumidity: " + data.current.relative_humidity_2m + "%" +
+    "\nWind Speed: " + data.current.wind_speed_10m +
+    data.current_units.wind_speed_10m;
   break;
 
       case "country": {
