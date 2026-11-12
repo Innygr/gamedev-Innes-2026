@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innes | Luau Sorting</title>
+    <link rel="stylesheet" href="t2-theme.css">
+
+    <style>
+        body {
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 25px;
+        }
+
+        button {
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+
+        #myDiv01 {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .card {
+            display: inline-block;
+            padding: 15px 20px;
+            margin: 5px;
+            border: 1px solid #22dce9;
+            border-radius: 8px;
+            font-size: 22px;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        #myOutput {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>L-20 | Sorting</h1>
+    <p>Randomize a set of cards, view them, and sort them using Bubble Sort.</p>
+
+    <div class="controls">
+        <button id="myRandomize">Randomize</button>
+        <button id="myShow">Show</button>
+        <button id="mySort">Sort</button>
+    </div>
+
+    <div id="myDiv01">Press Randomize to begin.</div>
+
+    <script type="module">
+        import { runLuau } from "./LuauRuntime.js";
+
+        const myDiv01 = document.getElementById("myDiv01");
+
+        // JavaScript bridge: Luau calls this to display the cards.
+        function displayCards(myText) {
+            myDiv01.innerHTML = myText;
+        }
+
+        const myLuauCode = `
+            myMax = 3
+            myCards = {0, 0, 0}
+
+            function showCards()
+                local myTemp = ""
+
+                for myLoop = 1, myMax do
+                    myTemp = myTemp .. '<div class="card">'
+                        .. tostring(myCards[myLoop])
+                        .. '</div>'
+                end
+
+                displayCards(myTemp)
+            end
+
+            function randomizeCards()
+                for myLoop = 1, myMax do
+                    myCards[myLoop] = math.random(0, 9)
+                end
+
+                displayCards("Cards randomized! Click Show to view.")
+            end
+
+            function sortCards()
+                local myTemp = 0
+
+                for myOuter = 1, myMax do
+                    for myLoop = 1, myMax - 1 do
+                        if myCards[myLoop] > myCards[myLoop + 1] then
+                            myTemp = myCards[myLoop]
+                            myCards[myLoop] = myCards[myLoop + 1]
+                            myCards[myLoop + 1] = myTemp
+                        end
+                    end
+                end
+
+                displayCards("Cards sorted! Click Show to view.")
+            end
+        `;
+
+        await runLuau(myLuauCode, null, {
+            displayCards: displayCards
+        });
+
+        // Buttons call the Luau functions.
+        document.getElementById("myRandomize").addEventListener("click", async () => {
+            await runLuau("randomizeCards()", null, {
+                displayCards: displayCards
+            });
+        });
+
+        document.getElementById("myShow").addEventListener("click", async () => {
+            await runLuau("showCards()", null, {
+                displayCards: displayCards
+            });
+        });
+
+        document.getElementById("mySort").addEventListener("click", async () => {
+            await runLuau("sortCards()", null, {
+                displayCards: displayCards
+            });
+        });
+    </script>
+
+</body>
+</html>
