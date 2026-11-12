@@ -1,0 +1,37 @@
+<h1 align="center">t2a20 Sorting Innes.html</h1>
+
+<script>
+  let myMax = 3;
+  let myCards = new Array(myMax);
+</script>
+
+<input type="button" value="Randomize" onclick="{
+  for (let myLoop = 0; myLoop < myMax; myLoop++) {
+    myCards[myLoop] = Math.floor(Math.random() * 10);
+  }
+  document.getElementById('myDiv01').innerHTML = 'Cards randomized! Click Show to view.';
+}">
+
+<input type="button" value="Show" onclick="{
+  let myTemp = '';
+  for (let myLoop = 0; myLoop < myMax; myLoop++) {
+    myTemp += myLoop + ' = ' + myCards[myLoop] + '<br>';
+  }
+  document.getElementById('myDiv01').innerHTML = myTemp;
+}">
+
+<input type="button" value="Sort" onclick="{
+  let myTemp = 0;
+  for (let myOuter = 0; myOuter < myMax; myOuter++) {
+    for (let myLoop = 0; myLoop < myMax - 1; myLoop++) {
+      if (myCards[myLoop] > myCards[myLoop + 1]) {
+        myTemp = myCards[myLoop];
+        myCards[myLoop] = myCards[myLoop + 1];
+        myCards[myLoop + 1] = myTemp;
+      }
+    }
+  }
+  document.getElementById('myDiv01').innerHTML = 'Cards sorted! Click Show to view.';
+}">
+
+<div id="myDiv01"></div>
