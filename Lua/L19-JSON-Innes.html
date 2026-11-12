@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innes | Luau JSON API Explorer</title>
+
+    <link rel="stylesheet" href="t2-theme.css">
+
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #myDiv1 {
+            margin: 20px auto;
+            padding: 15px;
+            max-width: 850px;
+            background: #20202a;
+            color: white;
+            border-radius: 12px;
+            overflow-wrap: anywhere;
+            text-align: left;
+        }
+
+        #myDiv1 pre {
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        #myDiv1 img {
+            display: block;
+            max-width: 100%;
+            max-height: 350px;
+            margin: 15px auto;
+            border-radius: 10px;
+        }
+
+        #mySelect,
+        #weatherCity {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            max-width: 90%;
+        }
+
+        #myStatus {
+            margin: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>L-19 | JSON API Explorer</h1>
+    <p>Explore different APIs using Luau and JavaScript.</p>
+
+    <select id="mySelect">
+        <option value="">-- Choose an API --</option>
+
+        <optgroup label="Animals">
+            <option value="fox">Random Fox</option>
+            <option value="dog">Random Dog</option>
+            <option value="cat">Cat Fact</option>
+        </optgroup>
+
+        <optgroup label="Fun">
+            <option value="joke">Random Joke</option>
+            <option value="advice">Random Advice</option>
+        </optgroup>
+
+        <optgroup label="Games">
+            <option value="pokemon">Pokémon</option>
+        </optgroup>
+
+        <optgroup label="Information">
+            <option value="weather">Current Weather</option>
+            <option value="country">Country Information</option>
+        </optgroup>
+    </select>
+
+    <select id="weatherCity">
+        <option value="49.2827,-123.1207">Vancouver</option>
+        <option value="43.6532,-79.3832">Toronto</option>
+        <option value="45.5019,-73.5674">Montreal</option>
+        <option value="51.5072,-0.1276">London</option>
+        <option value="35.6762,139.6503">Tokyo</option>
+        <option value="40.7128,-74.0060">New York</option>
+        <option value="-33.8688,151.2093">Sydney</option>
+    </select>
+
+    <div id="myStatus">Choose an API to begin.</div>
+
+    <button id="myFetchAgain">Fetch Again</button>
+
+    <div id="myDiv1">
+        Choose an API from the dropdown above!
+    </div>
+
+    <script type="module">
+        import { runLuau } from "./LuauRuntime.js";
+
+        const mySelect = document.getElementById("mySelect");
+        const myCity = document.getElementById("weatherCity");
+        const myOutput = document.getElementById("myDiv1");
+        const myStatus = document.getElementById("myStatus");
+
+        // ==========================================
+        // API CONFIGURATION
+        // ==========================================
+
+        const myApis = {
+            fox: {
+                name: "Random Fox",
+                url: "https://randomfox.ca/floof/"
+            },
+
+            dog: {
+                name: "Random Dog",
+                url: "https://dog.ceo/api/breeds/image/random"
+            },
+
+            cat: {
+                name: "Cat Fact",
+                url: "https://catfact.ninja/fact"
+            },
+
+            joke: {
+                name: "Random Joke",
+                url: "https://v2.jokeapi.dev/joke/Any?type=twopart&blacklistFlags=nsfw,religious,political,racist,sexist,explicit"
+            },
+
+            advice: {
+                name: "Random Advice",
+                url: "https://api.adviceslip.com/advice"
+            },
+
+            pokemon: {
+                name: "Pokémon",
+                url: "https://pokeapi.co/api/v2/pokemon/pikachu"
+            },
+
+            weather: {
+                name: "City Weather",
+                url: "https://api.open-meteo.com/v1/forecast"
+            },
+
+            country: {
+                name: "Country Information",
+                url: "https://restcountries.com/v3.1/name/Canada?fields=name,region,cca2,flag"
+            }
+        };
+
+
+        // ==========================================
+        // DATA STORAGE
+        // ==========================================
+
+        let myCurrentData = {};
+        let myCurrentApi = "";
+        let myCurrentName = "";
+
+
+        // ==========================================
+        // JAVASCRIPT DISPLAY BRIDGE
+        // ==========================================
+
+        function displayResult(title, summary, imageUrl, jsonText) {
+            myOutput.replaceChildren();
+
+            const myHeading = document.createElement("h2");
+            myHeading.textContent = title;
+            myOutput.appendChild(myHeading);
+
+            const myDescription = document.createElement("p");
+            myDescription.style.whiteSpace = "pre-wrap";
+            myDescription.textContent = summary;
+            myOutput.appendChild(myDescription);
+
+            if (imageUrl) {
+                const myImage = document.createElement("img");
+                myImage.src = imageUrl;
+                myImage.alt = "Image returned by " + title;
+                myOutput.appendChild(myImage);
+            }
+
+            const myJsonHeading = document.createElement("h3");
+            myJsonHeading.textContent = "Full JSON Response";
+            myOutput.appendChild(myJsonHeading);
+
+            const myPre = document.createElement("pre");
+            myPre.textContent = jsonText;
+            myOutput.appendChild(myPre);
+        }
+
+
+        function displayError(message, url) {
+            myOutput.replaceChildren();
+
+            const myError = document.createElement("p");
+            myError.textContent = message;
+            myOutput.appendChild(myError);
+
+            if (url) {
+                const myLink = document.createElement("a");
+                myLink.href = url;
+                myLink.target = "_blank";
+                myLink.rel = "noopener noreferrer";
+                myLink.textContent = "Open API directly";
+                myOutput.appendChild(myLink);
+            }
+        }
+
+
+        // ==========================================
+        // LUUAU PROGRAM
+        // ==========================================
+
+        const myLuauCode = `
+            function renderApiResult()
+
+                local myApi = getApiKey()
+                local myName = getApiName()
+                local mySummary = ""
+                local myImage = getField("image")
+
+                if myApi == "fox" then
+
+                    mySummary = "Here's a random fox!"
+
+                elseif myApi == "dog" then
+
+                    mySummary = "Here's a random dog!"
+
+                elseif myApi == "cat" then
+
+                    mySummary = getField("fact")
+
+                elseif myApi == "joke" then
+
+                    local myType = getField("jokeType")
+
+                    if myType == "twopart" then
+                        mySummary = getField("setup")
+                            .. "\\n\\n"
+                            .. getField("delivery")
+                    else
+                        mySummary = getField("joke")
+                    end
+
+                elseif myApi == "advice" then
+
+                    mySummary = getField("advice")
+
+                elseif myApi == "pokemon" then
+
+                    mySummary =
+                        "Name: " .. getField("pokemonName")
+                        .. "\\nID: " .. getField("pokemonId")
+                        .. "\\nHeight: " .. getField("pokemonHeight")
+                        .. "\\nWeight: " .. getField("pokemonWeight")
+
+                elseif myApi == "weather" then
+
+                    mySummary =
+                        "City: " .. getField("city")
+                        .. "\\nTemperature: " .. getField("temperature")
+                        .. getField("temperatureUnit")
+                        .. "\\nHumidity: " .. getField("humidity")
+                        .. "%"
+                        .. "\\nWind Speed: " .. getField("windSpeed")
+                        .. getField("windUnit")
+
+                elseif myApi == "country" then
+
+                    mySummary =
+                        "Country: " .. getField("countryName")
+                        .. "\\nRegion: " .. getField("region")
+                        .. "\\nCountry code: " .. getField("countryCode")
+                        .. "\\nFlag: " .. getField("flag")
+
+                else
+
+                    mySummary = "No summary available."
+
+                end
+
+                displayResult(
+                    myName,
+                    mySummary,
+                    myImage,
+                    getField("json")
+                )
+
+                print("Displayed API: " .. myName)
+
+            end
+        `;
+
+
+        // ==========================================
+        // BRIDGE DATA
+        // ==========================================
+
+        function myGetBridge() {
+            return {
+                displayResult: displayResult,
+
+                getApiKey: () => myCurrentApi,
+
+                getApiName: () => myCurrentName,
+
+                getField: (key) => {
+                    return String(myCurrentData[key] ?? "");
+                }
+            };
+        }
+
+
+        // Initialize Luau.
+        await runLuau(myLuauCode, null, myGetBridge());
+
+
+        // ==========================================
+        // FETCH API DATA
+        // ==========================================
+
+        async function fetchData(apiKey) {
+
+            if (!apiKey || !myApis[apiKey]) {
+                myOutput.textContent = "Choose an API first!";
+                myStatus.textContent = "Waiting for API selection.";
+                return;
+            }
+
+            const myApi = myApis[apiKey];
+
+            let myUrl = myApi.url;
+
+            // Weather needs coordinates.
+            if (apiKey === "weather") {
+                const myCoordinates = myCity.value.split(",");
+
+                myUrl +=
+                    "?latitude=" + myCoordinates[0] +
+                    "&longitude=" + myCoordinates[1] +
+                    "&current=temperature_2m,relative_humidity_2m,wind_speed_10m";
+            }
+
+            myStatus.textContent = "Loading " + myApi.name + "...";
+            myOutput.textContent = "";
+
+            try {
+
+                const myResponse = await fetch(myUrl);
+
+                if (!myResponse.ok) {
+                    throw new Error("HTTP error " + myResponse.status);
+                }
+
+                const myData = await myResponse.json();
+
+                // Store the selected API.
+                myCurrentApi = apiKey;
+                myCurrentName = myApi.name;
+
+                // Store fields that Luau can access.
+                myCurrentData = {
+                    image: "",
+                    fact: "",
+                    jokeType: "",
+                    setup: "",
+                    delivery: "",
+                    joke: "",
+                    advice: "",
+                    pokemonName: "",
+                    pokemonId: "",
+                    pokemonHeight: "",
+                    pokemonWeight: "",
+                    city: "",
+                    temperature: "",
+                    temperatureUnit: "",
+                    humidity: "",
+                    windSpeed: "",
+                    windUnit: "",
+                    countryName: "",
+                    region: "",
+                    countryCode: "",
+                    flag: "",
+                    json: JSON.stringify(myData, null, 2)
+                };
+
+
+                // Extract API-specific fields.
+                switch (apiKey) {
+
+                    case "fox":
+                        myCurrentData.image = myData.image || "";
+                        break;
+
+                    case "dog":
+                        myCurrentData.image = myData.message || "";
+                        break;
+
+                    case "cat":
+                        myCurrentData.fact = myData.fact || "No fact returned.";
+                        break;
+
+                    case "joke":
+                        myCurrentData.jokeType = myData.type || "";
+
+                        myCurrentData.setup = myData.setup || "";
+
+                        myCurrentData.delivery = myData.delivery || "";
+
+                        myCurrentData.joke = myData.joke || "No joke returned.";
+                        break;
+
+                    case "advice":
+                        myCurrentData.advice =
+                            myData.slip?.advice || "No advice returned.";
+                        break;
+
+                    case "pokemon":
+                        myCurrentData.pokemonName = myData.name || "";
+                        myCurrentData.pokemonId = String(myData.id ?? "");
+                        myCurrentData.pokemonHeight = String(myData.height ?? "");
+                        myCurrentData.pokemonWeight = String(myData.weight ?? "");
+                        myCurrentData.image = myData.sprites?.front_default || "";
+                        break;
+
+                    case "weather": {
+                        const myCurrent = myData.current;
+                        const myUnits = myData.current_units;
+
+                        if (!myCurrent) {
+                            throw new Error("Weather data was not returned.");
+                        }
+
+                        myCurrentData.city =
+                            myCity.options[myCity.selectedIndex].text;
+
+                        myCurrentData.temperature =
+                            String(myCurrent.temperature_2m);
+
+                        myCurrentData.temperatureUnit =
+                            myUnits.temperature_2m;
+
+                        myCurrentData.humidity =
+                            String(myCurrent.relative_humidity_2m);
+
+                        myCurrentData.windSpeed =
+                            String(myCurrent.wind_speed_10m);
+
+                        myCurrentData.windUnit =
+                            myUnits.wind_speed_10m;
+
+                        break;
+                    }
+
+                    case "country": {
+                        const myCountry = myData[0];
+
+                        if (!myCountry) {
+                            throw new Error("Country data was not returned.");
+                        }
+
+                        myCurrentData.countryName =
+                            myCountry.name?.common || "";
+
+                        myCurrentData.region =
+                            myCountry.region || "";
+
+                        myCurrentData.countryCode =
+                            myCountry.cca2 || "";
+
+                        myCurrentData.flag =
+                            myCountry.flag || "";
+
+                        break;
+                    }
+                }
+
+
+                // Ask Luau to create the summary and display it.
+                const mySuccess = await runLuau(
+                    "renderApiResult()",
+                    null,
+                    myGetBridge()
+                );
+
+                if (!mySuccess) {
+                    throw new Error("Luau could not process the API response.");
+                }
+
+                myStatus.textContent =
+                    myApi.name + " loaded successfully!";
+
+            } catch (myError) {
+
+                displayError(
+                    "Could not fetch " + myApi.name + ": " + myError.message,
+                    myUrl
+                );
+
+                myStatus.textContent = "API request failed.";
+
+                console.error(myError);
+            }
+        }
+
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+
+        mySelect.addEventListener("change", function() {
+            fetchData(mySelect.value);
+        });
+
+        myCity.addEventListener("change", function() {
+            if (mySelect.value === "weather") {
+                fetchData("weather");
+            }
+        });
+
+        document.getElementById("myFetchAgain")
+            .addEventListener("click", function() {
+                fetchData(mySelect.value);
+            });
+
+    </script>
+
+</body>
+</html>
