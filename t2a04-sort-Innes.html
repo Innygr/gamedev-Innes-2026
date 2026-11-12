@@ -1,38 +1,287 @@
-<link rel="stylesheet" href="t2-theme.css">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sorting Algorithms</title>
+    <link rel="stylesheet" href="t2-theme.css">
+
+    <style>
+        #myCards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 30px;
+        }
+
+        .card {
+            width: 75px;
+            height: 100px;
+            background: #25204a;
+            color: white;
+            border: 3px solid #7770c9;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .card small {
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        .active {
+            background: #e6a52e;
+            color: black;
+            transform: translateY(-12px);
+        }
+
+        .sorted {
+            background: #278c57;
+            border-color: #65e69b;
+        }
+
+        button {
+            margin: 4px;
+            padding: 9px 14px;
+            cursor: pointer;
+        }
+
+        #myDiv01 {
+            text-align: center;
+            margin: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
 <h1 align="center">t2a20 Sorting Innes.html</h1>
 
+<div align="center">
+    <button onclick="randomize()">Randomize</button>
+    <button onclick="showCards()">Show</button>
+
+    <hr>
+
+    <h2>Sort Type</h2>
+
+    <button onclick="sortCards('bubble')">Bubble Sort</button>
+    <button onclick="sortCards('selection')">Selection Sort</button>
+    <button onclick="sortCards('insertion')">Insertion Sort</button>
+    <button onclick="sortCards('merge')">Merge Sort</button>
+</div>
+
+<div id="myCards"></div>
+<div id="myDiv01">Randomize the cards to begin!</div>
+
 <script>
-  let myMax = 3;
-  let myCards = new Array(myMax);
+    let myMax = 5;
+    let myCards = [];
+    let mySorting = false;
+    let myHasCards = false;
+
+    function wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function displayCards(active = [], sorted = []) {
+        let output = '';
+
+        for (let i = 0; i < myCards.length; i++) {
+            let classes = 'card';
+
+            if (active.includes(i)) classes += ' active';
+            if (sorted.includes(i)) classes += ' sorted';
+
+            output += `
+                <div class="${classes}">
+                    ${myCards[i]}
+                    <small>CARD ${i + 1}</small>
+                </div>
+            `;
+        }
+
+        document.getElementById('myCards').innerHTML = output;
+    }
+
+    function status(message) {
+        document.getElementById('myDiv01').innerHTML = message;
+    }
+
+    async function randomize() {
+        if (mySorting) return;
+
+        myCards = [];
+
+        for (let i = 0; i < myMax; i++) {
+            myCards.push(Math.floor(Math.random() * 100));
+        }
+
+        myHasCards = true;
+        displayCards();
+
+        status('Cards randomized!');
+    }
+
+    function showCards() {
+        if (mySorting || !myHasCards) return;
+
+        displayCards();
+        status('Current card order: ' + myCards.join(', '));
+    }
+
+    async function sortCards(type) {
+        if (mySorting || !myHasCards) {
+            if (!myHasCards) status('Randomize the cards first!');
+            return;
+        }
+
+        mySorting = true;
+        status('Running ' + type + ' sort...');
+
+        if (type === 'bubble') await bubbleSort();
+        if (type === 'selection') await selectionSort();
+        if (type === 'insertion') await insertionSort();
+        if (type === 'merge') await mergeSort();
+
+        displayCards([], Array.from(
+            {length: myMax},
+            (_, i) => i
+        ));
+
+        status(type + ' sort complete!');
+        mySorting = false;
+    }
+
+    // BUBBLE SORT
+    async function bubbleSort() {
+        for (let i = 0; i < myMax; i++) {
+            for (let j = 0; j < myMax - i - 1; j++) {
+                displayCards([j, j + 1]);
+                await wait(600);
+
+                if (myCards[j] > myCards[j + 1]) {
+                    let temp = myCards[j];
+                    myCards[j] = myCards[j + 1];
+                    myCards[j + 1] = temp;
+
+                    displayCards([j, j + 1]);
+                    await wait(400);
+                }
+            }
+        }
+    }
+
+    // SELECTION SORT
+    async function selectionSort() {
+        for (let i = 0; i < myMax; i++) {
+            let min = i;
+
+            for (let j = i + 1; j < myMax; j++) {
+                displayCards([min, j]);
+                await wait(600);
+
+                if (myCards[j] < myCards[min]) {
+                    min = j;
+                }
+            }
+
+            let temp = myCards[i];
+            myCards[i] = myCards[min];
+            myCards[min] = temp;
+
+            displayCards([i, min]);
+            await wait(500);
+        }
+    }
+
+    // INSERTION SORT
+    async function insertionSort() {
+        for (let i = 1; i < myMax; i++) {
+            let key = myCards[i];
+            let j = i - 1;
+
+            while (j >= 0 && myCards[j] > key) {
+                displayCards([j, j + 1]);
+                await wait(600);
+
+                myCards[j + 1] = myCards[j];
+                j--;
+
+                displayCards([j + 1]);
+                await wait(400);
+            }
+
+            myCards[j + 1] = key;
+
+            displayCards([j + 1]);
+            await wait(500);
+        }
+    }
+
+    // MERGE SORT
+    async function mergeSort() {
+        async function merge(left, middle, right) {
+            let leftArray = myCards.slice(left, middle + 1);
+            let rightArray = myCards.slice(middle + 1, right + 1);
+
+            let i = 0;
+            let j = 0;
+            let k = left;
+
+            while (i < leftArray.length && j < rightArray.length) {
+                displayCards([k]);
+                await wait(500);
+
+                if (leftArray[i] <= rightArray[j]) {
+                    myCards[k] = leftArray[i];
+                    i++;
+                } else {
+                    myCards[k] = rightArray[j];
+                    j++;
+                }
+
+                displayCards([k]);
+                await wait(400);
+                k++;
+            }
+
+            while (i < leftArray.length) {
+                myCards[k] = leftArray[i];
+                displayCards([k]);
+                await wait(400);
+                i++;
+                k++;
+            }
+
+            while (j < rightArray.length) {
+                myCards[k] = rightArray[j];
+                displayCards([k]);
+                await wait(400);
+                j++;
+                k++;
+            }
+        }
+
+        async function divide(left, right) {
+            if (left >= right) return;
+
+            let middle = Math.floor((left + right) / 2);
+
+            await divide(left, middle);
+            await divide(middle + 1, right);
+            await merge(left, middle, right);
+        }
+
+        await divide(0, myMax - 1);
+    }
 </script>
 
-<input type="button" value="Randomize" onclick="{
-  for (let myLoop = 0; myLoop < myMax; myLoop++) {
-    myCards[myLoop] = Math.floor(Math.random() * 10);
-  }
-  document.getElementById('myDiv01').innerHTML = 'Cards randomized! Click Show to view.';
-}">
-
-<input type="button" value="Show" onclick="{
-  let myTemp = '';
-  for (let myLoop = 0; myLoop < myMax; myLoop++) {
-    myTemp += myLoop + ' = ' + myCards[myLoop] + '<br>';
-  }
-  document.getElementById('myDiv01').innerHTML = myTemp;
-}">
-
-<input type="button" value="Sort" onclick="{
-  let myTemp = 0;
-  for (let myOuter = 0; myOuter < myMax; myOuter++) {
-    for (let myLoop = 0; myLoop < myMax - 1; myLoop++) {
-      if (myCards[myLoop] > myCards[myLoop + 1]) {
-        myTemp = myCards[myLoop];
-        myCards[myLoop] = myCards[myLoop + 1];
-        myCards[myLoop + 1] = myTemp;
-      }
-    }
-  }
-  document.getElementById('myDiv01').innerHTML = 'Cards sorted! Click Show to view.';
-}">
-
-<div id="myDiv01"></div>
+</body>
+</html>
