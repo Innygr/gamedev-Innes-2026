@@ -187,6 +187,17 @@
         filter: drop-shadow(0 0 10px #ff465899);
     }
 
+    .game-jump-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .game-jump-controls button {
+        flex: 1 1 150px;
+        min-height: 46px;
+    }
+
     .controls {
         display: flex;
         flex-wrap: wrap;
@@ -370,6 +381,19 @@
     </div>
 </div>
 
+
+<div class="panel" id="gameJumpPanel">
+    <h2>JUMP TO A GAME</h2>
+    <p>Choose any game to start it immediately:</p>
+    <div class="game-jump-controls">
+        <button type="button" onclick="myJumpToGame(1)">1. Platformer</button>
+        <button type="button" onclick="myJumpToGame(2)">2. Snake</button>
+        <button type="button" onclick="myJumpToGame(3)">3. Dodge Arena</button>
+        <button type="button" onclick="myJumpToGame(4)">4. Space PvP</button>
+        <button type="button" onclick="myJumpToGame(5)">5. Memory Match</button>
+    </div>
+</div>
+
 <div class="panel">
     <h2>GAME ARENA</h2>
 
@@ -521,6 +545,77 @@ let myJumpFrame = 0;
 
 const myMoveSpeed = 5;
 const myMoveDelay = 25;
+
+
+// ================================================
+// DIRECT GAME NAVIGATION
+// ================================================
+
+function myJumpToGame(gameNumber) {
+    if (!Number.isInteger(gameNumber) || gameNumber < 1 || gameNumber > 5) return;
+
+    // Stop every active game loop and pending transition before switching.
+    clearTimeout(myNextLevelClock);
+    clearTimeout(myMemoryTimeout);
+    clearInterval(myClock);
+    clearInterval(myMoveClock);
+    clearInterval(myJumpClock);
+    clearInterval(mySnakeClock);
+
+    if (myDodgeFrame) cancelAnimationFrame(myDodgeFrame);
+    if (mySpaceFrame) cancelAnimationFrame(mySpaceFrame);
+
+    myNextLevelClock = null;
+    myMemoryTimeout = null;
+    myClock = null;
+    myMoveClock = null;
+    myJumpClock = null;
+    mySnakeClock = null;
+    myDodgeFrame = null;
+    mySpaceFrame = null;
+
+    myStopMoving();
+    myDodgeOver = true;
+    myDodgeKeys = {};
+    mySpaceRoundOver = true;
+    mySpaceKeys = {};
+    myMemoryLocked = false;
+    myMemoryFirst = null;
+    myGameOver = false;
+    myLevelTransition = false;
+    myIsJumping = false;
+
+    myCurrentGame = gameNumber;
+    myLevel = gameNumber;
+    myElement('myLevel').textContent = gameNumber + ' / 5';
+    myElement('myProgress').style.width = '0%';
+
+    if (gameNumber === 1) {
+        myLevel = 1;
+        myLoadLevel();
+        mySetGameState('PLATFORMER');
+        mySetMessage('Platformer selected. Complete its five levels!');
+        myElement('myLevelInfo').textContent = 'Game 1: Platformer — complete all five levels.';
+    } else if (gameNumber === 2) {
+        mySetGameState('SNAKE');
+        myElement('myLevelInfo').textContent = 'Game 2: Snake — collect 10 food items.';
+        myShowSnake();
+    } else if (gameNumber === 3) {
+        mySetGameState('DODGE ARENA');
+        myElement('myLevelInfo').textContent = 'Game 3: Dodge Arena — survive for 30 seconds with 3 lives.';
+        myShowDodgeArena();
+    } else if (gameNumber === 4) {
+        mySetGameState('SPACE PvP');
+        myElement('myLevelInfo').textContent = 'Game 4: Space PvP — local two-player battle. First pilot to 5 hits wins.';
+        myShowSpacePvP();
+    } else if (gameNumber === 5) {
+        mySetGameState('MEMORY MATCH');
+        myElement('myLevelInfo').textContent = 'Game 5: Memory Match — find all 8 matching pairs.';
+        myShowMemoryMatch();
+    }
+
+    myElement('myGame').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
 
 // ================================================
