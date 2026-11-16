@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKBROWSER // INNYGR</title>
+<link rel="stylesheet" href="t2-theme.css">
+
+<style>
+:root {
+    color-scheme: dark;
+    --bg: #030609;
+    --panel: #080e13;
+    --panel2: #0b151c;
+    --cyan: #42eaff;
+    --white: #d9faff;
+    --muted: #63818b;
+    --border: #17404b;
+    --green: #65ffb0;
+    --red: #ff5368;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background:
+        radial-gradient(ellipse at 50% 0%, #10232b 0%, transparent 55%),
+        var(--bg);
+    color: var(--white);
+    font-family: Consolas, "Courier New", monospace;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: .12;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        #8fffff 4px
+    );
+}
+
+main {
+    max-width: 1250px;
+    margin: auto;
+    position: relative;
+}
+
+header {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 0 20px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: var(--cyan);
+    text-align: center;
+    font-size: clamp(25px, 5vw, 44px);
+    letter-spacing: 5px;
+    text-shadow: 0 0 12px #42eaff77;
+    animation: flicker 5s infinite;
+}
+
+h2 {
+    color: var(--cyan);
+    font-size: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+p {
+    line-height: 1.6;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--muted);
+    letter-spacing: 2px;
+    font-size: 12px;
+}
+
+.panel {
+    background: linear-gradient(145deg, var(--panel2), var(--panel));
+    border: 1px solid var(--border);
+    padding: 17px;
+    margin: 16px 0;
+    box-shadow: 0 0 18px #0009;
+}
+
+.panel::before {
+    content: "[ SYSTEM MODULE ]";
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 8px;
+}
+
+button {
+    background: #071219;
+    color: var(--cyan);
+    border: 1px solid var(--border);
+    padding: 11px;
+    font-family: inherit;
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: .15s ease;
+}
+
+button:hover,
+button:focus-visible {
+    background: #102c36;
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px #42eaff33;
+    outline: none;
+    transform: translateY(-1px);
+}
+
+button:active {
+    background: #17404b;
+}
+
+input,
+textarea {
+    width: 100%;
+    background: #020609;
+    color: var(--green);
+    border: 1px solid var(--border);
+    padding: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 10px #42eaff22;
+}
+
+textarea {
+    min-height: 300px;
+    resize: vertical;
+    line-height: 1.5;
+    white-space: pre;
+}
+
+label {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin: 12px 0 6px;
+    letter-spacing: 1px;
+}
+
+.demo-box {
+    display: inline-grid;
+    place-items: center;
+    width: 130px;
+    height: 70px;
+    margin: 15px 0;
+    border: 1px solid var(--cyan);
+    background: #102d3d;
+    color: var(--cyan);
+    font-weight: bold;
+    position: relative;
+    left: 0;
+    top: 0;
+    box-shadow: 0 0 15px #42eaff33;
+}
+
+.demo-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+#status {
+    color: var(--green);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+}
+
+#status::before {
+    content: "> ";
+    color: var(--cyan);
+}
+
+footer {
+    margin-top: 25px;
+    text-align: center;
+}
+
+@keyframes flicker {
+    0%, 95%, 97%, 100% { opacity: 1; }
+    96% { opacity: .65; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<header>
+    <h1>HACKBROWSER</h1>
+    <p class="subtitle">INNYGR SYSTEMS // BROWSER OBJECT INSPECTOR</p>
+    <p class="subtitle">BUILD 017.01 // CONNECTION ESTABLISHED</p>
+</header>
+
+<section class="panel">
+    <h2>Page objects</h2>
+    <p>This is a live HTML element. Modify it and inspect its properties.</p>
+
+    <div id="demoBox" class="demo-box">DEMO OBJECT</div>
+
+    <div class="demo-controls">
+        <button type="button" id="animateButton">[ ANIMATE OBJECT ]</button>
+        <button type="button" id="resetButton">[ RESET OBJECT ]</button>
+    </div>
+
+    <p class="muted">
+        PRIVACY: Cookie contents and browser storage values are not displayed.
+    </p>
+</section>
+
+<section class="panel">
+    <h2>HTML tag samples</h2>
+    <p>Elements available for inspection:</p>
+
+    <p><a href="#demoBox" id="sampleLink">Sample link (&lt;a&gt;)</a></p>
+
+    <p>
+        <img id="sampleImage"
+        alt="Cyan and purple sample graphic"
+        width="160" height="80"
+        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='80'%3E%3Crect width='160' height='80' fill='%23080f1e'/%3E%3Ccircle cx='42' cy='40' r='23' fill='%2355e8ff'/%3E%3Cpath d='M78 56 104 17 138 56Z' fill='%23b39aff'/%3E%3C/svg%3E">
+    </p>
+
+    <p>
+        <b id="sampleBold">Sample bold text (&lt;b&gt;)</b>
+        and
+        <strong id="sampleStrong">sample strong text (&lt;strong&gt;)</strong>.
+    </p>
+</section>
+
+<section class="panel">
+    <h2>Object inspection terminal</h2>
+    <p class="muted">
+        Select a target to inspect its properties and prototype chain.
+    </p>
+
+    <div class="buttons">
+        <button data-inspect="window">01 // window</button>
+        <button data-inspect="document">02 // document</button>
+        <button data-inspect="form">03 // Inspector heading</button>
+        <button data-inspect="textarea">04 // Output textarea</button>
+        <button data-inspect="location">05 // window.location</button>
+        <button data-inspect="parent">06 // window.parent</button>
+        <button data-inspect="navigator">07 // navigator</button>
+        <button data-inspect="boxStyle">08 // Demo box style</button>
+        <button data-inspect="screen">09 // screen</button>
+        <button data-inspect="box">10 // Demo box element</button>
+        <button data-inspect="storage">11 // localStorage keys</button>
+        <button data-inspect="boxStyle">12 // getElementById().style</button>
+        <button data-inspect="input">13 // Object-name input</button>
+        <button data-inspect="input">14 // getElementById() input</button>
+        <button data-inspect="history">15 // history</button>
+        <button data-inspect="performance">16 // performance</button>
+        <button data-inspect="date">17 // Date object</button>
+        <button data-inspect="array">18 // Array object</button>
+        <button data-inspect="math">19 // Math object</button>
+        <button data-inspect="json">20 // JSON object</button>
+        <button data-inspect="all">21 // document.all</button>
+        <button data-inspect="legacyStyle">22 // Legacy global style</button>
+        <button data-inspect="demoImage">23 // Demo element</button>
+        <button data-inspect="cookieInfo">24 // Cookie API metadata</button>
+        <button data-inspect="documentElement">25 // document.documentElement</button>
+        <button data-inspect="elements">26 // All HTML elements</button>
+        <button data-inspect="links">27 // All links</button>
+        <button data-inspect="images">28 // All images</button>
+        <button data-inspect="bold">29 // Bold elements</button>
+        <button data-inspect="browserInfo">30 // Browser information</button>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Inspection results</h2>
+
+    <label for="objectName">SELECTED OBJECT</label>
+    <input id="objectName" type="text" readonly value="NONE">
+
+    <label for="output">TERMINAL OUTPUT</label>
+    <textarea id="output" rows="18" readonly spellcheck="false">> Awaiting inspection command...
+> Select a target above.</textarea>
+
+    <p id="status" role="status" aria-live="polite">SYSTEM READY.</p>
+</section>
+
+<footer>
+    <button type="button" id="backButton">[ RETURN TO PREVIOUS PAGE ]</button>
+    <p class="muted">HACKBROWSER // INNYGR // 017</p>
+</footer>
+
+</main>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+// --------------------------------------------------
+// LUAU TERMINAL BRIDGE
+// --------------------------------------------------
+
+const output = document.getElementById("output");
+const objectName = document.getElementById("objectName");
+const status = document.getElementById("status");
+
+function setTerminalStatus(message) {
+    status.textContent = message;
+}
+
+await runLuau(`
+    function terminalStatus(message)
+        setStatus(message)
+        print("[HACKBROWSER] " .. message)
+    end
+`, null, {
+    setStatus: setTerminalStatus
+});
+
+// --------------------------------------------------
+// OBJECT REGISTRY
+// --------------------------------------------------
+
+const objects = {
+    window: () => window,
+    document: () => document,
+    form: () => document.getElementById("inspect-heading"),
+    textarea: () => output,
+    location: () => window.location,
+    parent: () => window.parent,
+    navigator: () => navigator,
+    boxStyle: () => document.getElementById("demoBox").style,
+    screen: () => screen,
+    box: () => document.getElementById("demoBox"),
+
+    // Only expose storage keys, never their values.
+    storage: () => ({
+        length: localStorage.length,
+        keys: Object.keys(localStorage)
+    }),
+
+    input: () => objectName,
+
+    history: () => ({
+        length: history.length,
+        state: history.state
+    }),
+
+    performance: () => performance,
+    date: () => new Date(),
+    array: () => ["browser", "document", "element"],
+    math: () => Math,
+    json: () => JSON,
+    all: () => document.all,
+    legacyStyle: () => window.style,
+    demoImage: () => document.getElementById("demoBox"),
+
+    cookieInfo: () => ({
+        cookieEnabled: navigator.cookieEnabled,
+        cookieStringLength: document.cookie.length
+    }),
+
+    documentElement: () => document.documentElement,
+    elements: () => Array.from(document.querySelectorAll("*")),
+    links: () => Array.from(document.querySelectorAll("a")),
+    images: () => Array.from(document.querySelectorAll("img")),
+    bold: () => Array.from(document.querySelectorAll("b, strong")),
+    browserInfo: () => navigator
+};
+
+// --------------------------------------------------
+// VALUE DESCRIPTION
+// --------------------------------------------------
+
+function describeValue(value) {
+    if (value === null) return "null";
+    if (value === undefined) return "undefined";
+
+    if (typeof value === "function") {
+        return "[Function " + (value.name || "anonymous") + "]";
+    }
+
+    if (typeof value === "string") {
+        return JSON.stringify(
+            value.length > 180
+                ? value.slice(0, 180) + "..."
+                : value
+        );
+    }
+
+    if (typeof value === "object") {
+        if (Array.isArray(value)) {
+            return "[Array(" + value.length + ")]";
+        }
+
+        return Object.prototype.toString.call(value);
+    }
+
+    return String(value);
+}
+
+// --------------------------------------------------
+// BROWSER INFORMATION
+// --------------------------------------------------
+
+async function inspectBrowserInfo() {
+    objectName.value = "navigator";
+
+    const lines = [];
+    const add = (label, value) => {
+        lines.push(
+            label + ": " +
+            (value ?? "Not exposed by this browser")
+        );
+    };
+
+    const ua = navigator.userAgent || "";
+    const brands = navigator.userAgentData?.brands;
+
+    add(
+        "Browser",
+        brands?.map(item => item.brand).join(", ") ||
+        "Could not identify reliably"
+    );
+
+    add(
+        "Browser version",
+        brands?.map(item => item.brand + " " + item.version).join("; ") ||
+        "See user agent below"
+    );
+
+    add("Browser vendor", navigator.vendor);
+    add("User agent", ua);
+    add(
+        "Platform",
+        navigator.userAgentData?.platform || navigator.platform
+    );
+
+    add("OS version", "Not consistently exposed for privacy");
+    add("Architecture", navigator.userAgentData?.architecture);
+    add("Device bitness", navigator.userAgentData?.bitness);
+    add("CPU model", "Not exposed by standard browser APIs");
+    add("Language", navigator.language);
+    add("Languages", navigator.languages?.join(", "));
+    add("Online status", navigator.onLine ? "Online" : "Offline");
+    add("Cookies enabled", navigator.cookieEnabled);
+    add("Do Not Track", navigator.doNotTrack);
+    add("Logical CPU cores", navigator.hardwareConcurrency);
+    add("Approx. device memory (GB)", navigator.deviceMemory);
+    add("Touch points", navigator.maxTouchPoints);
+    add("Screen size", screen.width + " x " + screen.height);
+    add(
+        "Available screen size",
+        screen.availWidth + " x " + screen.availHeight
+    );
+    add("Color depth", screen.colorDepth + " bits");
+    add("Pixel ratio", window.devicePixelRatio);
+    add(
+        "Timezone",
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+    );
+    add("JavaScript", "Enabled");
+    add("Secure context", window.isSecureContext);
+
+    if (navigator.userAgentData?.getHighEntropyValues) {
+        try {
+            const high =
+                await navigator.userAgentData.getHighEntropyValues([
+                    "architecture",
+                    "bitness",
+                    "model",
+                    "platformVersion",
+                    "fullVersionList",
+                    "wow64"
+                ]);
+
+            lines.push("", "ADDITIONAL BROWSER DETAILS:");
+
+            const addHigh = (label, value) => {
+                lines.push(label + ": " + (value ?? "Not exposed"));
+            };
+
+            addHigh("Platform version", high.platformVersion);
+            addHigh("Device model", high.model);
+            addHigh(
+                "Full browser versions",
+                high.fullVersionList?.map(
+                    item => item.brand + " " + item.version
+                ).join("; ")
+            );
+            addHigh("WOW64", high.wow64);
+
+        } catch (error) {
+            lines.push("Additional details unavailable: " + error.name);
+        }
+    } else {
+        lines.push(
+            "",
+            "Detailed browser information unavailable: " +
+            "User-Agent Client Hints are unsupported."
+        );
+    }
+
+    output.value = lines.join("\n");
+    setTerminalStatus("BROWSER INFORMATION RETRIEVED.");
+}
+
+// --------------------------------------------------
+// HTML ELEMENT COLLECTION INSPECTION
+// --------------------------------------------------
+
+function inspectElementCollection(name, elements) {
+    objectName.value = name;
+
+    if (!elements.length) {
+        output.value = "NO MATCHING ELEMENTS FOUND.";
+        setTerminalStatus("QUERY RETURNED ZERO RESULTS.");
+        return;
+    }
+
+    const lines = [];
+
+    elements.forEach((element, index) => {
+        lines.push(
+            "[" + (index + 1) + "] <" +
+            element.tagName.toLowerCase() + ">"
+        );
+
+        lines.push(
+            "  class: " +
+            (
+                element.className &&
+                typeof element.className === "string"
+                    ? element.className
+                    : "(none)"
+            )
+        );
+
+        lines.push(
+            "  classList: " +
+            (
+                element.classList.length
+                    ? Array.from(element.classList).join(", ")
+                    : "(empty)"
+            )
+        );
+
+        lines.push("  id: " + (element.id || "(none)"));
+        lines.push("  attributes:");
+
+        if (element.attributes.length) {
+            for (const attribute of Array.from(element.attributes)) {
+                lines.push(
+                    '    ' + attribute.name +
+                    ' = "' + attribute.value + '"'
+                );
+            }
+        } else {
+            lines.push("    (none)");
+        }
+
+        const text = (
+            element.innerText ||
+            element.textContent ||
+            ""
+        ).trim().replace(/\s+/g, " ");
+
+        lines.push(
+            "  text: " +
+            (
+                text
+                    ? JSON.stringify(
+                        text.length > 240
+                            ? text.slice(0, 240) + "..."
+                            : text
+                    )
+                    : "(empty)"
+            )
+        );
+
+        if (element instanceof HTMLImageElement) {
+            lines.push("  src: " + element.currentSrc);
+            lines.push("  alt: " + (element.alt || "(no alt text)"));
+            lines.push(
+                "  natural size: " +
+                element.naturalWidth + " x " + element.naturalHeight
+            );
+        }
+
+        if (element instanceof HTMLAnchorElement) {
+            lines.push("  href: " + element.href);
+            lines.push("  target: " + (element.target || "(default)"));
+        }
+
+        lines.push("");
+    });
+
+    output.value = lines.join("\n");
+
+    setTerminalStatus(
+        "FOUND " + elements.length + " MATCHING ELEMENT(S)."
+    );
+}
+
+// --------------------------------------------------
+// OBJECT PROPERTY INSPECTION
+// --------------------------------------------------
+
+function inspect(name, value) {
+    objectName.value = name;
+
+    if (value === null || value === undefined) {
+        output.value =
+            "THIS OBJECT IS NOT AVAILABLE IN THIS BROWSER OR PAGE.";
+
+        setTerminalStatus("OBJECT UNAVAILABLE.");
+        return;
+    }
+
+    const lines = [];
+    const seen = new Set();
+
+    let current = Object(value);
+    let depth = 0;
+
+    // Inspect own and inherited properties.
+    while (current !== null) {
+        let keys;
+
+        try {
+            keys = Object.getOwnPropertyNames(current)
+                .sort((a, b) => a.localeCompare(b));
+        } catch (error) {
+            lines.push(
+                "[Could not enumerate prototype: " + error.name + "]"
+            );
+            break;
+        }
+
+        for (const key of keys) {
+            if (seen.has(key)) continue;
+
+            seen.add(key);
+
+            let rendered;
+
+            try {
+                const descriptor =
+                    Object.getOwnPropertyDescriptor(current, key);
+
+                // Avoid executing getters.
+                if (descriptor && !("value" in descriptor)) {
+                    rendered = "[Getter/setter - not executed]";
+                } else {
+                    rendered = describeValue(
+                        descriptor ? descriptor.value : undefined
+                    );
+                }
+            } catch (error) {
+                rendered = "[Access blocked: " + error.name + "]";
+            }
+
+            lines.push(
+                name + "." + key + " = " +
+                rendered +
+                "  [prototype level " + depth + "]"
+            );
+        }
+
+        try {
+            current = Object.getPrototypeOf(current);
+        } catch (error) {
+            lines.push(
+                "[Could not read next prototype: " + error.name + "]"
+            );
+            break;
+        }
+
+        depth++;
+    }
+
+    output.value = lines.length
+        ? lines.join("\n")
+        : "NO PROPERTIES FOUND.";
+
+    setTerminalStatus(
+        "DISPLAYED " + seen.size +
+        " UNIQUE PROPERTIES ACROSS " +
+        depth + " PROTOTYPE LEVELS."
+    );
+}
+
+// --------------------------------------------------
+// INSPECTION BUTTONS
+// --------------------------------------------------
+
+document.querySelectorAll("[data-inspect]").forEach(button => {
+    button.addEventListener("click", async () => {
+        const key = button.dataset.inspect;
+
+        output.value = "> INSPECTING " + key.toUpperCase() + "...\n";
+
+        try {
+            if (key === "browserInfo") {
+                await inspectBrowserInfo();
+                return;
+            }
+
+            const value = objects[key]();
+
+            if (
+                ["elements", "links", "images", "bold"].includes(key)
+            ) {
+                inspectElementCollection(key, value);
+            } else {
+                inspect(key, value);
+            }
+
+        } catch (error) {
+            objectName.value = key;
+            output.value =
+                "INSPECTION ERROR:\n" + error.message;
+
+            setTerminalStatus("INSPECTION FAILED.");
+        }
+    });
+});
+
+// --------------------------------------------------
+// DEMO OBJECT ANIMATION
+// --------------------------------------------------
+
+const demoBox = document.getElementById("demoBox");
+
+let animationFrame = null;
+let animationStep = 0;
+
+document.getElementById("animateButton")
+.addEventListener("click", () => {
+    if (animationFrame !== null) return;
+
+    animationStep = 0;
+
+    function animate() {
+        animationStep++;
+
+        demoBox.style.left =
+            (Math.sin(animationStep / 12) * 150) + "px";
+
+        demoBox.style.top =
+            (Math.cos(animationStep / 12) * 24) + "px";
+
+        if (animationStep < 240) {
+            animationFrame = requestAnimationFrame(animate);
+        } else {
+            animationFrame = null;
+        }
+    }
+
+    animationFrame = requestAnimationFrame(animate);
+});
+
+// --------------------------------------------------
+// RESET DEMO OBJECT
+// --------------------------------------------------
+
+document.getElementById("resetButton")
+.addEventListener("click", () => {
+    if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+    }
+
+    animationFrame = null;
+
+    demoBox.style.left = "0px";
+    demoBox.style.top = "0px";
+
+    setTerminalStatus("DEMO OBJECT RESET.");
+});
+
+// --------------------------------------------------
+// BACK BUTTON
+// --------------------------------------------------
+
+document.getElementById("backButton")
+.addEventListener("click", () => {
+    if (history.length > 1) {
+        history.back();
+    } else {
+        setTerminalStatus("NO PREVIOUS PAGE IN HISTORY.");
+    }
+});
+
+</script>
+</body>
+</html>
