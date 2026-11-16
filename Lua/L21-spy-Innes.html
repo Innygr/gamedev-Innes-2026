@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innes | L-21 Spy Encryption</title>
+    <link rel="stylesheet" href="t2-theme.css">
+
+    <style>
+        body {
+            text-align: center;
+        }
+
+        textarea {
+            display: block;
+            width: min(90%, 600px);
+            margin: 15px auto;
+            box-sizing: border-box;
+        }
+
+        .myButtons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        #myStatusText {
+            margin: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1 align="center">t2a21 // t2a05 Spy / Encryption by Innes</h1>
+
+    <h3>Original Message</h3>
+
+    <textarea id="myArea01" rows="4">Hello how are you</textarea>
+
+    <div class="myButtons">
+        <button id="myEncrypt">Encrypt</button>
+    </div>
+
+    <h3>Encrypted Message</h3>
+
+    <textarea id="myArea02" rows="4"></textarea>
+
+    <div class="myButtons">
+        <button id="myDecrypt">Decrypt</button>
+    </div>
+
+    <p id="myStatusText">Ready.</p>
+
+    <script type="module">
+        import { runLuau } from "./LuauRuntime.js";
+
+        const myArea01 = document.getElementById("myArea01");
+        const myArea02 = document.getElementById("myArea02");
+        const myStatusText = document.getElementById("myStatusText");
+
+        // JavaScript bridge functions.
+        function getInput() {
+            return myArea01.value;
+        }
+
+        function getEncryptedInput() {
+            return myArea02.value;
+        }
+
+        function displayOutput(myText) {
+            myArea02.value = myText;
+        }
+
+        function showMessage(myMessage) {
+            myStatusText.textContent = myMessage;
+        }
+
+        // The actual encryption and decryption are written in Luau.
+        const myLuauCode = `
+            local myStatus = false
+
+            function shiftText(myText, myAmount)
+                local myResult = {}
+
+                for myLoop = 1, #myText do
+                    local myCharacter = string.sub(myText, myLoop, myLoop)
+                    local myByte = string.byte(myCharacter)
+
+                    if myByte >= 97 and myByte <= 122 then
+                        local myShifted = ((myByte - 97 + myAmount) % 26) + 97
+                        myCharacter = string.char(myShifted)
+                    end
+
+                    table.insert(myResult, myCharacter)
+                end
+
+                return table.concat(myResult)
+            end
+
+            function encryptText()
+                if myStatus == true then
+                    showMessage("Already encrypted!")
+                    return
+                end
+
+                local myString = string.lower(getInput())
+                local myEncrypted = shiftText(myString, 1)
+
+                displayOutput(myEncrypted)
+
+                myStatus = true
+                showMessage("Message encrypted!")
+            end
+
+            function decryptText()
+                if myStatus == false then
+                    showMessage("Already decrypted!")
+                    return
+                end
+
+                local myString = getEncryptedInput()
+                local myDecrypted = shiftText(myString, -1)
+
+                displayOutput(myDecrypted)
+
+                myStatus = false
+                showMessage("Message decrypted!")
+            end
+        `;
+
+        const myBridge = {
+            getInput: getInput,
+            getEncryptedInput: getEncryptedInput,
+            displayOutput: displayOutput,
+            showMessage: showMessage
+        };
+
+        // Initialize Luau.
+        await runLuau(myLuauCode, null, myBridge);
+
+        // Connect the webpage buttons to Luau functions.
+        document.getElementById("myEncrypt").addEventListener("click", async function() {
+            await runLuau("encryptText()", null, myBridge);
+        });
+
+        document.getElementById("myDecrypt").addEventListener("click", async function() {
+            await runLuau("decryptText()", null, myBridge);
+        });
+    </script>
+
+</body>
+</html>
