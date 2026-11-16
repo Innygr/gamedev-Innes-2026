@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innes | Luau Multi-Game Template</title>
+<link rel="stylesheet" href="t2-theme.css">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 15px;
+    min-height: 100vh;
+    background: #101820;
+    color: #e6edf3;
+    font-family: Arial, sans-serif;
+}
+
+.container { max-width: 950px; margin: auto; }
+
+h1 {
+    text-align: center;
+    color: #00e5ff;
+    padding: 20px;
+    background: #172630;
+    border: 2px solid #00e5ff;
+    border-radius: 12px;
+}
+
+h2, h3 { color: #00e5ff; }
+
+.panel {
+    background: #172630;
+    border: 1px solid #344955;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 18px 0;
+}
+
+.stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.stat {
+    flex: 1;
+    min-width: 100px;
+    padding: 15px;
+    background: #0c141a;
+    border: 1px solid #344955;
+    border-radius: 8px;
+}
+
+.stat-label { color: #a4b6c3; font-size: .8rem; }
+.stat-value { color: #00e5ff; font-size: 1.3rem; font-weight: bold; }
+
+button {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 3px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #00bcd4;
+    color: #101820;
+}
+
+button:hover { background: #7df9ff; }
+button:disabled { opacity: .4; cursor: not-allowed; }
+
+.secondary { background: #344955; color: white; }
+.danger { background: #b83245; color: white; }
+
+.game-buttons, .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.game-buttons button { flex: 1 1 150px; }
+
+#myGame {
+    position: relative;
+    width: 100%;
+    height: clamp(260px, 55vw, 420px);
+    overflow: hidden;
+    border: 2px solid #00bcd4;
+    border-radius: 10px;
+    background-color: #0c141a;
+    background-image:
+        linear-gradient(#24343e 1px, transparent 1px),
+        linear-gradient(90deg, #24343e 1px, transparent 1px);
+    background-size: 40px 40px;
+    touch-action: none;
+}
+
+#myCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#myMessage {
+    min-height: 28px;
+    text-align: center;
+    color: #7df9ff;
+    font-weight: bold;
+}
+
+#myProgressTrack {
+    width: 100%;
+    height: 9px;
+    background: #263640;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+#myProgress {
+    width: 0%;
+    height: 100%;
+    background: #00e5ff;
+    transition: width .15s;
+}
+
+.mobile-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.mobile-controls button { min-height: 65px; font-size: 1.1rem; }
+.mobile-controls .jump { background: #8b5cf6; color: white; }
+
+#myMemoryBoard {
+    display: none;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 9px;
+    margin-top: 15px;
+}
+
+.memory-card {
+    min-height: 65px;
+    font-size: 1.5rem;
+    background: #19384d;
+    color: white;
+    border: 2px solid #5c8da5;
+}
+
+.memory-card.revealed, .memory-card.matched {
+    background: #d8f5ff;
+    color: #102431;
+    border-color: #00e5ff;
+}
+
+.memory-card.matched { opacity: .6; }
+
+footer { text-align: center; color: #8296a5; padding: 20px; }
+
+@media (max-width: 600px) {
+    .panel { padding: 13px; }
+    h1 { font-size: 1.5rem; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Innes | Luau Multi-Game Template</h1>
+
+<section class="panel">
+    <h2>GAME CONTROL CENTER</h2>
+
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-label">Game</div>
+            <div class="stat-value" id="myLevel">1 / 5</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Score</div>
+            <div class="stat-value" id="myScore">0</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Game State</div>
+            <div class="stat-value" id="myGameState">READY</div>
+        </div>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>JUMP TO A GAME</h2>
+    <div class="game-buttons">
+        <button data-game="1">1. Platformer</button>
+        <button data-game="2">2. Snake</button>
+        <button data-game="3">3. Dodge Arena</button>
+        <button data-game="4">4. Space PvP</button>
+        <button data-game="5">5. Memory Match</button>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>GAME ARENA</h2>
+
+    <div id="myGame">
+        <canvas id="myCanvas"></canvas>
+    </div>
+
+    <div id="myProgressTrack">
+        <div id="myProgress"></div>
+    </div>
+
+    <p id="myMessage" aria-live="polite">Initializing Luau...</p>
+
+    <div id="myMemoryBoard"></div>
+</section>
+
+<section class="panel">
+    <h2>PLAYER CONTROLS</h2>
+
+    <p><strong>Platformer:</strong> A/D or arrow keys to move, Space to jump.</p>
+    <p><strong>Snake:</strong> WASD or arrow keys to steer.</p>
+    <p><strong>Dodge Arena:</strong> A/D or arrow keys to move.</p>
+    <p><strong>Space PvP:</strong> P1 uses WASD + F. P2 uses arrows + Enter.</p>
+    <p><strong>Memory Match:</strong> Click two cards to find matching pairs.</p>
+
+    <div class="mobile-controls">
+        <button class="secondary" id="myLeft">◀</button>
+        <button class="jump" id="myJump">▲ JUMP</button>
+        <button class="secondary" id="myRight">▶</button>
+    </div>
+
+    <div class="controls" style="margin-top:15px">
+        <button id="myRestart">Restart Campaign</button>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>LEVEL INFORMATION</h2>
+    <p id="myLevelInfo">Platformer: Reach the target!</p>
+</section>
+
+<section class="panel">
+    <h2>LUAU OUTPUT</h2>
+    <pre id="myOutput">Waiting for Luau...</pre>
+</section>
+
+<footer>Luau Multi-Game Template | Innes</footer>
+</div>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+
+const output = document.getElementById("myOutput");
+const memoryBoard = document.getElementById("myMemoryBoard");
+
+let arenaWidth = 0;
+let arenaHeight = 0;
+let lastFrame = 0;
+let gameLoop = null;
+let heldKeys = new Set();
+
+function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    arenaWidth = rect.width;
+    arenaHeight = rect.height;
+
+    canvas.width = Math.floor(rect.width * dpr);
+    canvas.height = Math.floor(rect.height * dpr);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function clearArena() {
+    ctx.clearRect(0, 0, arenaWidth, arenaHeight);
+}
+
+function drawRect(x, y, w, h, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w, h);
+}
+
+function drawCircle(x, y, radius, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawText(text, x, y, color = "#ffffff") {
+    ctx.fillStyle = color;
+    ctx.font = "14px monospace";
+    ctx.fillText(text, x, y);
+}
+
+function updateUI(score, game, state, message, progress, info) {
+    document.getElementById("myScore").textContent = score;
+    document.getElementById("myLevel").textContent = game + " / 5";
+    document.getElementById("myGameState").textContent = state;
+    document.getElementById("myMessage").textContent = message;
+    document.getElementById("myProgress").style.width = progress + "%";
+    document.getElementById("myLevelInfo").textContent = info;
+}
+
+function drawPlatformer(playerX, playerY, targetX, obstacles) {
+    clearArena();
+
+    drawRect(0, arenaHeight - 25, arenaWidth, 25, "#183b4c");
+
+    for (const obstacle of obstacles) {
+        drawRect(obstacle, arenaHeight - 65, 38, 40, "#3e849c");
+    }
+
+    drawRect(targetX, arenaHeight - 85, 24, 60, "#65ffb0");
+    drawRect(playerX, playerY, 30, 40, "#45c9ff");
+
+    drawText("REACH THE EXIT", 12, 22, "#7df9ff");
+}
+
+function drawSnake(parts, food) {
+    clearArena();
+
+    for (const part of parts) {
+        drawRect(part.x * 20, part.y * 20, 18, 18, "#00bcd4");
+    }
+
+    drawCircle(food.x * 20 + 10, food.y * 20 + 10, 7, "#ff5470");
+}
+
+function drawDodge(playerX, hazards) {
+    clearArena();
+
+    for (const hazard of hazards) {
+        drawRect(hazard.x, hazard.y, hazard.size, hazard.size, "#ff5478");
+    }
+
+    drawCircle(playerX, arenaHeight - 35, 13, "#69e8ff");
+}
+
+function drawSpace(players, shots) {
+    clearArena();
+
+    for (const shot of shots) {
+        drawCircle(shot.x, shot.y, 4,
+            shot.owner === 1 ? "#8be5ff" : "#ff9caf");
+    }
+
+    for (const player of players) {
+        drawCircle(player.x, player.y, 15, player.color);
+        drawText(player.hp + " HP", player.x - 15, player.y + 28);
+    }
+}
+
+function showMemoryCards(cards) {
+    memoryBoard.innerHTML = "";
+    memoryBoard.style.display = "grid";
+
+    cards.forEach((card, index) => {
+        const button = document.createElement("button");
+        button.className = "memory-card";
+        button.textContent = card.visible ? card.symbol : "?";
+        button.disabled = card.matched;
+
+        if (card.visible) button.classList.add("revealed");
+        if (card.matched) button.classList.add("matched");
+
+        button.addEventListener("click", () => {
+            runGameAction("card:" + (index + 1));
+        });
+
+        memoryBoard.appendChild(button);
+    });
+}
+
+function hideMemoryCards() {
+    memoryBoard.style.display = "none";
+    memoryBoard.innerHTML = "";
+}
+
+// --------------------------------------------------
+// JAVASCRIPT BRIDGE
+// --------------------------------------------------
+
+const bridge = {
+    updateUI,
+    drawPlatformer,
+    drawSnake,
+    drawDodge,
+    drawSpace,
+    showMemoryCards,
+    hideMemoryCards,
+    clearArena,
+    drawRect,
+    drawCircle,
+    drawText,
+    logMessage: message => {
+        output.textContent += message + "\n";
+        output.scrollTop = output.scrollHeight;
+    }
+};
+
+// --------------------------------------------------
+// LUAU GAME ENGINE
+// --------------------------------------------------
+
+const luauCode = `
+local gameNumber = 1
+local score = 0
+local gameState = "READY"
+local message = "Reach the target!"
+local progress = 0
+local gameOver = false
+
+local playerX = 20
+local playerY = 0
+local targetX = 300
+local jumping = false
+local jumpTime = 0
+
+local level = 1
+local maxLevel = 5
+
+local levelTargets = {45, 55, 65, 75, 85}
+local levelObstacles = {
+    {30},
+    {28, 43},
+    {25, 43, 56},
+    {24, 39, 57, 67},
+    {22, 36, 51, 65, 76}
+}
+
+local snake = {}
+local food = {x = 10, y = 8}
+local snakeDirection = {x = 1, y = 0}
+local snakeNextDirection = {x = 1, y = 0}
+local snakeFood = 0
+local snakeTimer = 0
+
+local dodgePlayer = 0
+local dodgeHazards = {}
+local dodgeTime = 0
+local dodgeSpawn = 0
+local dodgeLives = 3
+
+local players = {}
+local shots = {}
+local spaceWinner = 0
+
+local memoryCards = {}
+local memoryFirst = nil
+local memoryLocked = false
+local memoryMatches = 0
+local memoryMoves = 0
+local memoryWait = 0
+
+local function setMessage(text)
+    message = text
+end
+
+local function update()
+    updateUI(
+        score,
+        gameNumber,
+        gameState,
+        message,
+        progress,
+        "Game " .. gameNumber .. " of 5"
+    )
+end
+
+local function randomNumber(minimum, maximum)
+    return math.random(minimum, maximum)
+end
+
+local function shuffle(list)
+    for i = #list, 2, -1 do
+        local j = randomNumber(1, i)
+        list[i], list[j] = list[j], list[i]
+    end
+end
+
+local function drawPlatform()
+    local obstacles = {}
+    for _, percent in ipairs(levelObstacles[level]) do
+        table.insert(obstacles, percent * 8)
+    end
+
+    drawPlatformer(
+        playerX,
+        playerY,
+        targetX,
+        obstacles
+    )
+end
+
+local function completeGame()
+    gameOver = true
+    gameState = "COMPLETE"
+    setMessage("CAMPAIGN COMPLETE! Final score: " .. score)
+    update()
+end
+
+local function nextGame()
+    gameNumber += 1
+    gameOver = false
+    progress = 0
+    gameState = "READY"
+
+    if gameNumber == 2 then
+        setMessage("Snake: collect 10 food items.")
+        snake = {
+            {x = 4, y = 8},
+            {x = 3, y = 8},
+            {x = 2, y = 8}
+        }
+        snakeFood = 0
+        snakeDirection = {x = 1, y = 0}
+        snakeNextDirection = {x = 1, y = 0}
+        food = {x = 10, y = 8}
+
+    elseif gameNumber == 3 then
+        setMessage("Dodge Arena: survive for 30 seconds.")
+        dodgePlayer = 200
+        dodgeHazards = {}
+        dodgeTime = 0
+        dodgeSpawn = 0
+        dodgeLives = 3
+
+    elseif gameNumber == 4 then
+        setMessage("Space PvP: first player to 5 hits wins.")
+        players = {
+            {x = 60, y = 150, hp = 5, color = "#45c9ff", angle = 0, hits = 0},
+            {x = 340, y = 150, hp = 5, color = "#ff6685", angle = 3.14, hits = 0}
+        }
+        shots = {}
+
+    elseif gameNumber == 5 then
+        setMessage("Memory Match: find all 8 pairs.")
+        local symbols = {"🚀", "🌙", "⭐", "🪐", "☄️", "🌍", "👾", "🛰️"}
+        memoryCards = {}
+
+        for _, symbol in ipairs(symbols) do
+            table.insert(memoryCards, {
+                symbol = symbol,
+                visible = false,
+                matched = false
+            })
+            table.insert(memoryCards, {
+                symbol = symbol,
+                visible = false,
+                matched = false
+            })
+        end
+
+        shuffle(memoryCards)
+        memoryFirst = nil
+        memoryLocked = false
+        memoryMatches = 0
+        memoryMoves = 0
+        memoryWait = 0
+        showMemoryCards(memoryCards)
+    end
+
+    update()
+end
+
+local function finishLevel()
+    score += 100
+    setMessage("LEVEL " .. level .. " COMPLETE! +100 POINTS")
+    gameState = "LEVEL CLEAR"
+
+    if level >= maxLevel then
+        nextGame()
+    else
+        level += 1
+        playerX = 20
+        playerY = 0
+        targetX = levelTargets[level] * 8
+        progress = 0
+        gameState = "READY"
+        setMessage("Level " .. level .. ": Reach the next target!")
+        drawPlatform()
+    end
+
+    update()
+end
+
+local function placeFood()
+    food = {
+        x = randomNumber(1, 18),
+        y = randomNumber(1, 12)
+    }
+end
+
+local function updateSnake()
+    snakeDirection = snakeNextDirection
+
+    local head = {
+        x = snake[1].x + snakeDirection.x,
+        y = snake[1].y + snakeDirection.y
+    }
+
+    local eating = head.x == food.x and head.y == food.y
+
+    if head.x < 0 or head.x > 19 or head.y < 0 or head.y > 14 then
+        gameOver = true
+        gameState = "TRY AGAIN"
+        setMessage("Snake hit the wall. Restart to try again.")
+        return
+    end
+
+    for i, part in ipairs(snake) do
+        if part.x == head.x and part.y == head.y then
+            gameOver = true
+            gameState = "TRY AGAIN"
+            setMessage("Snake hit itself. Restart to try again.")
+            return
+        end
+    end
+
+    table.insert(snake, 1, head)
+
+    if eating then
+        snakeFood += 1
+        score += 25
+        placeFood()
+
+        if snakeFood >= 10 then
+            score += 0
+            nextGame()
+            return
+        end
+    else
+        table.remove(snake)
+    end
+
+    progress = snakeFood * 10
+    drawSnake(snake, food)
+    update()
+end
+
+local function updateDodge(dt)
+    dodgeTime += dt
+    dodgeSpawn += dt
+
+    if dodgeSpawn >= 0.65 then
+        dodgeSpawn = 0
+        table.insert(dodgeHazards, {
+            x = randomNumber(15, 370),
+            y = -20,
+            size = randomNumber(18, 35),
+            speed = randomNumber(90, 150)
+        })
+    end
+
+    for i = #dodgeHazards, 1, -1 do
+        local hazard = dodgeHazards[i]
+        hazard.y += hazard.speed * dt
+
+        local closeX = math.abs(hazard.x - dodgePlayer) < hazard.size / 2 + 13
+        local closeY = math.abs(hazard.y - 350) < hazard.size / 2 + 13
+
+        if closeX and closeY then
+            table.remove(dodgeHazards, i)
+            dodgeLives -= 1
+
+            if dodgeLives <= 0 then
+                gameOver = true
+                gameState = "DODGE FAILED"
+                setMessage("Out of lives! Restart the campaign.")
+                return
+            end
+        elseif hazard.y > 450 then
+            table.remove(dodgeHazards, i)
+        end
+    end
+
+    progress = math.min(100, dodgeTime / 30 * 100)
+
+    drawDodge(dodgePlayer, dodgeHazards)
+
+    if dodgeTime >= 30 then
+        score += 300
+        nextGame()
+    else
+        setMessage(
+            "Survive: " .. math.floor(dodgeTime) ..
+            "/30 seconds | Lives: " .. dodgeLives
+        )
+    end
+
+    update()
+end
+
+local function updateSpace(dt)
+    for _, player in ipairs(players) do
+        player.cooldown = math.max(0, (player.cooldown or 0) - dt)
+    end
+
+    for i = #shots, 1, -1 do
+        local shot = shots[i]
+        shot.x += shot.vx * dt
+        shot.y += shot.vy * dt
+
+        local target = players[shot.owner == 1 and 2 or 1]
+
+        if math.abs(shot.x - target.x) < 18 and
+           math.abs(shot.y - target.y) < 18 then
+            target.hp -= 1
+            players[shot.owner].hits += 1
+            table.remove(shots, i)
+
+            if target.hp <= 0 then
+                score += 500
+                nextGame()
+                return
+            end
+        elseif shot.x < 0 or shot.x > 420 or
+               shot.y < 0 or shot.y > 420 then
+            table.remove(shots, i)
+        end
+    end
+
+    drawSpace(players, shots)
+
+    setMessage(
+        "P1: " .. players[1].hp .. " HP | P2: " ..
+        players[2].hp .. " HP"
+    )
+end
+
+local function updateMemory(dt)
+    if memoryWait > 0 then
+        memoryWait -= dt
+        if memoryWait <= 0 then
+            for _, card in ipairs(memoryCards) do
+                if not card.matched then
+                    card.visible = false
+                end
+            end
+            memoryLocked = false
+            showMemoryCards(memoryCards)
+        end
+    end
+end
+
+function action(command)
+    if command == "restart" then
+        gameNumber = 1
+        level = 1
+        score = 0
+        gameOver = false
+        playerX = 20
+        playerY = 0
+        targetX = levelTargets[1] * 8
+        progress = 0
+        gameState = "READY"
+        setMessage("Campaign restarted. Reach the target!")
+        drawPlatform()
+        update()
+        return
+    end
+
+    if string.sub(command, 1, 4) == "game" then
+        local chosen = tonumber(string.sub(command, 6))
+        if chosen and chosen >= 1 and chosen <= 5 then
+            gameNumber = chosen
+            gameOver = false
+            level = chosen
+
+            if chosen == 1 then
+                playerX = 20
+                targetX = levelTargets[1] * 8
+                drawPlatform()
+            else
+                nextGame()
+            end
+
+            update()
+        end
+        return
+    end
+
+    if gameOver then return end
+
+    if command == "left" then
+        if gameNumber == 1 then
+            playerX = math.max(0, playerX - 12)
+            progress = math.min(100, playerX / targetX * 100)
+            drawPlatform()
+        elseif gameNumber == 3 then
+            dodgePlayer = math.max(13, dodgePlayer - 20)
+        end
+
+    elseif command == "right" then
+        if gameNumber == 1 then
+            playerX = math.min(390, playerX + 12)
+            progress = math.min(100, playerX / targetX * 100)
+            drawPlatform()
+        elseif gameNumber == 3 then
+            dodgePlayer = math.min(407, dodgePlayer + 20)
+        end
+
+    elseif command == "jump" and gameNumber == 1 then
+        if not jumping then
+            jumping = true
+            jumpTime = 0
+        end
+
+    elseif command == "up" and gameNumber == 2 then
+        if snakeDirection.y ~= 1 then snakeNextDirection = {x = 0, y = -1} end
+
+    elseif command == "down" and gameNumber == 2 then
+        if snakeDirection.y ~= -1 then snakeNextDirection = {x = 0, y = 1} end
+
+    elseif command == "left" and gameNumber == 2 then
+        if snakeDirection.x ~= 1 then snakeNextDirection = {x = -1, y = 0} end
+
+    elseif command == "right" and gameNumber == 2 then
+        if snakeDirection.x ~= -1 then snakeNextDirection = {x = 1, y = 0} end
+
+    elseif command == "fire1" and gameNumber == 4 then
+        local p = players[1]
+        table.insert(shots, {
+            x = p.x, y = p.y, vx = 220, vy = 0, owner = 1
+        })
+
+    elseif command == "fire2" and gameNumber == 4 then
+        local p = players[2]
+        table.insert(shots, {
+            x = p.x, y = p.y, vx = -220, vy = 0, owner = 2
+        })
+
+    elseif string.sub(command, 1, 5) == "card:" and gameNumber == 5 then
+        if memoryLocked then return end
+
+        local index = tonumber(string.sub(command, 6))
+        local card = memoryCards[index]
+
+        if not card or card.matched or card.visible then return end
+
+        card.visible = true
+
+        if not memoryFirst then
+            memoryFirst = index
+        else
+            memoryMoves += 1
+            local first = memoryCards[memoryFirst]
+
+            if first.symbol == card.symbol then
+                first.matched = true
+                card.matched = true
+                memoryMatches += 1
+                score += 50
+
+                if memoryMatches >= 8 then
+                    gameState = "CAMPAIGN COMPLETE"
+                    gameOver = true
+                    setMessage("All five games complete! Final score: " .. score)
+                end
+            else
+                memoryLocked = true
+                memoryWait = 0.75
+            end
+
+            memoryFirst = nil
+        end
+
+        showMemoryCards(memoryCards)
+        update()
+    end
+
+    if gameNumber == 1 and playerX >= targetX then
+        finishLevel()
+    end
+
+    update()
+end
+
+function tick(dt)
+    if gameOver then return end
+
+    if gameNumber == 1 then
+        if jumping then
+            jumpTime += dt
+            playerY = -math.sin(math.min(1, jumpTime / 0.6) * math.pi) * 65
+
+            if jumpTime >= 0.6 then
+                jumping = false
+                playerY = 0
+            end
+        end
+
+        drawPlatform()
+
+    elseif gameNumber == 2 then
+        snakeTimer += dt
+        if snakeTimer >= 0.15 then
+            snakeTimer = 0
+            updateSnake()
+        end
+
+    elseif gameNumber == 3 then
+        updateDodge(dt)
+
+    elseif gameNumber == 4 then
+        updateSpace(dt)
+
+    elseif gameNumber == 5 then
+        updateMemory(dt)
+    end
+end
+
+function initialize()
+    math.randomseed(os.time())
+    targetX = levelTargets[1] * 8
+    drawPlatform()
+    update()
+    logMessage("Luau game engine initialized.")
+    logMessage("Five games loaded.")
+end
+
+initialize()
+`;
+
+resizeCanvas();
+
+await runLuau(luauCode, output, bridge);
+
+// --------------------------------------------------
+// JAVASCRIPT INPUT AND FRAME LOOP
+// --------------------------------------------------
+
+async function runGameAction(command) {
+    await runLuau("action(" + JSON.stringify(command) + ")", output, bridge);
+}
+
+function startGameLoop() {
+    if (gameLoop) clearInterval(gameLoop);
+
+    lastFrame = performance.now();
+
+    gameLoop = setInterval(async () => {
+        const now = performance.now();
+        const dt = Math.min(0.05, (now - lastFrame) / 1000);
+        lastFrame = now;
+
+        await runLuau("tick(" + dt + ")", output, bridge);
+    }, 33);
+}
+
+document.querySelectorAll("[data-game]").forEach(button => {
+    button.addEventListener("click", () => {
+        runGameAction("game " + button.dataset.game);
+    });
+});
+
+document.getElementById("myRestart").addEventListener("click", () => {
+    runGameAction("restart");
+});
+
+document.getElementById("myLeft").addEventListener("pointerdown", event => {
+    event.preventDefault();
+    runGameAction("left");
+});
+
+document.getElementById("myRight").addEventListener("pointerdown", event => {
+    event.preventDefault();
+    runGameAction("right");
+});
+
+document.getElementById("myJump").addEventListener("pointerdown", event => {
+    event.preventDefault();
+    runGameAction("jump");
+});
+
+document.addEventListener("keydown", event => {
+    if (event.repeat) return;
+
+    const key = event.key.toLowerCase();
+
+    const controls = {
+        a: "left",
+        arrowleft: "left",
+        d: "right",
+        arrowright: "right",
+        " ": "jump",
+        w: "up",
+        arrowup: "up",
+        s: "down",
+        arrowdown: "down",
+        f: "fire1",
+        enter: "fire2"
+    };
+
+    if (controls[key]) {
+        event.preventDefault();
+        runGameAction(controls[key]);
+    }
+});
+
+window.addEventListener("resize", resizeCanvas);
+
+startGameLoop();
+</script>
+
+</body>
+</html>
