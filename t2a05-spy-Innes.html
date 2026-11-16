@@ -1,0 +1,48 @@
+
+<h1 align="center">t2a21 // t2a05 Spy / Encryption by Innes.html</h1>
+
+<textarea id="myArea01" rows="4" cols="70">Hello how are you</textarea>
+<br><br>
+
+<input type="button" value="Encrypt" onclick="{
+    let myString = document.getElementById('myArea01').value.toLowerCase().split('');
+
+    for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+        if (myString[myLoop] == 'e') {
+            myString[myLoop] = 'f';
+        } else if (myString[myLoop] == 'f') {
+            myString[myLoop] = 'i';
+        }
+    }
+
+    document.getElementById('myArea02').value = myString.join('');
+    myStatus = true;
+}">
+
+<br><br>
+
+<textarea id="myArea02" rows="4" cols="70"></textarea>
+<br><br>
+
+<input type="button" value="Decrypt" onclick="{
+    if (myStatus == true) {
+        let myString = document.getElementById('myArea02').value.split('');
+
+        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+            if (myString[myLoop] == 'i') {
+                myString[myLoop] = 'f';
+            } else if (myString[myLoop] == 'f') {
+                myString[myLoop] = 'e';
+            }
+        }
+
+        document.getElementById('myArea02').value = myString.join('');
+        myStatus = false;
+    } else {
+        alert('Already Decrypted');
+    }
+}">
+
+<script>
+    let myStatus = false;
+</script>
