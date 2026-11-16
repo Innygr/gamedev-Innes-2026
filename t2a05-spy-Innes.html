@@ -7,14 +7,36 @@
 
 <input type="button" value="Encrypt" onclick="{
     let myString = document.getElementById('myArea01').value.toLowerCase().split('');
-
-    for (let myLoop = 0; myLoop < myString.length; myLoop++) {
-        if (myString[myLoop] == 'e') {
-            myString[myLoop] = 'f';
-        } else if (myString[myLoop] == 'f') {
-            myString[myLoop] = 'i';
+    if (myStatus == false) {
+        for (let myLoop = 0; myLoop < myString.length; myLoop++) {
+            if (myString[myLoop] == 'a') { myString[myLoop] = 'b'; }
+            else if (myString[myLoop] == 'b') { myString[myLoop] = 'c'; }
+            else if (myString[myLoop] == 'c') { myString[myLoop] = 'd'; }
+            else if (myString[myLoop] == 'd') { myString[myLoop] = 'e'; }
+            else if (myString[myLoop] == 'e') { myString[myLoop] = 'f'; }
+            else if (myString[myLoop] == 'f') { myString[myLoop] = 'g'; }
+            else if (myString[myLoop] == 'g') { myString[myLoop] = 'h'; }
+            else if (myString[myLoop] == 'h') { myString[myLoop] = 'i'; }
+            else if (myString[myLoop] == 'i') { myString[myLoop] = 'j'; }
+            else if (myString[myLoop] == 'j') { myString[myLoop] = 'k'; }
+            else if (myString[myLoop] == 'k') { myString[myLoop] = 'l'; }
+            else if (myString[myLoop] == 'l') { myString[myLoop] = 'm'; }
+            else if (myString[myLoop] == 'm') { myString[myLoop] = 'n'; }
+            else if (myString[myLoop] == 'n') { myString[myLoop] = 'o'; }
+            else if (myString[myLoop] == 'o') { myString[myLoop] = 'p'; }
+            else if (myString[myLoop] == 'p') { myString[myLoop] = 'q'; }
+            else if (myString[myLoop] == 'q') { myString[myLoop] = 'r'; }
+            else if (myString[myLoop] == 'r') { myString[myLoop] = 's'; }
+            else if (myString[myLoop] == 's') { myString[myLoop] = 't'; }
+            else if (myString[myLoop] == 't') { myString[myLoop] = 'u'; }
+            else if (myString[myLoop] == 'u') { myString[myLoop] = 'v'; }
+            else if (myString[myLoop] == 'v') { myString[myLoop] = 'w'; }
+            else if (myString[myLoop] == 'w') { myString[myLoop] = 'x'; }
+            else if (myString[myLoop] == 'x') { myString[myLoop] = 'y'; }
+            else if (myString[myLoop] == 'y') { myString[myLoop] = 'z'; }
+            else if (myString[myLoop] == 'z') { myString[myLoop] = 'a'; }
         }
-    }
+    } else { alert('Already Encrypted'); }
 
     document.getElementById('myArea02').value = myString.join('');
     myStatus = true;
@@ -30,11 +52,32 @@
         let myString = document.getElementById('myArea02').value.split('');
 
         for (let myLoop = 0; myLoop < myString.length; myLoop++) {
-            if (myString[myLoop] == 'i') {
-                myString[myLoop] = 'f';
-            } else if (myString[myLoop] == 'f') {
-                myString[myLoop] = 'e';
-            }
+            if (myString[myLoop] == 'b') { myString[myLoop] = 'a'; }
+            else if (myString[myLoop] == 'c') { myString[myLoop] = 'b'; }
+            else if (myString[myLoop] == 'd') { myString[myLoop] = 'c'; }
+            else if (myString[myLoop] == 'e') { myString[myLoop] = 'd'; }
+            else if (myString[myLoop] == 'f') { myString[myLoop] = 'e'; }
+            else if (myString[myLoop] == 'g') { myString[myLoop] = 'f'; }
+            else if (myString[myLoop] == 'h') { myString[myLoop] = 'g'; }
+            else if (myString[myLoop] == 'i') { myString[myLoop] = 'h'; }
+            else if (myString[myLoop] == 'j') { myString[myLoop] = 'i'; }
+            else if (myString[myLoop] == 'k') { myString[myLoop] = 'j'; }
+            else if (myString[myLoop] == 'l') { myString[myLoop] = 'k'; }
+            else if (myString[myLoop] == 'm') { myString[myLoop] = 'l'; }
+            else if (myString[myLoop] == 'n') { myString[myLoop] = 'm'; }
+            else if (myString[myLoop] == 'o') { myString[myLoop] = 'n'; }
+            else if (myString[myLoop] == 'p') { myString[myLoop] = 'o'; }
+            else if (myString[myLoop] == 'q') { myString[myLoop] = 'p'; }
+            else if (myString[myLoop] == 'r') { myString[myLoop] = 'q'; }
+            else if (myString[myLoop] == 's') { myString[myLoop] = 'r'; }
+            else if (myString[myLoop] == 't') { myString[myLoop] = 's'; }
+            else if (myString[myLoop] == 'u') { myString[myLoop] = 't'; }
+            else if (myString[myLoop] == 'v') { myString[myLoop] = 'u'; }
+            else if (myString[myLoop] == 'w') { myString[myLoop] = 'v'; }
+            else if (myString[myLoop] == 'x') { myString[myLoop] = 'w'; }
+            else if (myString[myLoop] == 'y') { myString[myLoop] = 'x'; }
+            else if (myString[myLoop] == 'z') { myString[myLoop] = 'y'; }
+            else if (myString[myLoop] == 'a') { myString[myLoop] = 'z'; }
         }
 
         document.getElementById('myArea02').value = myString.join('');
