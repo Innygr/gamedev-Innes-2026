@@ -165,14 +165,15 @@
         animation: target-pulse 1.8s ease-in-out infinite;
     }
 
+    /* Invisible collision shapes mapped to the platformer artwork. */
     .my-platform-obstacle {
         position: absolute;
         z-index: 2;
-        border: 2px solid #8cecff;
-        border-bottom: 5px solid #287d9c;
-        border-radius: 7px 7px 3px 3px;
-        background: linear-gradient(145deg, #3e849c, #163b55 75%);
-        box-shadow: 0 0 14px #00d9ff35, inset 0 2px 5px #ffffff30;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        border-radius: 0;
+        opacity: 0;
         pointer-events: none;
     }
 
@@ -626,11 +627,11 @@ function myJumpToGame(gameNumber) {
 // Each level gets progressively farther away.
 
 const myLevels = [
-    { target: 45, description: "Level 1: Reach the target. Jump over the energy crate!", obstacles: [30] },
-    { target: 55, description: "Level 2: Two crates stand between you and the exit.", obstacles: [28, 43] },
-    { target: 65, description: "Level 3: Time your jumps and clear the route.", obstacles: [25, 43, 56] },
-    { target: 75, description: "Level 4: Keep your momentum through the obstacle course.", obstacles: [24, 39, 57, 67] },
-    { target: 85, description: "Level 5: Final run. Clear every obstacle!", obstacles: [22, 36, 51, 65, 76] }
+    { target: 27, description: "Level 1: Reach the first safe ledge. Jump over the first spike platform." },
+    { target: 50, description: "Level 2: Cross the first spike platform and reach the next ledge." },
+    { target: 56, description: "Level 3: Reach the edge before the second spike platform." },
+    { target: 75, description: "Level 4: Clear the second spike platform." },
+    { target: 90, description: "Level 5: Final run. Cross the ruins and reach the exit." }
 ];
 
 
@@ -653,6 +654,10 @@ function mySetGameState(myText) {
 function mySetArenaBackground(myGameNumber) {
     myElement('myBackgroundImage').src =
         'myBackground0' + myGameNumber + '.jpg';
+
+    // The platformer collision coordinates use the full image proportions.
+    myElement('myBackgroundImage').style.objectFit =
+        myGameNumber === 1 ? 'fill' : 'cover';
 }
 
 function myHideDodge() { myElement('myDodgeCanvas').style.display='none'; myElement('myDodgeHud').style.display='none'; }
@@ -924,19 +929,30 @@ function myHitsPlatformObstacle(player) {
     return !!myGetHitPlatformObstacle(player);
 }
 
-function myBuildPlatformerObstacles(config) {
+function myBuildPlatformerObstacles() {
     const arena = myElement('myGame');
     arena.querySelectorAll('.my-platform-obstacle').forEach(node => node.remove());
-    const width = Math.max(30, Math.min(52, arena.clientWidth * 0.055));
-    config.obstacles.forEach(percent => {
-        const block = document.createElement('div');
-        block.className = 'my-platform-obstacle';
-        block.setAttribute('aria-hidden', 'true');
-        block.style.left = Math.min(arena.clientWidth - width - 4, arena.clientWidth * percent / 100) + 'px';
-        block.style.top = (arena.clientHeight * 0.84) + 'px';
-        block.style.width = width + 'px';
-        block.style.height = Math.max(34, arena.clientHeight * 0.14) + 'px';
-        arena.appendChild(block);
+
+    /*
+       Collision map based on the two raised, spike-topped platforms
+       in the supplied ruins image. Coordinates are percentages of
+       the full background image, so they scale with the arena.
+       The tall pillars and hanging blocks remain background scenery.
+    */
+    const myCollisionMap = [
+        { left: 29, top: 63, width: 17, height: 17 },
+        { left: 57, top: 63, width: 17, height: 17 }
+    ];
+
+    myCollisionMap.forEach(myShape => {
+        const myBlock = document.createElement('div');
+        myBlock.className = 'my-platform-obstacle';
+        myBlock.setAttribute('aria-hidden', 'true');
+        myBlock.style.left = (arena.clientWidth * myShape.left / 100) + 'px';
+        myBlock.style.top = (arena.clientHeight * myShape.top / 100) + 'px';
+        myBlock.style.width = (arena.clientWidth * myShape.width / 100) + 'px';
+        myBlock.style.height = (arena.clientHeight * myShape.height / 100) + 'px';
+        arena.appendChild(myBlock);
     });
 }
 
@@ -1028,12 +1044,12 @@ function myLoadLevel() {
     myTarget.style.display = 'block';
     myPlayer.style.left = '20px';
     myPlayer.style.top =
-        (myArena.clientHeight * 0.72) + 'px';
+        (myArena.clientHeight * 0.60) + 'px';
 
     // Place the goal and build this level's solid obstacles.
     myTarget.style.left = Math.min(myArena.clientWidth - myTarget.offsetWidth - 4,
         myArena.clientWidth * myConfig.target / 100) + 'px';
-    myTarget.style.top = (myArena.clientHeight * 0.72) + 'px';
+    myTarget.style.top = (myArena.clientHeight * 0.60) + 'px';
     myBuildPlatformerObstacles(myConfig);
 
     myPlayer.style.filter =
