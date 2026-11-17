@@ -90,3 +90,127 @@
 <script>
     let myStatus = false;
 </script>
+<hr>
+<h2>AES-256 Encryption</h2>
+
+<textarea id="myAESInput" rows="4" cols="70">Hello how are you</textarea>
+<br><br>
+
+<input type="password" id="myAESPassword" placeholder="Enter password">
+<br><br>
+
+<input type="button" value="Encrypt with AES" onclick="myAESEncrypt()">
+<input type="button" value="Decrypt with AES" onclick="myAESDecrypt()">
+<br><br>
+
+<textarea id="myAESOutput" rows="4" cols="70"></textarea>
+
+<script>
+async function myAESGetKey(myPassword, mySalt) {
+    let myEncoder = new TextEncoder();
+
+    let myPasswordKey = await crypto.subtle.importKey(
+        'raw',
+        myEncoder.encode(myPassword),
+        'PBKDF2',
+        false,
+        ['deriveKey']
+    );
+
+    return await crypto.subtle.deriveKey(
+        {
+            name: 'PBKDF2',
+            salt: mySalt,
+            iterations: 250000,
+            hash: 'SHA-256'
+        },
+        myPasswordKey,
+        {
+            name: 'AES-GCM',
+            length: 256
+        },
+        false,
+        ['encrypt', 'decrypt']
+    );
+}
+
+async function myAESEncrypt() {
+    try {
+        let myPassword = document.getElementById('myAESPassword').value;
+        let myMessage = document.getElementById('myAESInput').value;
+
+        if (!myPassword) {
+            alert('Enter a password first!');
+            return;
+        }
+
+        let myEncoder = new TextEncoder();
+
+        let mySalt = crypto.getRandomValues(new Uint8Array(16));
+        let myIV = crypto.getRandomValues(new Uint8Array(12));
+
+        let myKey = await myAESGetKey(myPassword, mySalt);
+
+        let myEncrypted = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv: myIV },
+            myKey,
+            myEncoder.encode(myMessage)
+        );
+
+        let myCombined = new Uint8Array(
+            mySalt.length + myIV.length + myEncrypted.byteLength
+        );
+
+        myCombined.set(mySalt, 0);
+        myCombined.set(myIV, 16);
+        myCombined.set(new Uint8Array(myEncrypted), 28);
+
+        let myBinary = '';
+        myCombined.forEach(myByte => {
+            myBinary += String.fromCharCode(myByte);
+        });
+
+        document.getElementById('myAESOutput').value = btoa(myBinary);
+
+    } catch (myError) {
+        alert('Encryption failed: ' + myError.message);
+    }
+}
+
+async function myAESDecrypt() {
+    try {
+        let myPassword = document.getElementById('myAESPassword').value;
+        let myInput = document.getElementById('myAESOutput').value;
+
+        if (!myPassword) {
+            alert('Enter a password first!');
+            return;
+        }
+
+        let myCombined = Uint8Array.from(
+            atob(myInput),
+            myChar => myChar.charCodeAt(0)
+        );
+
+        let mySalt = myCombined.slice(0, 16);
+        let myIV = myCombined.slice(16, 28);
+        let myEncrypted = myCombined.slice(28);
+
+        let myKey = await myAESGetKey(myPassword, mySalt);
+
+        let myDecrypted = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: myIV },
+            myKey,
+            myEncrypted
+        );
+
+        let myDecoder = new TextDecoder();
+
+        document.getElementById('myAESOutput').value =
+            myDecoder.decode(myDecrypted);
+
+    } catch (myError) {
+        alert('Decryption failed! Check your password and encrypted text.');
+    }
+}
+</script>
