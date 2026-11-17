@@ -819,18 +819,29 @@ function myJump() {
     myJumpStart = myPlayer.offsetTop;
     myJumpFrame = 0;
 
+    const arena = myElement('myGame');
+    const myJumpHeight = Math.min(280, arena.clientHeight * 0.55);
+    const myJumpFrames = 40;
+
     myJumpClock = setInterval(function() {
 
         myJumpFrame++;
 
+        // A much higher, smooth arc: up for 20 frames, down for 20.
         let myHeight;
-        if (myJumpFrame <= 15) myHeight = myJumpFrame * 6;
-        else myHeight = (30 - myJumpFrame) * 6;
+        if (myJumpFrame <= 20) myHeight = myJumpFrame * (myJumpHeight / 20);
+        else myHeight = (myJumpFrames - myJumpFrame) * (myJumpHeight / 20);
 
         const oldTop = myPlayer.offsetTop;
-        const arena = myElement('myGame');
         const nextTop = Math.max(4, myJumpStart - Math.max(0, myHeight));
         myPlayer.style.top = nextTop + 'px';
+
+        // Spike tips are dangerous when the player lands on them.
+        if (myJumpFrame > 20 && myGetHitSpike(myPlayer)) {
+            myRespawnAfterSpikes();
+            return;
+        }
+
         const obstacle = myGetHitPlatformObstacle(myPlayer);
         if (obstacle && nextTop >= oldTop) {
             myPlayer.style.top = (obstacle.offsetTop - myPlayer.offsetHeight) + 'px';
@@ -843,7 +854,7 @@ function myJump() {
         }
         myCheckHit();
 
-        if (myJumpFrame >= 30 || myGameOver || myLevelTransition) {
+        if (myJumpFrame >= myJumpFrames || myGameOver || myLevelTransition) {
 
             clearInterval(myJumpClock);
             myJumpClock = null;
@@ -925,6 +936,32 @@ function myGetHitPlatformObstacle(player) {
         }) || null;
 }
 
+function myGetHitSpike(player) {
+    return Array.from(myElement('myGame').querySelectorAll('.my-platform-spike'))
+        .find(spike => {
+            const a = player.getBoundingClientRect();
+            const b = spike.getBoundingClientRect();
+            return a.right > b.left + 3 && a.left < b.right - 3 &&
+                a.bottom > b.top && a.top < b.bottom;
+        }) || null;
+}
+
+function myRespawnAfterSpikes() {
+    const myPlayer = myElement('myImg01');
+    const myArena = myElement('myGame');
+
+    clearInterval(myJumpClock);
+    myJumpClock = null;
+    myIsJumping = false;
+    myStopMoving();
+
+    myPlayer.style.left = '20px';
+    myPlayer.style.top = (myArena.clientHeight * 0.60) + 'px';
+    mySetGameState('SPIKE HIT');
+    mySetMessage('SPIKES! Try that jump again.');
+    myElement('myPlayer');
+}
+
 function myHitsPlatformObstacle(player) {
     return !!myGetHitPlatformObstacle(player);
 }
@@ -945,6 +982,7 @@ function myBuildPlatformerObstacles() {
     ];
 
     myCollisionMap.forEach(myShape => {
+        // Solid platform body: blocks horizontal movement and supports landings.
         const myBlock = document.createElement('div');
         myBlock.className = 'my-platform-obstacle';
         myBlock.setAttribute('aria-hidden', 'true');
@@ -953,6 +991,16 @@ function myBuildPlatformerObstacles() {
         myBlock.style.width = (arena.clientWidth * myShape.width / 100) + 'px';
         myBlock.style.height = (arena.clientHeight * myShape.height / 100) + 'px';
         arena.appendChild(myBlock);
+
+        // Thin hazard strip across the spike tips at the top of each platform.
+        const mySpike = document.createElement('div');
+        mySpike.className = 'my-platform-spike';
+        mySpike.setAttribute('aria-hidden', 'true');
+        mySpike.style.left = (arena.clientWidth * myShape.left / 100) + 'px';
+        mySpike.style.top = (arena.clientHeight * (myShape.top - 2.5) / 100) + 'px';
+        mySpike.style.width = (arena.clientWidth * myShape.width / 100) + 'px';
+        mySpike.style.height = (arena.clientHeight * 2.5 / 100) + 'px';
+        arena.appendChild(mySpike);
     });
 }
 
