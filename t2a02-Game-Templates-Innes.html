@@ -185,6 +185,19 @@
         z-index: 4;
     }
 
+    /* Visible floating stepping-stone between the two spike platforms. */
+    .my-platform-floating {
+        position: absolute;
+        z-index: 2;
+        height: 12px;
+        box-sizing: border-box;
+        border: 2px solid #a8eaff;
+        border-radius: 5px;
+        background: linear-gradient(180deg, #b9eaff 0%, #477fba 45%, #203c70 100%);
+        box-shadow: 0 0 12px #55cfff99, inset 0 2px 3px #ffffff88;
+        pointer-events: none;
+    }
+
     @keyframes target-pulse {
         0%, 100% { filter: drop-shadow(0 0 7px #ff465899); }
         50% { filter: drop-shadow(0 0 17px #ff6685); }
@@ -1010,6 +1023,24 @@ function myBuildPlatformerObstacles() {
         mySpike.style.height = (arena.clientHeight * 2.5 / 100) + 'px';
         arena.appendChild(mySpike);
     });
+
+    // Floating stepping-stone in the gap: solid to land on, but not spiked.
+    const myFloatingPlatform = document.createElement('div');
+    myFloatingPlatform.className = 'my-platform-floating';
+    myFloatingPlatform.setAttribute('aria-hidden', 'true');
+    myFloatingPlatform.style.left = (arena.clientWidth * 46.5 / 100) + 'px';
+    myFloatingPlatform.style.top = (arena.clientHeight * 53 / 100) + 'px';
+    myFloatingPlatform.style.width = (arena.clientWidth * 10 / 100) + 'px';
+    arena.appendChild(myFloatingPlatform);
+
+    const myFloatingCollision = document.createElement('div');
+    myFloatingCollision.className = 'my-platform-obstacle';
+    myFloatingCollision.setAttribute('aria-hidden', 'true');
+    myFloatingCollision.style.left = myFloatingPlatform.style.left;
+    myFloatingCollision.style.top = myFloatingPlatform.style.top;
+    myFloatingCollision.style.width = myFloatingPlatform.style.width;
+    myFloatingCollision.style.height = '12px';
+    arena.appendChild(myFloatingCollision);
 }
 
 
