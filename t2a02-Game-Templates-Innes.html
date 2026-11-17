@@ -166,15 +166,23 @@
     }
 
     /* Invisible collision shapes mapped to the platformer artwork. */
-    .my-platform-obstacle {
+    .my-platform-obstacle,
+    .my-platform-spike {
         position: absolute;
-        z-index: 2;
         background: transparent;
         border: 0;
         box-shadow: none;
         border-radius: 0;
         opacity: 0;
         pointer-events: none;
+    }
+
+    .my-platform-obstacle {
+        z-index: 2;
+    }
+
+    .my-platform-spike {
+        z-index: 4;
     }
 
     @keyframes target-pulse {
@@ -959,7 +967,7 @@ function myRespawnAfterSpikes() {
     myPlayer.style.top = (myArena.clientHeight * 0.60) + 'px';
     mySetGameState('SPIKE HIT');
     mySetMessage('SPIKES! Try that jump again.');
-    myElement('myPlayer');
+    
 }
 
 function myHitsPlatformObstacle(player) {
