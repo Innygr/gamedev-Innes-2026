@@ -648,10 +648,10 @@ function myJumpToGame(gameNumber) {
 // Each level gets progressively farther away.
 
 const myLevels = [
-    { target: 27, description: "Level 1: Reach the first safe ledge. Jump over the first spike platform." },
-    { target: 50, description: "Level 2: Cross the first spike platform and reach the next ledge." },
-    { target: 56, description: "Level 3: Reach the edge before the second spike platform." },
-    { target: 75, description: "Level 4: Clear the second spike platform." },
+    { target: 15, description: "Level 1: Reach the safe area before the first spike platform." },
+    { target: 48, description: "Level 2: Land on the floating platform between the spike areas." },
+    { target: 76, description: "Level 3: Reach the safe ground beyond the second spike platform." },
+    { target: 83, description: "Level 4: Continue across the ruins beyond the spikes." },
     { target: 90, description: "Level 5: Final run. Cross the ruins and reach the exit." }
 ];
 
@@ -841,24 +841,28 @@ function myJump() {
     myJumpFrame = 0;
 
     const arena = myElement('myGame');
-    const myJumpHeight = Math.min(280, arena.clientHeight * 0.55);
-    const myJumpFrames = 40;
+    // Lower launch speed and gentler gravity create a shorter, slower jump.
+    const myJumpGravity = 0.36; // pixels per frame squared
+    const myJumpVelocity = 10;  // pixels per frame
+    const myJumpFrames = 56;
 
     myJumpClock = setInterval(function() {
 
         myJumpFrame++;
 
-        // A much higher, smooth arc: up for 20 frames, down for 20.
-        let myHeight;
-        if (myJumpFrame <= 20) myHeight = myJumpFrame * (myJumpHeight / 20);
-        else myHeight = (myJumpFrames - myJumpFrame) * (myJumpHeight / 20);
+        // Basic upward-velocity + gravity arc (28-frame apex, then descent).
+        const myTime = myJumpFrame;
+        const myHeight = Math.max(0,
+            myJumpVelocity * myTime -
+            0.5 * myJumpGravity * myTime * myTime
+        );
 
         const oldTop = myPlayer.offsetTop;
-        const nextTop = Math.max(4, myJumpStart - Math.max(0, myHeight));
+        const nextTop = Math.max(4, myJumpStart - myHeight);
         myPlayer.style.top = nextTop + 'px';
 
         // Spike tips are dangerous when the player lands on them.
-        if (myJumpFrame > 20 && myGetHitSpike(myPlayer)) {
+        if (myJumpFrame > 28 && myGetHitSpike(myPlayer)) {
             myRespawnAfterSpikes();
             return;
         }
@@ -989,7 +993,7 @@ function myHitsPlatformObstacle(player) {
 
 function myBuildPlatformerObstacles() {
     const arena = myElement('myGame');
-    arena.querySelectorAll('.my-platform-obstacle').forEach(node => node.remove());
+    arena.querySelectorAll('.my-platform-obstacle, .my-platform-floating').forEach(node => node.remove());
 
     /*
        Collision map based on the two raised, spike-topped platforms
@@ -1134,6 +1138,9 @@ function myLoadLevel() {
         (myArena.clientHeight * 0.60) + 'px';
 
     // Place the goal and build this level's solid obstacles.
+    // Keep the goal compact enough to fit in safe gaps, away from spike hitboxes.
+    myTarget.style.width = Math.min(64, Math.max(42, myArena.clientWidth * 0.07)) + 'px';
+    myTarget.style.height = Math.min(60, Math.max(42, myArena.clientHeight * 0.10)) + 'px';
     myTarget.style.left = Math.min(myArena.clientWidth - myTarget.offsetWidth - 4,
         myArena.clientWidth * myConfig.target / 100) + 'px';
     myTarget.style.top = (myArena.clientHeight * 0.60) + 'px';
