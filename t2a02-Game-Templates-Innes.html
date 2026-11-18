@@ -713,26 +713,37 @@ function myShowSnake() {
 // COLLISION DETECTION
 // ================================================
 
-function myHitOther(my1, my2) {
+// Rectangle collision detection, following the simple myHitOther example.
+// getBoundingClientRect() keeps the hitboxes accurate when CSS sizes are responsive.
+function myGetBounds(myObject) {
+    const myRect = myObject.getBoundingClientRect();
+    return {
+        left: myRect.left,
+        right: myRect.right,
+        top: myRect.top,
+        bottom: myRect.bottom,
+        width: myRect.width,
+        height: myRect.height
+    };
+}
 
-    let myObject1 = myElement(my1);
-    let myObject2 = myElement(my2);
-
-    let left1 = myObject1.offsetLeft;
-    let right1 = left1 + myObject1.offsetWidth;
-    let top1 = myObject1.offsetTop;
-    let bottom1 = top1 + myObject1.offsetHeight;
-
-    let left2 = myObject2.offsetLeft;
-    let right2 = left2 + myObject2.offsetWidth;
-    let top2 = myObject2.offsetTop;
-    let bottom2 = top2 + myObject2.offsetHeight;
-
+function myRectanglesOverlap(myBounds1, myBounds2) {
     return (
-        right1 >= left2 &&
-        bottom1 >= top2 &&
-        left1 <= right2 &&
-        top1 <= bottom2
+        myBounds1.right >= myBounds2.left &&
+        myBounds1.bottom >= myBounds2.top &&
+        myBounds1.left <= myBounds2.right &&
+        myBounds1.top <= myBounds2.bottom
+    );
+}
+
+function myHitOther(my1, my2) {
+    const myObject1 = typeof my1 === 'string' ? myElement(my1) : my1;
+    const myObject2 = typeof my2 === 'string' ? myElement(my2) : my2;
+    if (!myObject1 || !myObject2) return false;
+
+    return myRectanglesOverlap(
+        myGetBounds(myObject1),
+        myGetBounds(myObject2)
     );
 }
 
@@ -954,20 +965,38 @@ function myCheckHit() {
 function myGetHitPlatformObstacle(player) {
     return Array.from(myElement('myGame').querySelectorAll('.my-platform-obstacle'))
         .find(obstacle => {
-            const a = player.getBoundingClientRect();
-            const b = obstacle.getBoundingClientRect();
-            return a.right > b.left + 2 && a.left < b.right - 2 &&
-                a.bottom > b.top + 2 && a.top < b.bottom - 2;
+            const playerBounds = myGetBounds(player);
+            const obstacleBounds = myGetBounds(obstacle);
+            // Keep a tiny inset so merely touching an edge does not snag movement.
+            const insetObstacle = {
+                left: obstacleBounds.left + 2,
+                right: obstacleBounds.right - 2,
+                top: obstacleBounds.top + 2,
+                bottom: obstacleBounds.bottom - 2
+            };
+            return myRectanglesOverlap(playerBounds, insetObstacle) &&
+                playerBounds.right > insetObstacle.left &&
+                playerBounds.left < insetObstacle.right &&
+                playerBounds.bottom > insetObstacle.top &&
+                playerBounds.top < insetObstacle.bottom;
         }) || null;
 }
 
 function myGetHitSpike(player) {
     return Array.from(myElement('myGame').querySelectorAll('.my-platform-spike'))
         .find(spike => {
-            const a = player.getBoundingClientRect();
-            const b = spike.getBoundingClientRect();
-            return a.right > b.left + 3 && a.left < b.right - 3 &&
-                a.bottom > b.top && a.top < b.bottom;
+            const playerBounds = myGetBounds(player);
+            const spikeBounds = myGetBounds(spike);
+            const insetSpike = {
+                left: spikeBounds.left + 3,
+                right: spikeBounds.right - 3,
+                top: spikeBounds.top,
+                bottom: spikeBounds.bottom
+            };
+            return playerBounds.right > insetSpike.left &&
+                playerBounds.left < insetSpike.right &&
+                playerBounds.bottom > insetSpike.top &&
+                playerBounds.top < insetSpike.bottom;
         }) || null;
 }
 
