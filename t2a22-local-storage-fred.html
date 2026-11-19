@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>t2a22-local-storage-fred</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    input[type="text"] { width: min(420px, 75vw); padding: 8px; }
+    button { padding: 8px 12px; margin: 4px; cursor: pointer; }
+    li { margin: 10px 0; }
+    li span { margin: 0 10px; }
+    .completed { text-decoration: line-through; color: gray; }
+  </style>
+</head>
+<body onload="myLoadTasks()">
+  <h2>t2a22-local-storage-fred.html</h2>
+  <h3>My To-Do List</h3>
+
+  <input id="myTaskInput" type="text" placeholder="Write a task here"
+         onkeydown="if(event.key === 'Enter'){ myAddTask(); }">
+  <input type="button" value="Add Task" onclick="myAddTask()">
+
+  <ul id="myTaskList"></ul>
+
+  <input type="button" value="Clear Completed" onclick="myClearCompleted()">
+  <input type="button" value="Clear All" onclick="myClearAll()">
+
+  <script>
+    let myTasks = [];
+
+    function mySaveTasks() {
+      localStorage.setItem('myToDoTasks', JSON.stringify(myTasks));
+    }
+
+    function myLoadTasks() {
+      let myStoredTasks = localStorage.getItem('myToDoTasks');
+      if (myStoredTasks != null) {
+        try {
+          myTasks = JSON.parse(myStoredTasks);
+          if (!Array.isArray(myTasks)) myTasks = [];
+        } catch (myError) {
+          myTasks = [];
+        }
+      }
+      myDisplayTasks();
+    }
+
+    function myAddTask() {
+      let myTaskText = document.getElementById('myTaskInput').value.trim();
+      if (myTaskText === '') {
+        alert('Please write a task first.');
+        return;
+      }
+
+      myTasks.push({ text: myTaskText, completed: false });
+      document.getElementById('myTaskInput').value = '';
+      mySaveTasks();
+      myDisplayTasks();
+    }
+
+    function myToggleTask(myIndex) {
+      myTasks[myIndex].completed = !myTasks[myIndex].completed;
+      mySaveTasks();
+      myDisplayTasks();
+    }
+
+    function myDeleteTask(myIndex) {
+      myTasks.splice(myIndex, 1);
+      mySaveTasks();
+      myDisplayTasks();
+    }
+
+    function myClearCompleted() {
+      myTasks = myTasks.filter(myTask => !myTask.completed);
+      mySaveTasks();
+      myDisplayTasks();
+    }
+
+    function myClearAll() {
+      if (confirm('Delete every task?')) {
+        myTasks = [];
+        mySaveTasks();
+        myDisplayTasks();
+      }
+    }
+
+    function myDisplayTasks() {
+      let myList = document.getElementById('myTaskList');
+      myList.innerHTML = '';
+
+      for (let myIndex = 0; myIndex < myTasks.length; myIndex++) {
+        let myListItem = document.createElement('li');
+        let myCheckbox = document.createElement('input');
+        myCheckbox.type = 'checkbox';
+        myCheckbox.checked = myTasks[myIndex].completed;
+        myCheckbox.onchange = function() { myToggleTask(myIndex); };
+
+        let myText = document.createElement('span');
+        myText.textContent = myTasks[myIndex].text;
+        if (myTasks[myIndex].completed) {
+          myText.className = 'completed';
+        }
+
+        let myDeleteButton = document.createElement('button');
+        myDeleteButton.textContent = 'Delete';
+        myDeleteButton.onclick = function() { myDeleteTask(myIndex); };
+
+        myListItem.appendChild(myCheckbox);
+        myListItem.appendChild(myText);
+        myListItem.appendChild(myDeleteButton);
+        myList.appendChild(myListItem);
+      }
+    }
+  </script>
+</body>
+</html>
