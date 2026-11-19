@@ -81,9 +81,9 @@ jobs:
               path = unquote(parsed.path)
               if not path:
                   continue
-              # Ignore filename patterns such as foo-bar-baz (glob: *-*-*).
-              # These are intentional placeholders and should not fail validation.
-              if fnmatch.fnmatch(Path(path).name, "*-*-*"):
+              # Ignore only the explicit placeholder pattern (glob: *-...-*).
+              # All other local links and assets must still pass validation.
+              if fnmatch.fnmatch(Path(path).name, "*-...-*"):
                   continue
               target = (root / path.lstrip("/")).resolve()
               if root not in target.parents and target != root:
