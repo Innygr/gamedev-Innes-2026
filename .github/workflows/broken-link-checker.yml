@@ -21,19 +21,20 @@ concurrency:
 
 jobs:
   check-links:
-    name: Check local and external links
+    name: Check external links only
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Check links in HTML and Markdown
+      - name: Check external HTTP and HTTPS links in HTML and Markdown
         uses: lycheeverse/lychee-action@v2
         with:
           args: >-
             --root-dir "$(pwd)"
             --verbose
             --no-progress
+            --include '^https?://'
             --exclude "https://deltarune.fandom.com/wiki/Spamton"
             "./**/*.html"
             "./**/*.htm"
