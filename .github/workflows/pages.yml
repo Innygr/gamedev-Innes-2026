@@ -3,8 +3,18 @@ name: Build and Deploy GameDev Website
 on:
   push:
     branches: [main]
+    paths:
+      - '**/*.html'
+      - '**/*.htm'
+      - '**/*.js'
+      - '**/*.css'
   pull_request:
     branches: [main]
+    paths:
+      - '**/*.html'
+      - '**/*.htm'
+      - '**/*.js'
+      - '**/*.css'
   workflow_dispatch:
 
 permissions:
@@ -22,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
