@@ -1,3 +1,4 @@
+
 <link rel="stylesheet" href="t2-theme.css">
 
 <h2>t2a22-local-storage-fred.html</h2>
@@ -6,16 +7,16 @@ Use local storage to make a to-do list
 
 <body onload="{
    myStorage = localStorage.getItem('myStoredText')
-   if(myStorage  != null){
-      document.getElementById('myText1').value = myStorage 
-    }
+   if(myStorage != null){
+      document.getElementById('myText1').value = myStorage
+   }
+
+   myLoadData()
 }" class="t2-page">
 
-<body onunload="{
-   localstorage.setItem('myStoredText',document.getElementById('myText1').value)
-}">   
-
-Text example: <input id="myText1" type=text size=70 value="" placeholder="Write here to store"><br>
+Text example:
+<input id="myText1" type="text" size="70" value="" placeholder="Write here to store">
+<br>
 
 <input type="button" value="Store Text" onClick="{
    localStorage.setItem('myStoredText', document.getElementById('myText1').value)
@@ -25,8 +26,240 @@ Text example: <input id="myText1" type=text size=70 value="" placeholder="Write 
 
 <input type="button" value="Retrieve Text" onClick="{
    document.getElementById('myText1').value = localStorage.getItem('myStoredText')
-}"> 
+}">
 
+<hr>
 
+<h2>Advanced Array Storage</h2>
 
+<p>Store multiple pieces of information in an array.</p>
 
+Title:
+<input id="myTitle" type="text" placeholder="Enter a title">
+<br>
+
+Type:
+<select id="myType">
+   <option value="Note">Note</option>
+   <option value="Task">Task</option>
+   <option value="Number">Number</option>
+   <option value="Setting">Setting</option>
+   <option value="Other">Other</option>
+</select>
+<br>
+
+Information:
+<br>
+<textarea id="myContent" rows="4" cols="50" placeholder="Enter information"></textarea>
+<br>
+
+<input type="button" value="Add to Array" onclick="myAddData()">
+
+<h3>Stored Array Data</h3>
+
+<div id="myDisplay"></div>
+
+<input type="button" value="Export Array" onclick="myExportData()">
+
+<input type="file" id="myImportFile" accept=".json" onchange="myImportData()">
+
+<input type="button" value="Clear Array" onclick="myClearData()">
+
+<script>
+
+// Array containing all stored entries
+let myData = []
+
+// Open IndexedDB database
+let myDatabaseRequest = indexedDB.open("MyAdvancedStorage", 1)
+
+myDatabaseRequest.onupgradeneeded = function(event) {
+   let myDatabase = event.target.result
+
+   if (!myDatabase.objectStoreNames.contains("storage")) {
+      myDatabase.createObjectStore("storage")
+   }
+}
+
+myDatabaseRequest.onsuccess = function(event) {
+   myDatabase = event.target.result
+
+   myLoadData()
+}
+
+myDatabaseRequest.onerror = function() {
+   alert("Database could not be opened!")
+}
+
+// Load array from IndexedDB
+function myLoadData() {
+   if (!myDatabaseRequest.result) return
+
+   let myTransaction = myDatabaseRequest.result.transaction("storage", "readonly")
+   let myStore = myTransaction.objectStore("storage")
+   let myRequest = myStore.get("allData")
+
+   myRequest.onsuccess = function() {
+      if (Array.isArray(myRequest.result)) {
+         myData = myRequest.result
+      }
+
+      myDisplayData()
+   }
+}
+
+// Save array to IndexedDB
+function mySaveData() {
+   if (!myDatabaseRequest.result) return
+
+   let myTransaction = myDatabaseRequest.result.transaction("storage", "readwrite")
+   let myStore = myTransaction.objectStore("storage")
+
+   myStore.put(myData, "allData")
+}
+
+// Add an entry to the array
+function myAddData() {
+   let myTitle = document.getElementById("myTitle").value
+   let myType = document.getElementById("myType").value
+   let myContent = document.getElementById("myContent").value
+
+   if (myTitle == "" || myContent == "") {
+      alert("Enter a title and some information!")
+      return
+   }
+
+   let myEntry = {
+      id: Date.now(),
+      title: myTitle,
+      type: myType,
+      content: myContent,
+      date: new Date().toLocaleString()
+   }
+
+   myData.push(myEntry)
+
+   mySaveData()
+   myDisplayData()
+
+   document.getElementById("myTitle").value = ""
+   document.getElementById("myContent").value = ""
+}
+
+// Display all array entries
+function myDisplayData() {
+   let myOutput = ""
+
+   for (let myCount = 0; myCount < myData.length; myCount++) {
+      myOutput += `
+         <div style="border: 1px solid gray; padding: 10px; margin: 10px;">
+            <h3>${myEscape(myData[myCount].title)}</h3>
+            <p>Type: ${myEscape(myData[myCount].type)}</p>
+            <p>${myEscape(myData[myCount].content)}</p>
+            <small>${myEscape(myData[myCount].date)}</small>
+            <br>
+            <button onclick="myDeleteData(${myData[myCount].id})">Delete</button>
+         </div>
+      `
+   }
+
+   if (myData.length == 0) {
+      myOutput = "No array data stored."
+   }
+
+   document.getElementById("myDisplay").innerHTML = myOutput
+}
+
+// Delete one entry
+function myDeleteData(myID) {
+   myData = myData.filter(function(myEntry) {
+      return myEntry.id != myID
+   })
+
+   mySaveData()
+   myDisplayData()
+}
+
+// Clear array
+function myClearData() {
+   if (confirm("Clear all array data?")) {
+      myData = []
+      mySaveData()
+      myDisplayData()
+   }
+}
+
+// Export array as JSON
+function myExportData() {
+   let myFile = new Blob(
+      [JSON.stringify(myData, null, 2)],
+      {type: "application/json"}
+   )
+
+   let myURL = URL.createObjectURL(myFile)
+   let myLink = document.createElement("a")
+
+   myLink.href = myURL
+   myLink.download = "my-array-storage.json"
+   myLink.click()
+
+   URL.revokeObjectURL(myURL)
+}
+
+// Import array from JSON
+function myImportData() {
+   let myFile = document.getElementById("myImportFile").files[0]
+
+   if (!myFile) return
+
+   let myReader = new FileReader()
+
+   myReader.onload = function() {
+      try {
+         let myImportedData = JSON.parse(myReader.result)
+
+         if (!Array.isArray(myImportedData)) {
+            throw new Error("File must contain an array!")
+         }
+
+         if (!myImportedData.every(function(myEntry) {
+            return myEntry &&
+               typeof myEntry.id === "number" &&
+               typeof myEntry.title === "string" &&
+               typeof myEntry.type === "string" &&
+               typeof myEntry.content === "string" &&
+               typeof myEntry.date === "string"
+         })) {
+            throw new Error("Invalid array data!")
+         }
+
+         myData = myData.concat(myImportedData)
+
+         mySaveData()
+         myDisplayData()
+
+         alert("Array imported!")
+      } catch (myError) {
+         alert("Import failed: " + myError.message)
+      }
+   }
+
+   myReader.readAsText(myFile)
+}
+
+// Prevent HTML from being interpreted as markup
+function myEscape(myText) {
+   return String(myText).replace(/[&<>"']/g, function(myCharacter) {
+      return {
+         "&": "&amp;",
+         "<": "&lt;",
+         ">": "&gt;",
+         '"': "&quot;",
+         "'": "&#39;"
+      }[myCharacter]
+   })
+}
+
+</script>
+
+</body>
