@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="t2-theme.css">
 
 <h2>t2a22-local-storage-fred.html</h2>
 
@@ -8,7 +9,7 @@ Use local storage to make a to-do list
    if(myStorage  != null){
       document.getElementById('myText1').value = myStorage 
     }
-}">
+}" class="t2-page">
 
 <body onunload="{
    localstorage.setItem('myStoredText',document.getElementById('myText1').value)
