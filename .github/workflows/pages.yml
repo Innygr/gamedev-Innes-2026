@@ -1,0 +1,119 @@
+name: Build and Deploy GameDev Website
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: gamedev-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and validate static website
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build website
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s index.html || { echo "::error::index.html is missing or empty."; exit 1; }
+          rm -rf _site
+          mkdir -p _site
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.github/' \
+            --exclude='_site/' \
+            ./ _site/
+          touch _site/.nojekyll
+
+      - name: Validate homepage local links and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          from urllib.parse import urlsplit, unquote
+          import sys
+
+          root = Path("_site").resolve()
+          homepage = root / "index.html"
+
+          class LocalReferenceChecker(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.references = []
+
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  for key in ("href", "src", "poster"):
+                      value = attrs.get(key)
+                      if value:
+                          self.references.append((tag, key, value))
+
+          parser = LocalReferenceChecker()
+          parser.feed(homepage.read_text(encoding="utf-8"))
+
+          missing = []
+          for tag, attribute, value in parser.references:
+              value = value.strip()
+              if not value or value.startswith("#"):
+                  continue
+              parsed = urlsplit(value)
+              if parsed.scheme or parsed.netloc:
+                  continue
+              path = unquote(parsed.path)
+              if not path:
+                  continue
+              target = (root / path.lstrip("/")).resolve()
+              if root not in target.parents and target != root:
+                  missing.append((tag, attribute, value, "path escapes site root"))
+                  continue
+              if target.is_dir():
+                  target = target / "index.html"
+              if not target.is_file():
+                  missing.append((tag, attribute, value, "file not found"))
+
+          if missing:
+              for tag, attribute, value, reason in missing:
+                  print(f"::error::{tag} {attribute}='{value}': {reason}")
+              sys.exit(1)
+
+          print(f"Validated {len(parser.references)} homepage resource/link references.")
+          PY
+
+      - name: Upload built website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy GameDev website
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Report deployment URL
+        run: echo "GameDev website deployed to ${{ steps.deployment.outputs.page_url }}" >> "$GITHUB_STEP_SUMMARY"
