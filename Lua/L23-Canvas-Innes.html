@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L-23 Canvas - Innes</title>
+    <link rel="stylesheet" href="t2-theme.css">
+</head>
+<body>
+
+<h2 align="center">L-23 // Canvas by Innes (Luau)</h2>
+
+<input type="button" value="Draw Basic Shapes" id="drawButton">
+
+<br><br>
+
+<canvas id="myCanvas" width="500" height="300"
+    style="border:1px solid #000000;"></canvas>
+
+<h3>Luau Output</h3>
+<pre id="myOutput"></pre>
+
+<script type="module">
+import { runLuau } from "./LuauRuntime.js";
+
+const canvas = document.getElementById("myCanvas");
+const context = canvas.getContext("2d");
+const output = document.getElementById("myOutput");
+
+// JavaScript bridge: browser canvas operations
+const bridge = {
+    clearCanvas() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    },
+
+    drawLine(x1, y1, x2, y2, width, color) {
+        context.beginPath();
+        context.lineWidth = width;
+        context.strokeStyle = color;
+        context.moveTo(x1, y1);
+        context.lineTo(x2, y2);
+        context.stroke();
+    },
+
+    drawRectangle(x, y, width, height, color) {
+        context.fillStyle = color;
+        context.fillRect(x, y, width, height);
+    },
+
+    drawCircle(x, y, radius, width, color) {
+        context.beginPath();
+        context.lineWidth = width;
+        context.strokeStyle = color;
+        context.arc(x, y, radius, 0, 2 * Math.PI);
+        context.stroke();
+    },
+
+    drawText(text, x, y, font, color) {
+        context.fillStyle = color;
+        context.font = font;
+        context.fillText(text, x, y);
+    },
+
+    logMessage(message) {
+        output.textContent += message + "\n";
+    }
+};
+
+// Actual drawing instructions in Luau
+const luauCode = `
+function drawBasicShapes()
+    clearCanvas()
+
+    -- Line
+    drawLine(20, 20, 150, 20, 3, "black")
+
+    -- Filled Rectangle
+    drawRectangle(30, 50, 100, 60, "blue")
+
+    -- Circle
+    drawCircle(220, 80, 40, 5, "green")
+
+    -- Text
+    drawText("Hello World!", 30, 180, "24px Arial", "red")
+
+    logMessage("Basic shapes drawn successfully!")
+end
+
+drawBasicShapes()
+`;
+
+// Initialize Luau
+await runLuau(luauCode, output, bridge);
+
+// Button calls the Luau function
+document.getElementById("drawButton").addEventListener("click", async () => {
+    await runLuau("drawBasicShapes()", output, bridge);
+});
+</script>
+
+</body>
+</html>
