@@ -1,2 +1,38 @@
 <link rel="stylesheet" href="t2-theme.css">
 
+<h2 align=center>t2a07 // 23 Canvas by Innes</h2>
+
+<input type="button" value="Draw Basic Shapes" onclick="{
+  myContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
+
+  // Line
+  myContext.beginPath();
+  myContext.lineWidth = 3;
+  myContext.strokeStyle = 'black';
+  myContext.moveTo(20, 20);
+  myContext.lineTo(150, 20);
+  myContext.stroke();
+
+  // Filled Rectangle
+  myContext.fillStyle = 'blue';
+  myContext.fillRect(30, 50, 100, 60);
+
+  // Circle
+  myContext.beginPath();
+  myContext.lineWidth = 5;
+  myContext.strokeStyle = 'green';
+  myContext.arc(220, 80, 40, 0, 2 * Math.PI);
+  myContext.stroke();
+
+  // Text
+  myContext.fillStyle = 'red';
+  myContext.font = '24px Arial';
+  myContext.fillText('Hello World!', 30, 180);
+}"><br><br>
+
+<canvas id="myCanvas+++" width="500" height="300" style="border:1px solid #000000;"></canvas>
+
+<script>
+  let myCanvas = document.getElementById('myCanvas+++');
+  let myContext = myCanvas.getContext('2d');
+</script>
