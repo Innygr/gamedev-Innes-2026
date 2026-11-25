@@ -1,5 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-25T17:19:42.890Z",
-  "items": []
+  "updatedAt": "2026-11-25T17:20:02.236Z",
+  "items": [
+    {
+      "id": "7940a93d-25cd-4cf5-9298-3e2b865c3781",
+      "text": "LocalStorage",
+      "completed": false
+    }
+  ]
 }
