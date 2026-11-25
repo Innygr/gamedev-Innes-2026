@@ -1,15 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-25T17:47:44.078Z",
+  "updatedAt": "2026-11-25T17:47:45.926Z",
   "items": [
     {
       "id": "7940a93d-25cd-4cf5-9298-3e2b865c3781",
       "text": "LocalStorage",
-      "completed": false
-    },
-    {
-      "id": "ce8b3357-baf9-4667-8cd1-85e5af41c855",
-      "text": "LUA",
       "completed": false
     },
     {
