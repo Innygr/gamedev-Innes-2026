@@ -1,204 +1,265 @@
 
 <link rel="stylesheet" href="t2-theme.css">
 
-<h2 align="center">t2a07 // 23 Canvas by Innes</h2>
+<h2>t2a22-local-storage-fred.html</h2>
 
-<p>Use the buttons to draw different shapes on the canvas!</p>
+Use local storage to make a to-do list
 
-<input type="button" value="Draw Basic Shapes" onclick="{
-  myContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
+<body onload="{
+   myStorage = localStorage.getItem('myStoredText')
+   if(myStorage != null){
+      document.getElementById('myText1').value = myStorage
+   }
 
-  // Line
-  myContext.beginPath();
-  myContext.lineWidth = 3;
-  myContext.strokeStyle = 'black';
-  myContext.moveTo(20, 30);
-  myContext.lineTo(180, 30);
-  myContext.stroke();
+   myLoadData()
+}" class="t2-page">
 
-  // Filled Rectangle
-  myContext.fillStyle = 'blue';
-  myContext.fillRect(30, 60, 100, 60);
+Text example:
+<input id="myText1" type="text" size="70" value="" placeholder="Write here to store">
+<br>
 
-  // Outlined Rectangle
-  myContext.lineWidth = 3;
-  myContext.strokeStyle = 'purple';
-  myContext.strokeRect(160, 60, 100, 60);
-
-  // Outlined Circle
-  myContext.beginPath();
-  myContext.lineWidth = 5;
-  myContext.strokeStyle = 'green';
-  myContext.arc(330, 90, 40, 0, 2 * Math.PI);
-  myContext.stroke();
-
-  // Filled Circle
-  myContext.beginPath();
-  myContext.fillStyle = 'orange';
-  myContext.arc(420, 90, 30, 0, 2 * Math.PI);
-  myContext.fill();
-
-  // Text
-  myContext.fillStyle = 'red';
-  myContext.font = '24px Arial';
-  myContext.fillText('Hello World!', 30, 180);
-
-  // Triangle
-  myContext.beginPath();
-  myContext.fillStyle = 'cyan';
-  myContext.moveTo(250, 220);
-  myContext.lineTo(200, 280);
-  myContext.lineTo(300, 280);
-  myContext.closePath();
-  myContext.fill();
+<input type="button" value="Store Text" onClick="{
+   localStorage.setItem('myStoredText', document.getElementById('myText1').value)
+   alert(document.getElementById('myText1').value + ' \nHas been stored')
+   document.getElementById('myText1').value = ''
 }">
 
-<input type="button" value="Draw Grid" onclick="{
-  myContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
-
-  myContext.strokeStyle = '#cccccc';
-  myContext.lineWidth = 1;
-
-  for (let x = 0; x <= myCanvas.width; x += 25) {
-    myContext.beginPath();
-    myContext.moveTo(x, 0);
-    myContext.lineTo(x, myCanvas.height);
-    myContext.stroke();
-  }
-
-  for (let y = 0; y <= myCanvas.height; y += 25) {
-    myContext.beginPath();
-    myContext.moveTo(0, y);
-    myContext.lineTo(myCanvas.width, y);
-    myContext.stroke();
-  }
+<input type="button" value="Retrieve Text" onClick="{
+   document.getElementById('myText1').value = localStorage.getItem('myStoredText')
 }">
-
-<input type="button" value="Clear Canvas" onclick="{
-  myContext.clearRect(0, 0, myCanvas.width, myCanvas.height);
-}">
-
-<br><br>
-
-<canvas id="myCanvas+++" width="500" height="300"
-style="border:1px solid #000000; background-color:white;"></canvas>
-
-<script>
-  let myCanvas = document.getElementById('myCanvas+++');
-  let myContext = myCanvas.getContext('2d');
-</script>
-
 
 <hr>
 
-<h2 align="center">t2a07 // 3D Canvas Experiment</h2>
+<h2>Advanced Array Storage</h2>
 
-<p>Welcome to the third dimension! Watch the objects rotate in 3D.</p>
+<p>Store multiple pieces of information in an array.</p>
 
-<div id="my3DContainer" style="
-  width: 100%;
-  max-width: 600px;
-  height: 350px;
-  margin: auto;
-  border: 2px solid #555;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #101020;
-"></div>
-
+Title:
+<input id="myTitle" type="text" placeholder="Enter a title">
 <br>
 
-<input type="button" value="Pause / Resume" onclick="{
-  my3DPaused = !my3DPaused;
-}">
+Type:
+<select id="myType">
+   <option value="Note">Note</option>
+   <option value="Task">Task</option>
+   <option value="Number">Number</option>
+   <option value="Setting">Setting</option>
+   <option value="Other">Other</option>
+</select>
+<br>
 
-<input type="button" value="Change Shape Colours" onclick="{
-  my3DCube.material.color.setHex(Math.random() * 0xffffff);
-  my3DSphere.material.color.setHex(Math.random() * 0xffffff);
-  my3DTorus.material.color.setHex(Math.random() * 0xffffff);
-}">
+Information:
+<br>
+<textarea id="myContent" rows="4" cols="50" placeholder="Enter information"></textarea>
+<br>
 
-<input type="button" value="Reset Camera" onclick="{
-  my3DCamera.position.set(0, 2, 7);
-  my3DCamera.lookAt(0, 0, 0);
-}">
+<input type="button" value="Add to Array" onclick="myAddData()">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<h3>Stored Array Data</h3>
+
+<div id="myDisplay"></div>
+
+<input type="button" value="Export Array" onclick="myExportData()">
+
+<input type="file" id="myImportFile" accept=".json" onchange="myImportData()">
+
+<input type="button" value="Clear Array" onclick="myClearData()">
 
 <script>
-  let my3DScene = new THREE.Scene();
-  my3DScene.background = new THREE.Color(0x101020);
 
-  let my3DCamera = new THREE.PerspectiveCamera(
-    75, 600 / 350, 0.1, 1000
-  );
+// Array containing all stored entries
+let myData = []
 
-  let my3DRenderer = new THREE.WebGLRenderer({ antialias: true });
-  my3DRenderer.setSize(600, 350);
-  my3DRenderer.setPixelRatio(window.devicePixelRatio);
+// Open IndexedDB database
+let myDatabaseRequest = indexedDB.open("MyAdvancedStorage", 1)
 
-  document.getElementById('my3DContainer').appendChild(my3DRenderer.domElement);
+myDatabaseRequest.onupgradeneeded = function(event) {
+   let myDatabase = event.target.result
 
-  my3DCamera.position.set(0, 2, 7);
+   if (!myDatabase.objectStoreNames.contains("storage")) {
+      myDatabase.createObjectStore("storage")
+   }
+}
 
-  // Lighting
-  let my3DLight = new THREE.PointLight(0xffffff, 2);
-  my3DLight.position.set(5, 5, 5);
-  my3DScene.add(my3DLight);
+myDatabaseRequest.onsuccess = function(event) {
+   myDatabase = event.target.result
 
-  my3DScene.add(new THREE.AmbientLight(0xffffff, 0.5));
+   myLoadData()
+}
 
-  // Cube
-  let my3DCube = new THREE.Mesh(
-    new THREE.BoxGeometry(1.5, 1.5, 1.5),
-    new THREE.MeshStandardMaterial({ color: 0x0088ff })
-  );
-  my3DCube.position.x = -2;
-  my3DScene.add(my3DCube);
+myDatabaseRequest.onerror = function() {
+   alert("Database could not be opened!")
+}
 
-  // Sphere
-  let my3DSphere = new THREE.Mesh(
-    new THREE.SphereGeometry(0.8, 32, 32),
-    new THREE.MeshStandardMaterial({ color: 0x00ff88 })
-  );
-  my3DScene.add(my3DSphere);
+// Load array from IndexedDB
+function myLoadData() {
+   if (!myDatabaseRequest.result) return
 
-  // Torus
-  let my3DTorus = new THREE.Mesh(
-    new THREE.TorusGeometry(0.8, 0.25, 16, 100),
-    new THREE.MeshStandardMaterial({ color: 0xff0088 })
-  );
-  my3DTorus.position.x = 2;
-  my3DScene.add(my3DTorus);
+   let myTransaction = myDatabaseRequest.result.transaction("storage", "readonly")
+   let myStore = myTransaction.objectStore("storage")
+   let myRequest = myStore.get("allData")
 
-  // Animation
-  let my3DPaused = false;
+   myRequest.onsuccess = function() {
+      if (Array.isArray(myRequest.result)) {
+         myData = myRequest.result
+      }
 
-  function my3DAnimate() {
-    requestAnimationFrame(my3DAnimate);
+      myDisplayData()
+   }
+}
 
-    if (!my3DPaused) {
-      my3DCube.rotation.x += 0.01;
-      my3DCube.rotation.y += 0.015;
+// Save array to IndexedDB
+function mySaveData() {
+   if (!myDatabaseRequest.result) return
 
-      my3DSphere.rotation.y += 0.02;
+   let myTransaction = myDatabaseRequest.result.transaction("storage", "readwrite")
+   let myStore = myTransaction.objectStore("storage")
 
-      my3DTorus.rotation.x += 0.01;
-      my3DTorus.rotation.y += 0.02;
-    }
+   myStore.put(myData, "allData")
+}
 
-    my3DRenderer.render(my3DScene, my3DCamera);
-  }
+// Add an entry to the array
+function myAddData() {
+   let myTitle = document.getElementById("myTitle").value
+   let myType = document.getElementById("myType").value
+   let myContent = document.getElementById("myContent").value
 
-  my3DAnimate();
+   if (myTitle == "" || myContent == "") {
+      alert("Enter a title and some information!")
+      return
+   }
 
-  // Resize support
-  window.addEventListener('resize', function() {
-    let my3DWidth = document.getElementById('my3DContainer').clientWidth;
+   let myEntry = {
+      id: Date.now(),
+      title: myTitle,
+      type: myType,
+      content: myContent,
+      date: new Date().toLocaleString()
+   }
 
-    my3DCamera.aspect = my3DWidth / 350;
-    my3DCamera.updateProjectionMatrix();
+   myData.push(myEntry)
 
-    my3DRenderer.setSize(my3DWidth, 350);
-  });
+   mySaveData()
+   myDisplayData()
+
+   document.getElementById("myTitle").value = ""
+   document.getElementById("myContent").value = ""
+}
+
+// Display all array entries
+function myDisplayData() {
+   let myOutput = ""
+
+   for (let myCount = 0; myCount < myData.length; myCount++) {
+      myOutput += `
+         <div style="border: 1px solid gray; padding: 10px; margin: 10px;">
+            <h3>${myEscape(myData[myCount].title)}</h3>
+            <p>Type: ${myEscape(myData[myCount].type)}</p>
+            <p>${myEscape(myData[myCount].content)}</p>
+            <small>${myEscape(myData[myCount].date)}</small>
+            <br>
+            <button onclick="myDeleteData(${myData[myCount].id})">Delete</button>
+         </div>
+      `
+   }
+
+   if (myData.length == 0) {
+      myOutput = "No array data stored."
+   }
+
+   document.getElementById("myDisplay").innerHTML = myOutput
+}
+
+// Delete one entry
+function myDeleteData(myID) {
+   myData = myData.filter(function(myEntry) {
+      return myEntry.id != myID
+   })
+
+   mySaveData()
+   myDisplayData()
+}
+
+// Clear array
+function myClearData() {
+   if (confirm("Clear all array data?")) {
+      myData = []
+      mySaveData()
+      myDisplayData()
+   }
+}
+
+// Export array as JSON
+function myExportData() {
+   let myFile = new Blob(
+      [JSON.stringify(myData, null, 2)],
+      {type: "application/json"}
+   )
+
+   let myURL = URL.createObjectURL(myFile)
+   let myLink = document.createElement("a")
+
+   myLink.href = myURL
+   myLink.download = "my-array-storage.json"
+   myLink.click()
+
+   URL.revokeObjectURL(myURL)
+}
+
+// Import array from JSON
+function myImportData() {
+   let myFile = document.getElementById("myImportFile").files[0]
+
+   if (!myFile) return
+
+   let myReader = new FileReader()
+
+   myReader.onload = function() {
+      try {
+         let myImportedData = JSON.parse(myReader.result)
+
+         if (!Array.isArray(myImportedData)) {
+            throw new Error("File must contain an array!")
+         }
+
+         if (!myImportedData.every(function(myEntry) {
+            return myEntry &&
+               typeof myEntry.id === "number" &&
+               typeof myEntry.title === "string" &&
+               typeof myEntry.type === "string" &&
+               typeof myEntry.content === "string" &&
+               typeof myEntry.date === "string"
+         })) {
+            throw new Error("Invalid array data!")
+         }
+
+         myData = myData.concat(myImportedData)
+
+         mySaveData()
+         myDisplayData()
+
+         alert("Array imported!")
+      } catch (myError) {
+         alert("Import failed: " + myError.message)
+      }
+   }
+
+   myReader.readAsText(myFile)
+}
+
+// Prevent HTML from being interpreted as markup
+function myEscape(myText) {
+   return String(myText).replace(/[&<>"']/g, function(myCharacter) {
+      return {
+         "&": "&amp;",
+         "<": "&lt;",
+         ">": "&gt;",
+         '"': "&quot;",
+         "'": "&#39;"
+      }[myCharacter]
+   })
+}
+
 </script>
+
+</body>
