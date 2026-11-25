@@ -709,6 +709,16 @@ function myShowSnake() {
 }
 
 
+/* ==================================================
+   COLLISION SYSTEM — START
+   Adapted from collision-detection-Innes.html.
+
+   The original myHitOther(my1, my2) rectangle-overlap
+   method is retained, but bounds come from
+   getBoundingClientRect() so responsive sizing and
+   positioned elements work reliably.
+   ================================================== */
+
 // ================================================
 // COLLISION DETECTION
 // ================================================
@@ -747,6 +757,13 @@ function myHitOther(my1, my2) {
     );
 }
 
+
+/* ==================================================
+   COLLISION SYSTEM — CORE END
+   myHitOther() and its rectangle helpers are defined
+   above. Platform-specific collision checks are
+   grouped in the collision-check section below.
+   ================================================== */
 
 // ================================================
 // PLAYER MOVEMENT
@@ -953,6 +970,13 @@ document.addEventListener('keyup', function(myEvent) {
 });
 
 
+/* ==================================================
+   PLATFORMER COLLISION CHECKS — START
+   Uses the same rectangle-overlap system as
+   collision-detection-Innes.html for player/target,
+   platform obstacles, and spike hitboxes.
+   ================================================== */
+
 // ================================================
 // COLLISION CHECK
 // ================================================
@@ -999,6 +1023,10 @@ function myGetHitSpike(player) {
                 playerBounds.top < insetSpike.bottom;
         }) || null;
 }
+
+/* ==================================================
+   PLATFORMER COLLISION CHECKS — END
+   ================================================== */
 
 function myRespawnAfterSpikes() {
     const myPlayer = myElement('myImg01');
