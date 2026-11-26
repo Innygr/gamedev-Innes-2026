@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T18:00:40.375Z",
+  "updatedAt": "2026-11-26T18:01:58.023Z",
   "items": [
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
@@ -15,6 +15,41 @@
     {
       "id": "8c7c5499-c803-411e-9fe6-6d458a1afaf0",
       "text": "Hackbrowser // 17",
+      "completed": false
+    },
+    {
+      "id": "a95b47ac-abe5-41b2-9d59-289d238567d7",
+      "text": "BUILD WORKFLOW — Read the assignment instructions and identify the required outcome.",
+      "completed": false
+    },
+    {
+      "id": "6f13b17e-c1f2-45f0-8c39-9f711bca473c",
+      "text": "BUILD WORKFLOW — List the HTML elements, CSS rules, or JavaScript features needed.",
+      "completed": false
+    },
+    {
+      "id": "e5eb314f-b199-42c6-8d85-9a3c88aaf9ca",
+      "text": "BUILD WORKFLOW — Make the smallest working version first.",
+      "completed": false
+    },
+    {
+      "id": "77dcded1-665d-42d9-8862-94c6e593b061",
+      "text": "BUILD WORKFLOW — Add the required examples and interactive behaviour.",
+      "completed": false
+    },
+    {
+      "id": "eb0c0717-7e9a-448f-9f44-357de1156510",
+      "text": "BUILD WORKFLOW — Test normal, empty, unusual, and invalid inputs.",
+      "completed": false
+    },
+    {
+      "id": "69d5a38a-f5f9-4831-ae99-5cc1e77dca6e",
+      "text": "BUILD WORKFLOW — Check spelling, headings, labels, and code formatting.",
+      "completed": false
+    },
+    {
+      "id": "6c99b090-77a2-4aea-ae9c-993f39949a46",
+      "text": "BUILD WORKFLOW — Save the file and verify every link and asset.",
       "completed": false
     }
   ]
