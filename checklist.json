@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T18:02:07.584Z",
+  "updatedAt": "2026-11-26T18:02:09.191Z",
   "items": [
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
@@ -20,11 +20,6 @@
     {
       "id": "eb0c0717-7e9a-448f-9f44-357de1156510",
       "text": "BUILD WORKFLOW — Test normal, empty, unusual, and invalid inputs.",
-      "completed": false
-    },
-    {
-      "id": "6c99b090-77a2-4aea-ae9c-993f39949a46",
-      "text": "BUILD WORKFLOW — Save the file and verify every link and asset.",
       "completed": false
     }
   ]
