@@ -1,15 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T17:59:35.958Z",
+  "updatedAt": "2026-11-26T17:59:37.564Z",
   "items": [
     {
       "id": "7940a93d-25cd-4cf5-9298-3e2b865c3781",
       "text": "LocalStorage",
-      "completed": false
-    },
-    {
-      "id": "fb22b07b-ddaf-4a01-bffc-d1b9727f382a",
-      "text": "Gametemplates",
       "completed": false
     },
     {
