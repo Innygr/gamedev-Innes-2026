@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T17:58:36.457Z",
+  "updatedAt": "2026-11-26T17:58:39.319Z",
   "items": [
     {
       "id": "7940a93d-25cd-4cf5-9298-3e2b865c3781",
@@ -10,11 +10,6 @@
     {
       "id": "fb22b07b-ddaf-4a01-bffc-d1b9727f382a",
       "text": "Gametemplates",
-      "completed": false
-    },
-    {
-      "id": "06e8fe4f-1f48-4fb2-a229-004e512b0acc",
-      "text": "t1a07 (Fixed)",
       "completed": false
     },
     {
