@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T18:01:58.023Z",
+  "updatedAt": "2026-11-26T18:02:01.950Z",
   "items": [
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
@@ -15,11 +15,6 @@
     {
       "id": "8c7c5499-c803-411e-9fe6-6d458a1afaf0",
       "text": "Hackbrowser // 17",
-      "completed": false
-    },
-    {
-      "id": "a95b47ac-abe5-41b2-9d59-289d238567d7",
-      "text": "BUILD WORKFLOW — Read the assignment instructions and identify the required outcome.",
       "completed": false
     },
     {
