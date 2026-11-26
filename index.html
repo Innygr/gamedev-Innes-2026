@@ -1145,6 +1145,14 @@
 
     
         .workflowHub { margin: 18px 0; padding: 18px; border: 1px solid rgba(167,139,250,.42); border-radius: 12px; background: linear-gradient(135deg,rgba(12,20,43,.96),rgba(7,29,43,.94)); box-shadow: 0 0 18px rgba(83,244,255,.08); }
+        .workflowDetails > summary { display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; list-style:none; color:#53f4ff; font-size:1.25rem; font-weight:700; }
+        .workflowDetails > summary::-webkit-details-marker { display:none; }
+        .workflowDetails > summary::before { content:"＋"; display:inline-block; margin-right:9px; color:#a78bfa; }
+        .workflowDetails[open] > summary::before { content:"−"; }
+        .workflowToggleHint { margin-left:auto; font-size:.82rem; font-weight:400; color:#c5d5e8; }
+        .workflowDetails[open] .workflowToggleHint { font-size:0; }
+        .workflowDetails[open] .workflowToggleHint::after { content:"Hide workflows"; font-size:.82rem; }
+        .workflowContent { padding-top:12px; }
         .workflowHub h2 { margin:0 0 6px; }
         .workflowIntro { color:#c5d5e8; margin:0 0 14px; }
         .workflowGrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
@@ -1283,8 +1291,10 @@
         <!-- =====================
              WORKFLOW LAUNCHPAD
              ===================== -->
-        <section class="workflowHub" aria-labelledby="workflowTitle">
-            <h2 id="workflowTitle">Workflow Launchpad</h2>
+        <section class="workflowHub" aria-label="Workflow Launchpad">
+            <details class="workflowDetails">
+                <summary id="workflowTitle">Workflow Launchpad <span class="workflowToggleHint">Show workflows</span></summary>
+                <div class="workflowContent">
             <p class="workflowIntro">One click adds a practical step-by-step workflow to your checklist. Your checklist remains saved in this browser.</p>
             <div class="workflowGrid">
                 <article class="workflowCard">
@@ -1313,6 +1323,8 @@
                 <button type="button" id="copyChecklistWorkflow">Copy checklist as text</button>
             </div>
             <p id="workflowFeedback" role="status" aria-live="polite"></p>
+                </div>
+            </details>
         </section>
 
         <!-- =====================
