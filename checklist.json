@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T18:02:01.950Z",
+  "updatedAt": "2026-11-26T18:02:03.558Z",
   "items": [
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
@@ -20,11 +20,6 @@
     {
       "id": "6f13b17e-c1f2-45f0-8c39-9f711bca473c",
       "text": "BUILD WORKFLOW — List the HTML elements, CSS rules, or JavaScript features needed.",
-      "completed": false
-    },
-    {
-      "id": "e5eb314f-b199-42c6-8d85-9a3c88aaf9ca",
-      "text": "BUILD WORKFLOW — Make the smallest working version first.",
       "completed": false
     },
     {
