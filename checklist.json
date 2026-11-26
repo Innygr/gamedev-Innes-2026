@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T18:02:05.051Z",
+  "updatedAt": "2026-11-26T18:02:07.584Z",
   "items": [
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
@@ -15,11 +15,6 @@
     {
       "id": "8c7c5499-c803-411e-9fe6-6d458a1afaf0",
       "text": "Hackbrowser // 17",
-      "completed": false
-    },
-    {
-      "id": "77dcded1-665d-42d9-8862-94c6e593b061",
-      "text": "BUILD WORKFLOW — Add the required examples and interactive behaviour.",
       "completed": false
     },
     {
