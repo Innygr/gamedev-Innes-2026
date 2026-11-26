@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T17:59:05.637Z",
+  "updatedAt": "2026-11-26T17:59:35.958Z",
   "items": [
     {
       "id": "7940a93d-25cd-4cf5-9298-3e2b865c3781",
@@ -15,6 +15,11 @@
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
       "text": "Sort // 20",
+      "completed": false
+    },
+    {
+      "id": "6f29bab9-3cf5-4571-aa00-60309af43fc5",
+      "text": "Game Templates // 18",
       "completed": false
     }
   ]
