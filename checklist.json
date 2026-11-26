@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T18:02:03.558Z",
+  "updatedAt": "2026-11-26T18:02:05.051Z",
   "items": [
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
@@ -18,11 +18,6 @@
       "completed": false
     },
     {
-      "id": "6f13b17e-c1f2-45f0-8c39-9f711bca473c",
-      "text": "BUILD WORKFLOW — List the HTML elements, CSS rules, or JavaScript features needed.",
-      "completed": false
-    },
-    {
       "id": "77dcded1-665d-42d9-8862-94c6e593b061",
       "text": "BUILD WORKFLOW — Add the required examples and interactive behaviour.",
       "completed": false
@@ -30,11 +25,6 @@
     {
       "id": "eb0c0717-7e9a-448f-9f44-357de1156510",
       "text": "BUILD WORKFLOW — Test normal, empty, unusual, and invalid inputs.",
-      "completed": false
-    },
-    {
-      "id": "69d5a38a-f5f9-4831-ae99-5cc1e77dca6e",
-      "text": "BUILD WORKFLOW — Check spelling, headings, labels, and code formatting.",
       "completed": false
     },
     {
