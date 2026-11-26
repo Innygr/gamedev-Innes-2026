@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-25T18:50:03.107Z",
+  "updatedAt": "2026-11-26T17:58:28.153Z",
   "items": [
     {
       "id": "7940a93d-25cd-4cf5-9298-3e2b865c3781",
@@ -15,11 +15,6 @@
     {
       "id": "045fb8a6-a41e-4c42-9645-fb87d01c194f",
       "text": "the special area",
-      "completed": false
-    },
-    {
-      "id": "869cd522-4490-488c-8cf5-2b9bf67334e3",
-      "text": "t1a10",
       "completed": false
     },
     {
