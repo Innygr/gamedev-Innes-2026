@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-26T18:02:09.191Z",
+  "updatedAt": "2026-11-26T18:02:10.880Z",
   "items": [
     {
       "id": "b18e4c96-e449-40a0-87e5-aa536fe17753",
@@ -15,11 +15,6 @@
     {
       "id": "8c7c5499-c803-411e-9fe6-6d458a1afaf0",
       "text": "Hackbrowser // 17",
-      "completed": false
-    },
-    {
-      "id": "eb0c0717-7e9a-448f-9f44-357de1156510",
-      "text": "BUILD WORKFLOW — Test normal, empty, unusual, and invalid inputs.",
       "completed": false
     }
   ]
